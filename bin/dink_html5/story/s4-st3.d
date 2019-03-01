@@ -1,0 +1,2 @@
+¨
+€ , ;)ƒpe&…†psp‡‚(‰34ˆ_set ‚0rein1„= q(‹p_”˜•d™ašo›lœ—hawŸ& te{¡’Œrarivoid ma‘( void )€£’3„7„9„‘¡tƒ‘‡ƒ¤“¦ndom(2‚’if (¤=“1)£ ‡ “ca¢_ˆ§¢(2‹‚168–„}if (¤=“2)£ ‡ “ca¢_ˆ§¢(401‚215–„}Œb¦‘Š16„Œba_walkŠ‹0„Œs…edŠ¥tim‘gŠ0„//start‘g picŒp”Š‹¥pf¦meŠ¥sc§ptŠ"s4-st3p");€}€

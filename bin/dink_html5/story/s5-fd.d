@@ -1,0 +1,2 @@
+À
+€ );sp‚, reido‡vˆ(&22sete‰ _ƒ!!Œqnt)€„ƒ}€p†r†(‹i’_‘„–u—šr™›˜Ÿc¡d a£o¤l¥œ¦“{¢…e Š©”_if‚€•€¨d…¯ l±p3(³mµ·o´h¹¸º daiooaym½n¶°//Œtup¼augher€ƒ_baŒ_walk«‹0”eed«1¬br½n«16¬hitpoi’s«50§1§3§5§7§9¬p‘Š»‹3¬pframeŠ»1®€²hit (‰¨€pl¿sound(12…‹050…0…&»0®²die¶°//dink f½ls€­ Šl­ª> 0°s¿("N¾¾!  Thªgirl has¼ied!  I HAVE FAILED!"…1„&l­ª= 0;•²talk¶¨€­ Šstory > 11) s¿("`#Whe†¼‡ you learn to fight likªthat?",&¢®•

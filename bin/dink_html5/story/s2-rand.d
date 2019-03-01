@@ -1,0 +1,2 @@
+¤
+€ ;)‚, &psp…e‡pˆ„(‰†_seƒ‹39int reŒq(p‘’“_•d–a—o˜l™”š0„ƒ›= //Š1ra…a¢pvoid ma( void )€{£‚£ ¡ndom(5„1ƒif (£ =1){€ŸRighnow jus†awn the dang guy›1379ƒŸSpawn guyˆ‚ˆ c‘ate_†rite(326„30œœœ0b¡ 6baŒ_walkŠ0†eed timgŠ0ƒŸŒstartg pic‹p’Š3pf¡me scriptŠ"s2-wand"ƒ}€}€

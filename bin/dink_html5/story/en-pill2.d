@@ -1,0 +1,2 @@
+¿
+sp);it‚€re, _ntrƒ‡‰(&Šer…ˆŒuc‘†‹’_d oi–•v—se)€0„1„= lo{€}€p…_™¡d¢a¤£¥q(¦§¨1edho€€hƒ3„0†›””˜š²Ÿ  ( //µ³maragend«linou¶pillbug b¹½¬˜¸½·”b¹½“9„‡eª“®”exp“4°ba™_walk“13°ba™_death“14°t¾ch_da¸º“8„”­p–ˆs“3›©3œ©3®©4œ©4®€if (¹»om(2,1) =1š Ÿ ”tarºt“œ   ¬˜­·”tarºt“&enemyŒ„plays¾»(3¯1505¯400¯&’›¶ck on to the guy w« just ­ us€¶plays¾»€ ˜die·´iˆ &¼•±ªƒor_num‹‘„´if ‹¼•!0š´ªƒor_type‹¼d†6‚ ¬&save_x ±x“-œ&save_y ±y“-œ€ external("e¸ke","mªium"„€ 

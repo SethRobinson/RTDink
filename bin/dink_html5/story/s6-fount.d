@@ -1,0 +1,2 @@
+¸  
+€‚ 1) „;ƒif  =reoi‚€,…‡ (&ay†s‘d ("“•‰=pa˜p{Œ"’š–.›ƒœin}ƒv‹fŠ™—¡”£e („"ˆ)t  ¥ e§0,z­e¯«¬¢°²; cndthop¤maŸ( ¤){ˆŸª&™;}¤talk( ¤){ˆ³ˆch‹ce_start()ˆ"Tak¦a drŸk¨"Dr· Ÿ a´‹n¨"Leave¨ch‹ce_eµ()‚Šsult—…‚{ƒ–Ah, Š¢shŸg&l‡e‰ &l‡emax†Pl‘souµ(22,2205®®®0);‚}‚Šsult— 2)‚{ƒgol”<…I don'ªhav¦any´‹ns!";Œun³ŒŠturn† &gol”-= 1†&™‰ raµom(4’¥…I h·¦¶is helps±2©For luck±3©H·¦¶aªwish´omes true±4©For Mo¶er}‚}ˆun³}

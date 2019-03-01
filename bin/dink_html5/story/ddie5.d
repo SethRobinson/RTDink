@@ -1,0 +1,2 @@
+¤
+);€re_spƒd„a†o‡lˆ…‰q(e‹ŠŒ‚1d oiit2v‘”(&211in)€‚€1“  t olhŸ sornt//generic¡cripf¢ kill™g th™gs¡o they don'come back€€•ma™( •š{€sp_h’p‘£s–curƒ£„pr’e, “23—4—6—7—9›˜˜3˜7˜9›œœœ121›}€€•die( •š{€™& =¡p_ed’¢_num–curƒ£„pr’e‚if – != 0šed’¢_type– d, 6 €}€

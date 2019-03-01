@@ -1,0 +1,2 @@
+Ÿ
+€ ido‚vƒ, {;"…s y ("y‹aŒs1)ˆst)€}€(„€„i‰”’!€“• be›drnušmain—{™štalk—†if (&‘orŠ>= 3)†MŠœ –going to b up˜‡ret‡}Th––mŠœ.  So clean and neat!  Mom mu‘ have made it.;™šhit—†if (&‘orŠ>= 3)†It'‰hot˜‡ret‡}Die…‘up‚ œ˜;™

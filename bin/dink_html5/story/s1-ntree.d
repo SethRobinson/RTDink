@@ -1,0 +1,2 @@
+½
+ra, ;€  nd)ƒ…c&ˆe t ‰p)€&‡d iov‘al_s(Œ=  –rein•‚{€}€0†™‹f“rithŸlnuœ€y‚—‡„„rŠ’e”©›ƒ( c n &¢­«m(0,o²¦´mamoto®pts¸px’¶™±Œ¬¼¬y¬°yƒ€¤’t“k±say”»("He¥¡at's a¯AlkT˜e."‚1†wait(25¤’hit±§§ Œ—s¹º_used(†if • > 170„›„//don'‹¶kŠany ·¨£º‚¡e¨a¨165 “˜ady o¯¡Šsc˜en..„˜turnƒ„¤//leº ¶kŠ¡Š£‹¢ dow¯a… givŠi‹a £‹s¹t€¼µ20³32yµ8³Œ—c˜atªp te(¼‚¥0‚421‚23†sp”peedš1†·vª»š8‚86‚1°yµ8³11sp”¹tš"s1-£t"†·vª»š2‚°¥1€œ

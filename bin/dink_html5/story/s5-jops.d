@@ -1,0 +1,2 @@
+Ã  
+€te0,‚ );&ƒ= „ 5-sŠldoŒhri‡mspp0† ˆt(ma}ƒ‚€aƒ†„„“…"‹&‹c…’•’_‘‘”/–£˜"›eš‰œ e s p¢©§ª¤/¦¯(,«_­´®k¬‰3³…±r²¹¶°µcº¥½¸fŸjÀoÁpvoid –in( void ){ if (Â =ˆ0)…{™Â”1;™wai•90“™say("Weird.€This town looks deserƒd.",1†…—if (Â =ˆ2)‚{»guy¡1¾56·3¼1¿guy¨»mom¡2¾40·1¼2¿mom¨»daughƒr¡3¾4·2¼3¿d¨‚——

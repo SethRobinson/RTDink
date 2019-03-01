@@ -1,0 +1,2 @@
+¡
+€ d i‚oƒv„it;}€n y re)‡, "("yas‘urnt)€{ …–’—•(™e  cSitoarer…mainš{€ˆ…h†š˜'gn' m›up.. for DESTRUCTION! Haw haw!1);€ˆ€…talkš{€if (&srŠ< 8) ˜`%K n‰isœlose‚u”il p‹pŸatio‰isœomplete.&c“‹”_spr†eŒwa†(1000Œ’Huh?  What o‰eŸthœa‰theŠb›p‹pŸing?1Œ ‹t“n‡ ˆif (&srŠ> 7) ˜`%K n‰c†Šlim†s.  Pleas›e”  o“ lovelŠwn!&c“‹”_spr†eŒ ˆˆ

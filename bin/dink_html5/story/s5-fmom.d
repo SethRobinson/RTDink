@@ -1,0 +1,2 @@
+µ
+€ );sp‚re(&sete, 36oi_ƒv‹!!d ‡qurnt„ƒp…’…iˆ(Š“Œ_‘r—c–™›š˜œda o¡l¢•£)€}€Ÿ‰†§„¤”_if¥{‚€¬ e (¯aidioom²n±®//‡tup mom€ƒ_ba‡_walk¨Š0”Œeed¨1ªbr²n¨16ªhitp‹“s¨50­¤1©3©5©7©9ªp‘†ˆmp2hold‰Š1ªpframe†ˆmp2hold‰1­€¦€€³e±®//³nk f²ls€« †l«°> 0®say("N´´!  Th°mother has ³ed!  I HAVE FAILED!"‰1„&l«°= 0;€¦¦€talk±¬€« †story > 11) say("`#My daughˆr is just about yo’ age.",&Ÿ­¦

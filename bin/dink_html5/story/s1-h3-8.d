@@ -1,0 +1,2 @@
+¶
+  €‚ aybe, 1)idoˆv‰m„‹…&Œ‡;ƒ}€{ƒs„"†= s  ("’—eaib)€{€€•…d†(Š“ƒ‘=”(–r™ ›¢˜LšŸ¦œ¤£f .¡Š y'¬«§¨¯©i°b²±´€®mainª®talkª int ;€ –”random(3,³‡µahh y™h­‘³2)µto d¥m the impossšle d¥m..­}ƒ³3)µlook•lonely­®hitª ˜Get ¥dy for me!“€

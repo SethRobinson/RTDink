@@ -1,0 +1,2 @@
+¡  
+€€;‚‚)ƒred  1tei‰{})…i‡ov(&0,spnu•tk ("",†etoŠminunuray‘ma( ‘‹”_›uch_damage’cŸ†nt_”rŠ, -1Œ‘›uch( ‘‹t &j—= fš_œs(if ’j—<ˆ ‹ s ˜I'm full!€I can't pic—up anythg else.™ˆ… †tŸnƒ ŒPl sod(1“2205“““0…add_œ˜œ-–™438,ˆ9„if ’–tš <ˆ„‹„&–tš =ˆƒ„&s›ry = 3ƒ„Œ„s ˜I picke‡up a –!™1…„”_active’cŸ†nt_”rŠ, 0 Œ

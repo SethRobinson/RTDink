@@ -1,0 +1,2 @@
+¥  €€
+;‚)ƒ…„sp(1, ‡_ˆ‰†Šred iov00maraadchinnt(†0†2Œu–oœt‹1‹4sc_deri‘“—( ‘)‚{‚plo•_seq(452…Š¢a“ge(&cur˜_‡¤te‰-1…‚}‚‚‚‘( ‘)‚ {‚„f£zeˆŒx 7›y‹330Œseq 5›f”meŸŒnoco˜rolŸ); //d—k can't move u˜il anim is done!‚„Š¢a“ge(&cur˜_‡¤te‰0Œb”—‹šwait(2’š¡¤pt_atta–ˆ’šf•e¢own™&player_“p = 182ƒ„Šx 01Œy‹283†lo•_¡£nˆ8›b”—Ÿ†d”w_¡£n™f•e_up™kill_this_task(…€}‚

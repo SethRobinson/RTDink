@@ -1,0 +1,2 @@
+¾
+spit);reƒ€_(&ntr‚†‰, Šer„ˆŒuc‡‘’‹_d …”seoi˜•v™)€lo{€}€p„_—…Ÿ¡œd a£¢¤q(¥¦“1§6hoinh‚a—0–€šš›°  ( = b­//³±µ_tageedimªl¶sl¼e/puddle g„en‹weak€¯ma«·”bra«“9…†e»¨–t¼«g¨®exp“3–¸walk“67®¸death“68®¸at¹ck“-1–touch_damaº“3–¬p˜ˆs¨3©71©73©81©83…€if (random(2,1) =´1›  ”¹rºt¨… €¯¬·”¹rºt“&enemyŒ…¶œck on to the guy wª just ¬ us€¶playsound€”t¼«g“0…¯die·²iˆ &½•´”»‚or_num’…²if ‡½•!´0›²»‚or_type‡½d‹6ƒ €

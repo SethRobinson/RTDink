@@ -1,0 +1,2 @@
+ 
+;€)sp(1, ƒ_‚†„…re(‚d i‹oŒv00maraadchinnt0‚6‡u“o˜t™ˆ1sc_d‰eri”( )€{€p‰lo’_seq(452‡šage(&cur‰•_ƒŸte…-1‚€}€€€š( )€{€fze„‡xˆ26—yˆ8—seqˆ452‡f‘me›‡noco•rol›); //d”k can't move u•il anim is done!€†šage(&cur‰•_ƒŸte…0‡b‘”ˆ–wait(2–œŸpt_atta“„–f’eownŠ&player_p = 166†xˆ315‡yˆ365‚lo’_œn„6—b‘”›‚d‘w_œnŠf’e_upŠkill_this_taskŠ}€

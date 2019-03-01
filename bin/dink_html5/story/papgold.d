@@ -1,0 +1,2 @@
+¼  
+spit€€(&);, ƒent†_‚e‰Œ‹rˆrru‘c’…“‚_”‡d  sina™olto)„„Š••t //–1ucœ¤agth¥ham›—i—e–rš= s Š ©¦ §o«b­d±v³_µ¨·il¹lor¢§is˜crip¡fº¯life up‡¸e mus¡be˜e¡œ -1. (run˜crip¡mode¶mš( { pseq£78°fr©¬4† ¢so²e˜eq wº˜tart„€¢€•´–6°¸¬-1°nohƒ£Š}¶¨( ¶{&gª+®200;say("I foun—200 g›d!",1Ÿ´_parm£0Ÿ´£2Ÿ¸¬0Ÿtim™g–0Š€¢kº²i¯ˆm˜o ƒ doesn't˜how up ¦š f»²i¯player€i‰ &hª®•edƒ»_num”Š€if …hª!®0€edƒ»_type…h›d‡1† }

@@ -1,0 +1,2 @@
+º  
+€itsp);, (&re…‚d ntrƒ_„ˆ‹Œru‘c’‡“„_”eol–†e s thor‚€dƒh—œe seoi…1‰‡Ÿ= y v£//¡_¢qd†©Š§•›™t  ¦­17´7mach›iinªscrip±fœ ·es±wƒh 500 g—Š¹ ƒ®¶¹( ©d){pˆload_¬(µ¤}®hƒ ( ®) {‚ªpla¨n£¢‚i‹ &ŸŠ¯«num–¤‚if ¦Š!§0){²ª¸šwašplaceŠb¨°¡†letš¶k™°·es±sta¨open²«type³4… ²«¬³µ‰€ «frame³6‰€ ªtyp™meanšshow ¸š¬/fram™combo ašbackgrounŠ¹ °futuˆ}‚&save_x ¯x˜-¥&save_¨¯y˜-¥external("¶ke"†"g—d500"¤‚•¬˜µ‰•script˜""‰•notou·˜¥•nohƒ˜¥kill_¸s_task(¤ }

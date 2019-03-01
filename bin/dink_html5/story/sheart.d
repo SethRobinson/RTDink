@@ -1,0 +1,2 @@
+Å  
+sp€€it(&;, „ent_‚)†‰ŠrˆeŒrru‘c’…“‚_”‡ife l—mainƒƒ)œ•d t to0‹&™a›= s 0,–1uc¡©thªhho{}¢•aš‹iŸr¤i¦ «//d±o³b´v¹_¸¬¼se½gil­lsoÀlor·«µscrip fÃ¦™˜up‡¿˜mus b˜¾ ¡ -1. (run scrip mode»š›( ®¾q–54²frame¨); ·Â¶˜¾q wÃ startº–6²¿e–-1²noh„¨‹¯»¬( »®£˜+¥3†— …™˜> £ešx ® £˜¥£ešx† ¯PlayÂund(1§2205§§§°º_parm¨°º¨2‹•¿e–°tim›g–¢€·kÃ¶µˆm Â „ doesn' s­w up ag¤ fÄ¶µplayer€i‰ &ÁŸ¥•ed„Ä_num”‹€— …ÁŸ!¥0€ed„Ä_type…Ád‡1); ¯

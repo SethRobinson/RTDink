@@ -1,0 +1,2 @@
+ 
+€ ;)‚, gu…y&†spre‡„(Šˆ_seƒŒ39inqp‰(_‘”“d•a–o—l˜’™‰aƒš..„0tevoid ma( void )€{š1œ3œ7œ9ƒt ‡‚//C›Ÿ the f›k †‡ = c›Ÿ_ˆriŸ(333„129bra‹16ba_walk‹0ˆeed‹4timg‹0ƒ//t startg picŒp‘‹1pframe‹1script‹"s3-f›k");€}

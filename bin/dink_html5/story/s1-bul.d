@@ -1,0 +1,2 @@
+Ø  €€
+=-);ƒƒ_s‚‡, itreto……†Œwap(„‚00ay"‰„ˆ”‘s—˜"†pntŠr‹rŠ2“›š u(Ÿœ£¢¡c¥&¦§e€ „©ˆ¤–¬™ª«ig.•p¯t ®­ha¨‰`6idloinoud†p‹e » q(40±1½¹a¼y¿’ÃeÀÇÁÆÄÉÈºg?•±¨µ³ ²°°´·(¶m¸ Å fsparvo¸ maº( vo¸ )‚{‚ÖšeedÒ2’Ö_timËÒ0’Ö_base_lkÒ4“Ê1Ê3Ê7Ê9’‚if (&²ry == 0)‚{‚ˆf‹eze(1’¤’™He‹‰²gi¾²giesÂ’¤’‡ˆmove‘¶1‰542‰1)ˆpl”Ói("bullythe.Ó"’ˆ™·Well‰¹oki¾wÎw¾go³he‹Í–­WÎdoÔ›‰MilderÌ1–­·NothËÍÑ'cep³Œ tchÔwork... IsÏÕ×mËÕunÌ¨´I'm NOT aÏÕ×merÂÑA‹ÔfeedËÏs r¯h³nowÌ¨´Er.Â´Um.ÂÑBaµµµh!€Se¾Å×»nd‰squirtÍ®move‘¶3‰7“‰1)ˆ™I *HATE* tÎguy!•1®unf‹eze(1„‡©sŒpÓi(–&²ry = 1;‚}‚‚}‚‚//-ĞĞ‚

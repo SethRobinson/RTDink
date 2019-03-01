@@ -1,0 +1,2 @@
+ 
+€ ;)‚, sepe&†q(…ˆre‡p_‰pŠdŒaol‘sp‹„ƒ’“_ƒ–(”4133in0„•š•™˜1void ma›( void )€{’™79311379ƒ//Spawn guy›t ‹‚‹ = cŠate_“rite(30œ20œœœ0—bra›Ÿ6—ba…_walk˜™0—s†edŸ—tim›g˜0ƒ//…t start›g pic–p‰”™3—pframeŸ—script˜"s3-larry");€}€

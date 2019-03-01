@@ -1,0 +1,2 @@
+•
+;€)(1sp, „_ƒ…‚†red iŠo‹vŒ‡1rainma‰e_snt‘( )€{€p‰load“eq(452‚}€€€touch( )€{€if (&life < 1) ‰turn€f’zeƒˆx‡274ˆy95ˆseq‡452ˆfmeˆnoco”rol); //dk can't move u”il anim is done!€†touch_da‘ge(&cur‰”_„rite…0ˆb‡0‚wait(2000ˆb‚&player_‘p = 131†x‡289ˆy‡377‚load“c’nƒ31‚dw“c’n(‚}€

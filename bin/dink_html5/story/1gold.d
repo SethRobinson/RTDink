@@ -1,0 +1,2 @@
+À  
+spit€€;(&nt, ƒe_‚)…e‡ŒŠr‰rru‘c’†“‚_”ˆd ra sinolto)„„‹••= t //–1maucœ¦th§h›—i—e–˜šc˜p s ‹ a¥ ¨o«b­m®d²v´_·&¶©¹»gil½lor£¨is™crip¢f¾°life upˆ¼e mus¢be™e¢œ -1. (run™crip¢mode¸¥š( { pseq¤78±f˜m¬4); £so³e™eq w¾™tart„ £€ •µ–6±¼¬-1±nohƒ¤‹}¸©( ¸{i‡ º¯¡1…&gª+¡ºp…say("I foun—º¯g›d.",1Ÿµ_parm¤0Ÿµ¤2Ÿ¼¬0Ÿtimšg–0‹€£k¾³i°‰m™o ƒ doesn't™how u¯agaš f¿³i°player€i‡ &hª¡•edƒ¿_num”‹€if †hª!¡0€edƒ¿_type†h›dˆ1); }

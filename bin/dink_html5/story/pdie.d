@@ -1,0 +1,2 @@
+•
+d itioƒv„t (&);insp)€ˆ€  , ‚etholh‘enor//g“eric scrip†f” kill‰g ‰gs so ey don'†come back€€…ma‰( …‹{€Š_exp‡curr“t_Šr5000Œ}€€…die( …‹{€‰†&’= Š_ed‚”_num‡curr“t_ŠrŒif ‡’!= 0‹ed‚”_type‡’d1ˆ €say("Wowa†was qu a pig!",1Œ}€
