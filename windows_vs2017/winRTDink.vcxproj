@@ -778,7 +778,10 @@
     <ClCompile Include="..\..\shared\Audio\AudioManager.cpp" />
     <ClCompile Include="..\..\shared\Audio\AudioManagerAndroid.cpp" />
     <ClCompile Include="..\..\shared\Audio\AudioManagerFMODStudio.cpp" />
-    <ClCompile Include="..\..\shared\Audio\AudioManagerSDL.cpp" />
+    <ClCompile Include="..\..\shared\Audio\AudioManagerSDL.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release GL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug GL|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\shared\BaseApp.cpp" />
     <ClCompile Include="..\..\shared\bbx\bbutil.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Common Debug|Win32'">true</ExcludedFromBuild>
