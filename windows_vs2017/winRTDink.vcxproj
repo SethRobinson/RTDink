@@ -78,7 +78,7 @@
     <ProjectGuid>{AD1D1337-0F3F-4AC5-B9EE-EE151B0193FE}</ProjectGuid>
     <RootNamespace>winRTDink</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug WebOS|Win32'" Label="Configuration">
@@ -88,7 +88,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug WebOS|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GL AkikoBox|Win32'" Label="Configuration">
@@ -98,7 +98,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GL AkikoBox|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GL WinDir|Win32'" Label="Configuration">
@@ -108,7 +108,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GL WinDir|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug GL WinDir|Win32'" Label="Configuration">
@@ -118,12 +118,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug GL WinDir|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GL|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseBeta GL|Win32'" Label="Configuration">
@@ -133,7 +133,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GL|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseBeta GL|x64'" Label="Configuration">
@@ -143,7 +143,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug GL|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug GL|x64'" Label="Configuration">
@@ -158,7 +158,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Common Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Common Debug|Win32'" Label="Configuration">
@@ -168,7 +168,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Common Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -422,7 +422,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\source;..\..\shared;..\..\shared\win\;..\..\shared\util\boost;..\..\shared\ClanLib-2.0\Sources;..\..\shared\win\include;..\..\shared\FliteTTS\include;..\..\shared\Irrlicht\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;C_GL_MODE;_HAS_ITERATOR_DEBUGGING=0;_SECURE_SCL=0;_NO_DEBUG_HEAP=1;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_RUNS_IN_BACKGROUND_DISABLED;RT_IPV6;_USE_32BIT_TIME_T;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;C_GL_MODE;_HAS_ITERATOR_DEBUGGING=0;_SECURE_SCL=0;_NO_DEBUG_HEAP=1;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_RUNS_IN_BACKGROUND_DISABLED;RT_IPV6;_USE_32BIT_TIME_T;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;WGL_WGLEXT_PROTOTYPES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -519,7 +519,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4267;4244;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;_USE_32BIT_TIME_T;C_GL_MODE;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_PNG_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;C_GL_MODE;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_PNG_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;fmod64_vc.lib;zdll.lib;ws2_32.lib;dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -1271,6 +1271,8 @@
     <ClCompile Include="..\..\shared\Gamepad\GamepadProvider.cpp" />
     <ClCompile Include="..\..\shared\Gamepad\GamepadProviderDirectX.cpp" />
     <ClCompile Include="..\..\shared\Gamepad\GamepadProvideriCade.cpp" />
+    <ClCompile Include="..\..\shared\Gamepad\GamepadProviderXInput.cpp" />
+    <ClCompile Include="..\..\shared\Gamepad\GamepadXInput.cpp" />
     <ClCompile Include="..\..\shared\GUI\RTFont.cpp" />
     <ClCompile Include="..\..\shared\html5\HTML5Main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Common Debug|Win32'">true</ExcludedFromBuild>
@@ -4253,6 +4255,8 @@
     <ClInclude Include="..\..\shared\Gamepad\GamepadProvider60BeatNative.h" />
     <ClInclude Include="..\..\shared\Gamepad\GamepadProviderDirectX.h" />
     <ClInclude Include="..\..\shared\Gamepad\GamepadProvideriCade.h" />
+    <ClInclude Include="..\..\shared\Gamepad\GamepadProviderXInput.h" />
+    <ClInclude Include="..\..\shared\Gamepad\GamepadXInput.h" />
     <ClInclude Include="..\..\shared\GUI\RTFont.h" />
     <ClInclude Include="..\..\shared\GUI\RTFontFileFormat.h" />
     <ClInclude Include="..\..\shared\html5\HTML5Utils.h" />
@@ -4279,6 +4283,7 @@
     <ClInclude Include="..\..\shared\Irrlicht\source\Irrlicht\jpeglib\transupp.h" />
     <ClInclude Include="..\..\shared\Irrlicht\source\Irrlicht\libpng\png.h" />
     <ClInclude Include="..\..\shared\Irrlicht\source\Irrlicht\libpng\pngconf.h" />
+    <ClInclude Include="..\..\shared\Irrlicht\source\Irrlicht\wglext.h" />
     <ClInclude Include="..\..\shared\Manager\AdManager.h" />
     <ClInclude Include="..\..\shared\Manager\Console.h" />
     <ClInclude Include="..\..\shared\Manager\GameTimer.h" />
@@ -4376,6 +4381,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\android\proguard\config.txt" />
+    <Text Include="..\bin\version_history.txt" />
     <Text Include="..\dinkhd_license.txt" />
     <Text Include="..\flash\exports.txt" />
     <Text Include="..\OSX\readme.txt" />

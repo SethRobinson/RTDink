@@ -213,6 +213,15 @@ void MainMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity sen
 		GetMessageManager()->CallEntityFunction(pEntClicked->GetParent(), 500, "OnDelete", NULL);
 		AboutMenuCreate(pEntClicked->GetParent()->GetParent());
 	}
+	if (pEntClicked->GetName() == "Quit")
+	{
+		DisableAllButtonsEntity(pEntClicked->GetParent());
+		//RemoveFocusIfNeeded(pEntClicked->GetParent());	//slide it off the screen and then kill the whole menu tree
+		SlideScreen(pEntClicked->GetParent(), false);
+		//GetMessageManager()->CallEntityFunction(pEntClicked->GetParent(), 500, "OnDelete", NULL);
+		GetApp()->OnExitApp(NULL);
+		
+	}
 
 	if (pEntClicked->GetName() == "rtsoftlogo")
 	{
@@ -605,6 +614,7 @@ Entity * MainMenuCreate( Entity *pParentEnt, bool bFadeIn )
 	CL_Vec2f vAboutButPt = CL_Vec2f(251, 245);
 
 	CL_Vec2f vOptionsButPt = CL_Vec2f(360, 246);
+	CL_Vec2f vQuitButPt = CL_Vec2f(825, 473);
 
 	if (IsIPADSize)
 	{
@@ -668,10 +678,7 @@ Entity * MainMenuCreate( Entity *pParentEnt, bool bFadeIn )
 	pComp->GetFunction("OnActivated")->sig_function.connect(1, boost::bind(&App::OnExitApp, GetApp(), _1));
 	pComp->GetVar("keycode")->Set(uint32(VIRTUAL_KEY_BACK));
 
-	pButtonEntity = CreateOverlayButtonEntity(pBG, "rtsoftlogo", ReplaceWithDeviceNameInFileName("interface/iphone/logo_rtsoft.rttex"), vRtsoftLogoPt.x, vRtsoftLogoPt.y);
-	SetTouchPaddingEntity(pButtonEntity, CL_Rectf(0, 0, 0, -10)); //no padding, it overlaps other buttons..
-	pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&MainMenuOnSelect);
-	FadeInEntity(pButtonEntity, false, 300, 1000);
+
 	
 
 	static bool bOneTimeDMODLoaded = false;
@@ -774,8 +781,26 @@ Entity * MainMenuCreate( Entity *pParentEnt, bool bFadeIn )
 			pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&MainMenuOnSelect);
 			SetTouchPaddingEntity(pButtonEntity, CL_Rectf(0,0,0,0));
 			FadeInEntity(pButtonEntity, false, 500, 1500);
+		
+			if (GetEmulatedPlatformID() == PLATFORM_ID_WINDOWS)
+			{
+				pButtonEntity = CreateOverlayButtonEntity(pBG, "Quit", ReplaceWithDeviceNameInFileName("interface/iphone/main_but_quit.rttex"), vQuitButPt.x, vQuitButPt.y);
+				pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&MainMenuOnSelect);
+				SetTouchPaddingEntity(pButtonEntity, CL_Rectf(0, 0, 0, 0));
+				FadeInEntity(pButtonEntity, false, 300, 1000);
+			}
+			else
+			{
+				//show rtsoft logo instead, where the quit button would have been
+				pButtonEntity = CreateOverlayButtonEntity(pBG, "rtsoftlogo", ReplaceWithDeviceNameInFileName("interface/iphone/logo_rtsoft.rttex"), vRtsoftLogoPt.x, vRtsoftLogoPt.y);
+				SetTouchPaddingEntity(pButtonEntity, CL_Rectf(0, 0, 0, -10)); //no padding, it overlaps other buttons..
+				pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&MainMenuOnSelect);
+				FadeInEntity(pButtonEntity, false, 300, 1000);
+			}
+
 			DestroyUnusedTextures();
-	
+
+
 
 	//pButtonEntity = CreateTextButtonEntity(pBG, "Debug", x, y, "Debug and MP3 Music"); y += ySpacer;
 	//pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&MainMenuOnSelect);

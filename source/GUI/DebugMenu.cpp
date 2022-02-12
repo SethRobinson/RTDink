@@ -171,7 +171,7 @@ if (GetApp()->GetCheatsEnabled())
 	AddHotKeyToButton(pButtonEntity, VIRTUAL_KEY_BACK);
 
 
-	if (GetApp()->GetCheatsEnabled())
+	if (GetApp()->GetCheatsEnabled() || g_script_debug_mode)
 	{
 	//buttons on right
 	x = iPhoneMapX(200);

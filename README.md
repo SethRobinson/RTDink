@@ -13,8 +13,8 @@ Visit https://www.rtsoft.com/pages/dink.php for installers for Windows, Mac, iOS
 * By default, Proton SDK's main.cpp is setup to compile for iPhone most likely.  Assuming you'd rather not have an iPhone build, search the project for "//WORK: Change device emulation here" and right under that,
 	change it from string desiredVideoMode = "iPhone Landscape"; or whatever it was to "string desiredVideoMode = "Windows"; instead.  (this is where you can emulate many devices and sizes)
 * Set the profile to "Release GL" and "Win32".  (or "Debug GL" is ok too)  Compile.  If it worked, you should have a dink.exe created in DinkHD/bin.
-* Install DinkHD from rtsoft.com. (media is not included on here, so this is a way to get it..)  Overwrite its dink.exe and fmod.dll (as that is probably different now) with your new one.  It should run!
-
+* Install DinkHD from rtsoft.com. (most media is not included on here, so this is a way to get it..)  Overwrite its dink.exe and fmod.dll (as that is probably different now) with your new one.  It should run!
+* To build the HTML5 version, check out https://www.rtsoft.com/wiki/doku.php?id=proton:html5_setup
 
 Use the "Debug GL" or "Release GL" solution configuations in 32 bit.  Debug GL 64 bit is also setup (just to test - as I actually don't package a 64 bit version for Windows, just iOS)
 
@@ -24,4 +24,4 @@ See script/installer/readme.txt for what's new info.
 
 -- Note about various ports
 
-* While this is the source code used for the mobile and html5 versions too, not everything is included to build those versions
+* While this is the source code used for the mobile versions too, not everything is included to build those versions

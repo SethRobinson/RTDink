@@ -92,8 +92,11 @@ SectionIn RO
   File "..\..\bin\dink.exe"
   ;dink.pdf is optional, it's like 11 MB but it allows auto logged crash stacks to contain useful info
   File "..\..\bin\dink.pdb"
+  File "readme.txt"
   File "..\..\bin\fmod.dll"
   File "..\..\bin\zlib1.dll"
+  File "..\..\bin\version_history.txt"
+  
   SetOutPath "$INSTDIR\audio\"
   File /r "..\..\bin\audio\"
  SetOutPath "$INSTDIR"
@@ -203,7 +206,11 @@ Section "Uninstall"
    Delete "$INSTDIR\dink.pdb"
    Delete "$INSTDIR\Uninstall.exe"
    Delete "$INSTDIR\fmodex.dll"
+   Delete "$INSTDIR\fmod.dll"
    Delete "$INSTDIR\zlib1.dll"
+   Delete "$INSTDIR\log.txt"
+   Delete "$INSTDIR\readme.txt"
+   Delete "$INSTDIR\version_history.txt"
    RMDir /r "$INSTDIR\audio"
    RMDir /r "$INSTDIR\interface"
    RMDir /r "$INSTDIR\dink\dink"
@@ -236,7 +243,9 @@ Section "Uninstall"
 
 MessageBox MB_YESNO "Would you like to also delete all saved games and installed DMOD addons?" IDNO skip_it 
 ;RMDir /r "$INSTDIR\worlds"
-RMDir /r "$INSTDIR"
+RMDir /r "$INSTDIR\dmods"
+RMDir /r "$INSTDIR\dink"
+Delete  "$INSTDIR\save.dat"
 skip_it:
 
   ;start of restore script

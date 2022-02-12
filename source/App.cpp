@@ -126,6 +126,7 @@ AudioManagerFMOD g_audioManager;
 	// AudioManagerAudiere g_audioManager;  //Use Audiere for audio
 
 	#include "Gamepad/GamepadProviderDirectX.h"
+	#include "Gamepad/GamepadProviderXInput.h"
 	#include "Audio/AudioManagerFMODStudio.h"
 
 	 AudioManagerFMOD g_audioManager; //if we wanted FMOD sound in windows
@@ -192,8 +193,8 @@ App::App()
 	m_bDidPostInit = false;
 	m_bHasDMODSupport = true;
 	//for mobiles
-	m_version = 1.92f;
-	m_versionString = "V1.92";
+	m_version = 1.93f;
+	m_versionString = "V1.93";
 	m_build = 1;
 	m_bCheatsEnabled = false;
 
@@ -549,7 +550,16 @@ bool App::Init()
 	
 	//If you don't have directx, just comment out this and remove the dx lib dependency, directx is only used for the
 		//gamepad input on windows
-		GetGamepadManager()->AddProvider(new GamepadProviderDirectX); //use directx joysticks
+		//If you don't have directx, just comment out this and remove the dx lib dependency, directx is only used for the
+	//gamepad input on windows
+	GamepadProviderXInput* pTemp = new GamepadProviderXInput();
+	pTemp->PreallocateControllersEvenIfMissing(true);
+	GetGamepadManager()->AddProvider(pTemp); //use XInput joysticks
+
+	//do another scan for directx devices
+	GamepadProviderDirectX* pTempDirectX = new GamepadProviderDirectX;
+	pTempDirectX->SetIgnoreXInputCapableDevices(true);
+	GetGamepadManager()->AddProvider(pTempDirectX); //use directx joysticks
 	#endif
 
 #ifdef RT_MOGA_ENABLED
@@ -605,7 +615,6 @@ if (GetEmulatedPlatformID() == PLATFORM_ID_IOS || GetEmulatedPlatformID() == PLA
 	//GetApp()->SetCheatsEnabled(true);
 #endif
 	
-GetApp()->SetCheatsEnabled(true);
 
 	bool bSound = m_varDB.GetVarWithDefault("sound", uint32(1))->GetUINT32() != 0;
 	GetAudioManager()->SetSoundEnabled(bSound);
@@ -638,6 +647,7 @@ GetApp()->SetCheatsEnabled(true);
 
 	if (DoesCommandLineParmExist("-debug") )
 	{
+		GetApp()->SetCheatsEnabled(true);
 		g_script_debug_mode = true;
 	}
 
@@ -857,7 +867,9 @@ void App::OnScreenSizeChange()
 	GetApp()->GetVar("videox")->Set(uint32(GetPrimaryGLX()));
 	GetApp()->GetVar("videoy")->Set(uint32(GetPrimaryGLY()));
 	//GetApp()->GetVarWithDefault("borderless_fullscreen", uint32(g_bUseBorderlessFullscreenOnWindows))->Set(uint32(0));
-
+#ifdef _DEBUG
+	LogMsg("Got OnScreenSizeChange:  Setting to %d, %d", uint32(GetPrimaryGLX()), uint32(GetPrimaryGLY()));
+#endif
 #endif
 
 }
@@ -918,7 +930,7 @@ void App::UpdateVideoSettings()
 {
 	eVideoFPS v = (eVideoFPS)GetApp()->GetVarWithDefault("fpsLimit", Variant(uint32(VIDEO_FPS_LIMIT_OFF)))->GetUINT32();
 	SetFPSLimit(60);
-	
+
 #ifdef _DEBUG
 	//SetFPSLimit(20);
 
@@ -1008,19 +1020,24 @@ bool App::OnPreInitVideo()
 
 //windows only
 		
-		
-		
 		if (GetEmulatedPlatformID() == PLATFORM_ID_WINDOWS)
 		{
 			VariantDB temp;
 			temp.Load("save.dat");
 			Variant *pVarX = temp.GetVarIfExists("videox");
 			Variant *pVarY = temp.GetVarIfExists("videoy");
-			if (pVarX && pVarY && pVarX->GetUINT32() != 0 && pVarY->GetUINT32() != 0)
+			if (  (pVarX && pVarY && pVarX->GetUINT32() != 0 && pVarY->GetUINT32() != 0))
 			{
 
 				g_winVideoScreenX = pVarX->GetUINT32();
 				g_winVideoScreenY = pVarY->GetUINT32();
+				
+			}
+			else
+			{
+				g_winVideoScreenX = 1024;
+				g_winVideoScreenY = 768;
+
 			}
 
 			g_bIsFullScreen = temp.GetVarWithDefault("fullscreen", uint32(1))->GetUINT32();
@@ -1174,8 +1191,6 @@ void App::OnMessage( Message &m )
 				ImportNormalSaveSlot(physicalFname, fName);
 
 			}
-
-
 		}
 	}
 

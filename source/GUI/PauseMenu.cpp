@@ -433,9 +433,10 @@ Entity * PauseMenuCreate(Entity *pParentEnt)
 	eFont fontID = FONT_SMALL;
 	float fontScale = 1;
 	
-	pButtonEntity = CreateTextButtonEntity(pBG , "Debug", iPhoneMapX(440), iPhoneMapY(20), "Cheats", false); 
-	pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&PauseMenuOnSelect);
-	pButtonEntity->GetVar("alignment")->Set(uint32(ALIGNMENT_CENTER));
+		pButtonEntity = CreateTextButtonEntity(pBG, "Debug", iPhoneMapX(440), iPhoneMapY(20), "Debug tools", false);
+		pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&PauseMenuOnSelect);
+		pButtonEntity->GetVar("alignment")->Set(uint32(ALIGNMENT_CENTER));
+	
 
 	//pButtonEntity->GetVar("color")->Set(MAKE_RGBA(0,0,0,0));
 

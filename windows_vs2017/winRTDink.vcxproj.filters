@@ -841,6 +841,12 @@
     <ClCompile Include="..\..\shared\util\simple_md5_util.cpp">
       <Filter>shared\util</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\shared\Gamepad\GamepadProviderXInput.cpp">
+      <Filter>shared\Gamepad</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\Gamepad\GamepadXInput.cpp">
+      <Filter>shared\Gamepad</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\App.h">
@@ -1416,6 +1422,15 @@
     <ClInclude Include="..\..\shared\util\simple_md5_util.h">
       <Filter>shared\util</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\Irrlicht\source\Irrlicht\wglext.h">
+      <Filter>shared\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\Gamepad\GamepadProviderXInput.h">
+      <Filter>shared\Gamepad</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\Gamepad\GamepadXInput.h">
+      <Filter>shared\Gamepad</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\android\proguard\config.txt">
@@ -1430,6 +1445,7 @@
     <Text Include="..\OSX\readme.txt">
       <Filter>source</Filter>
     </Text>
+    <Text Include="..\bin\version_history.txt" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\android\AndroidManifest.xml">
