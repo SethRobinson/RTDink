@@ -91,7 +91,7 @@ void DMODInstallShowMsg(Entity *pMenu, string myMsg, bool bSuccess = false)
 				pLabel->GetComponentByName("TextRender")->GetVar("text")->Set("Error!");
 			} else
 			{
-				pLabel->GetComponentByName("TextRender")->GetVar("text")->Set("New quest added successfully.");
+				pLabel->GetComponentByName("TextRender")->GetVar("text")->Set("New adventure added successfully.");
 			}
 		}
 	
@@ -212,7 +212,7 @@ void OnDMODUnpackStatusUpdate(VariantList *pVList)
 	int curBytes = pVList->Get(1).GetUINT32();
 	int totalBytes = pVList->Get(2).GetUINT32();
 
-	int barSize = 1024*1024*5; //5 megs of unpacking will fill up one bar
+	int barSize = 1024*1024*100; //5 megs of unpacking will fill up one bar
 	float progress = float( (curBytes%barSize)) /float(barSize);
 	
 	//LogMsg("prog: %.2f", progress);
@@ -298,7 +298,7 @@ void InitNetStuff(VariantList *pVList)
 
 	string url = pMenu->GetVar("dmodURL")->GetString();
 	string tempFileName = pMenu->GetVar("tempFileName")->GetString();
-
+	float dmodSize = pMenu->GetVar("dmodSize")->GetFloat();
 	string domain;
 	string request;
 	int port = 80;
@@ -321,8 +321,11 @@ void InitNetStuff(VariantList *pVList)
 }
 
 
-Entity * DMODInstallMenuCreate(Entity *pParentEnt, string dmodURL, string installDirectory, string sourceFileName, bool bFromBrowseMenu, string dmodName, bool bDeleteOnFinish)
+Entity * DMODInstallMenuCreate(Entity *pParentEnt, string dmodURL, string installDirectory, string sourceFileName, bool bFromBrowseMenu, string dmodName,
+	bool bDeleteOnFinish, float dmodSize)
 {
+
+	//Note: I ended up not using dmodSize as  I figured out how to grab it from the http response header
 
 	Entity *pBG = CreateOverlayEntity(pParentEnt, "DMODInstall", ReplaceWithDeviceNameInFileName("interface/iphone/bkgd_stone.rttex"), 0,0);
 	AddFocusIfNeeded(pBG, true);
@@ -338,6 +341,7 @@ Entity * DMODInstallMenuCreate(Entity *pParentEnt, string dmodURL, string instal
 	//save these for later
 	pBG->GetVar("dmodURL")->Set(dmodURL);
 	pBG->GetVar("dmodName")->Set(dmodName);
+	pBG->GetVar("dmodSize")->Set(dmodSize);
 	pBG->GetVar("installDirectory")->Set(installDirectory);
 	pBG->GetVar("tempFileName")->Set(GetDMODRootPath()+"temp.dmod");
 	pBG->GetVar("originalFileName")->Set(GetFileNameFromString(dmodURL));

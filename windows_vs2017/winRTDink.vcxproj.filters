@@ -14,30 +14,6 @@
     <Filter Include="source\Dink">
       <UniqueIdentifier>{16848847-fb59-4318-b1b7-1afe62db1b42}</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\android">
-      <UniqueIdentifier>{e7f5f8ba-3ec6-4a9a-a66a-ccac70717cb9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\android\proguard">
-      <UniqueIdentifier>{f127cd43-b61f-465e-beaf-fd88720186d3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\android\jni">
-      <UniqueIdentifier>{ceaaf852-5bea-4de0-a684-2eb12481c5cb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\android\src">
-      <UniqueIdentifier>{53e7a66d-1542-4c5c-b0f7-b7b262ec5095}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\iOS">
-      <UniqueIdentifier>{9a981f24-0170-4d14-9df5-c623ede0173f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\OSX">
-      <UniqueIdentifier>{c2342915-bcb0-4a3d-abfd-a12986300d31}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\flash">
-      <UniqueIdentifier>{5dc2e99f-6f89-4dd5-a6f0-6960892d984a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\html5">
-      <UniqueIdentifier>{de87d5d6-c161-4393-8fd1-fa6ef684dff5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="shared">
       <UniqueIdentifier>{41de73ed-b059-4af0-9ed2-2336cd2b1ef8}</UniqueIdentifier>
     </Filter>
@@ -169,6 +145,42 @@
     </Filter>
     <Filter Include="shared\Renderer\libpng">
       <UniqueIdentifier>{7d52fbf0-de4b-498f-a8ef-a41773d0da66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platform">
+      <UniqueIdentifier>{d4bbe48f-5f95-420b-ba48-d6afa326609b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platform\html5">
+      <UniqueIdentifier>{de87d5d6-c161-4393-8fd1-fa6ef684dff5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platform\flash">
+      <UniqueIdentifier>{5dc2e99f-6f89-4dd5-a6f0-6960892d984a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platform\android">
+      <UniqueIdentifier>{e7f5f8ba-3ec6-4a9a-a66a-ccac70717cb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platform\android\proguard">
+      <UniqueIdentifier>{f127cd43-b61f-465e-beaf-fd88720186d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platform\android\jni">
+      <UniqueIdentifier>{ceaaf852-5bea-4de0-a684-2eb12481c5cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platform\android\src">
+      <UniqueIdentifier>{53e7a66d-1542-4c5c-b0f7-b7b262ec5095}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platform\iOS">
+      <UniqueIdentifier>{9a981f24-0170-4d14-9df5-c623ede0173f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platform\OSX">
+      <UniqueIdentifier>{c2342915-bcb0-4a3d-abfd-a12986300d31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platform\AndroidGradle">
+      <UniqueIdentifier>{bfb8b6c6-da86-4176-a88a-d84e72ee9710}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platform\AndroidGradle\App">
+      <UniqueIdentifier>{39238136-9f01-48b5-9d9b-82b949b79e6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\android\v3_src">
+      <UniqueIdentifier>{92d60f18-4801-484c-be74-f372809ea9e0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -847,6 +859,9 @@
     <ClCompile Include="..\..\shared\Gamepad\GamepadXInput.cpp">
       <Filter>shared\Gamepad</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\shared\Network\NetHTTP_libCURL.cpp">
+      <Filter>shared\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\App.h">
@@ -1434,10 +1449,10 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\android\proguard\config.txt">
-      <Filter>source\android\proguard</Filter>
+      <Filter>source\platform\android\proguard</Filter>
     </Text>
     <Text Include="..\flash\exports.txt">
-      <Filter>source\flash</Filter>
+      <Filter>source\platform\flash</Filter>
     </Text>
     <Text Include="..\programmer_readme.txt" />
     <Text Include="..\script\win_installer\readme.txt" />
@@ -1446,102 +1461,108 @@
       <Filter>source</Filter>
     </Text>
     <Text Include="..\bin\version_history.txt" />
+    <Text Include="..\AndroidGradle\app\src\main\cpp\CMakeLists.txt">
+      <Filter>source\platform\AndroidGradle\App</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\android\AndroidManifest.xml">
-      <Filter>source\android</Filter>
+      <Filter>source\platform\android</Filter>
     </Xml>
     <Xml Include="..\android\build.xml">
-      <Filter>source\android</Filter>
+      <Filter>source\platform\android</Filter>
+    </Xml>
+    <Xml Include="..\AndroidGradle\app\src\main\AndroidManifest.xml">
+      <Filter>source\platform\AndroidGradle\App</Filter>
     </Xml>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\android\ant.properties">
-      <Filter>source\android</Filter>
+      <Filter>source\platform\android</Filter>
     </None>
     <None Include="..\android\app_info_setup.bat">
-      <Filter>source\android</Filter>
+      <Filter>source\platform\android</Filter>
     </None>
     <None Include="..\android\build.bat">
-      <Filter>source\android</Filter>
+      <Filter>source\platform\android</Filter>
     </None>
     <None Include="..\android\build_prepare.bat">
-      <Filter>source\android</Filter>
+      <Filter>source\platform\android</Filter>
     </None>
     <None Include="..\android\buildRelease.bat">
-      <Filter>source\android</Filter>
+      <Filter>source\platform\android</Filter>
     </None>
     <None Include="..\android\Clean.bat">
-      <Filter>source\android</Filter>
+      <Filter>source\platform\android</Filter>
     </None>
     <None Include="..\android\default.properties">
-      <Filter>source\android</Filter>
+      <Filter>source\platform\android</Filter>
     </None>
     <None Include="..\android\InstallOnDefaultPhone.bat">
-      <Filter>source\android</Filter>
+      <Filter>source\platform\android</Filter>
     </None>
     <None Include="..\android\InstallOnDefaultPhoneRelease.bat">
-      <Filter>source\android</Filter>
+      <Filter>source\platform\android</Filter>
     </None>
     <None Include="..\android\ViewLogDefaultPhone.bat">
-      <Filter>source\android</Filter>
+      <Filter>source\platform\android</Filter>
     </None>
     <None Include="..\android\jni\Android.mk">
-      <Filter>source\android\jni</Filter>
+      <Filter>source\platform\android\jni</Filter>
     </None>
     <None Include="..\android\jni\Application.mk">
-      <Filter>source\android\jni</Filter>
+      <Filter>source\platform\android\jni</Filter>
     </None>
     <None Include="..\android\src\Main.java">
-      <Filter>source\android\src</Filter>
+      <Filter>source\platform\android\src</Filter>
     </None>
     <None Include="..\Info.plist">
-      <Filter>source\iOS</Filter>
+      <Filter>source\platform\iOS</Filter>
     </None>
     <None Include="..\OSX\Info.plist">
-      <Filter>source\OSX</Filter>
+      <Filter>source\platform\OSX</Filter>
     </None>
     <None Include="..\flash\app_info_setup.bat">
-      <Filter>source\flash</Filter>
+      <Filter>source\platform\flash</Filter>
     </None>
     <None Include="..\flash\build_prepare.bat">
-      <Filter>source\flash</Filter>
+      <Filter>source\platform\flash</Filter>
     </None>
     <None Include="..\flash\BuildDebug.bat">
-      <Filter>source\flash</Filter>
+      <Filter>source\platform\flash</Filter>
     </None>
     <None Include="..\flash\BuildRelease.bat">
-      <Filter>source\flash</Filter>
+      <Filter>source\platform\flash</Filter>
     </None>
     <None Include="..\flash\Makefile">
-      <Filter>source\flash</Filter>
+      <Filter>source\platform\flash</Filter>
     </None>
     <None Include="..\flash\test.html">
-      <Filter>source\flash</Filter>
+      <Filter>source\platform\flash</Filter>
     </None>
     <None Include="..\flash\upload.bat">
-      <Filter>source\flash</Filter>
+      <Filter>source\platform\flash</Filter>
     </None>
     <None Include="..\flash\ViewInBrowser.bat">
-      <Filter>source\flash</Filter>
+      <Filter>source\platform\flash</Filter>
     </None>
     <None Include="..\flash\ViewInProjector.bat">
-      <Filter>source\flash</Filter>
+      <Filter>source\platform\flash</Filter>
     </None>
     <None Include="..\html5\build_release.bat">
-      <Filter>source\html5</Filter>
+      <Filter>source\platform\html5</Filter>
     </None>
     <None Include="..\html5\BuildAndUpload.bat">
-      <Filter>source\html5</Filter>
+      <Filter>source\platform\html5</Filter>
     </None>
     <None Include="..\html5\BuildAndUploadFinal.bat">
-      <Filter>source\html5</Filter>
+      <Filter>source\platform\html5</Filter>
     </None>
     <None Include="..\html5\UploadToWebsite.bat">
-      <Filter>source\html5</Filter>
+      <Filter>source\platform\html5</Filter>
     </None>
     <None Include="..\html5\UploadToWebsiteFinal.bat">
-      <Filter>source\html5</Filter>
+      <Filter>source\platform\html5</Filter>
     </None>
     <None Include="..\..\shared\iOS\iOSUtils.mm">
       <Filter>shared\iOS</Filter>
@@ -1617,6 +1638,21 @@
     </None>
     <None Include="..\..\shared\html5\SharedJSLIB.js">
       <Filter>shared\html5</Filter>
+    </None>
+    <None Include="..\AndroidGradle\local.properties">
+      <Filter>source\platform\AndroidGradle</Filter>
+    </None>
+    <None Include="..\AndroidGradle\PrepareResources.bat">
+      <Filter>source\platform\AndroidGradle</Filter>
+    </None>
+    <None Include="..\AndroidGradle\app\src\main\java\com\rtsoft\RTAndroidApp\Main.java">
+      <Filter>source\platform\AndroidGradle\App</Filter>
+    </None>
+    <None Include="..\..\shared\android\v3_src\SharedActivity.java">
+      <Filter>shared\android\v3_src</Filter>
+    </None>
+    <None Include="..\..\shared\android\v3_src\SharedMultiTouchInput.java">
+      <Filter>shared\android\v3_src</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

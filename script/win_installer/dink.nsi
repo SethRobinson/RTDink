@@ -97,12 +97,26 @@ SectionIn RO
   File "..\..\bin\zlib1.dll"
   File "..\..\bin\version_history.txt"
   
+  
+   File "..\..\bin\zlibwapi.dll"
+   File "..\..\bin\libcrypto-1_1-x64.dll"
+   File "..\..\bin\libcurl-x64.dll"
+   File "..\..\bin\libssl-1_1-x64.dll"
+   File "..\..\bin\curl-ca-bundle.crt"
+  
+  
   SetOutPath "$INSTDIR\audio\"
   File /r "..\..\bin\audio\"
  SetOutPath "$INSTDIR"
+   
    SetOutPath "$INSTDIR\dink\"
 
- File /r /x TimGM6mbTiny.dls "..\..\bin\dink\"
+ File /r "..\..\bin\dink\"
+
+  
+ 
+
+
 SetOutPath "$INSTDIR\interface\"
 
 File /r "..\..\bin\interface\ipad"
@@ -202,12 +216,21 @@ Section "Uninstall"
 ;default delete
 
    Delete "$INSTDIR\dink.exe"
-   ;dink.pdf is optional, it's like 11 MB but it allows auto logged crash stacks to contain useful info
+   ;dink.pdb is optional, it's like 11 MB but it allows auto logged crash stacks to contain useful info
    Delete "$INSTDIR\dink.pdb"
    Delete "$INSTDIR\Uninstall.exe"
    Delete "$INSTDIR\fmodex.dll"
    Delete "$INSTDIR\fmod.dll"
    Delete "$INSTDIR\zlib1.dll"
+   Delete "$INSTDIR\zlibwapi.dll"
+  
+ Delete "$INSTDIR\libcrypto-1_1-x64.dll"
+   Delete "$INSTDIR\libcurl-x64.dll"
+   Delete "$INSTDIR\libssl-1_1-x64.dll"
+  Delete "$INSTDIR\curl-ca-bundle.crt"
+  
+
+  
    Delete "$INSTDIR\log.txt"
    Delete "$INSTDIR\readme.txt"
    Delete "$INSTDIR\version_history.txt"
@@ -218,7 +241,6 @@ Section "Uninstall"
    RMDir /r "$INSTDIR\dink\midi"
    RMDir /r "$INSTDIR\dink\sound"
    RMDir /r "$INSTDIR\dink\story"
-   RMDir /r "$INSTDIR\dink\tiles"
    RMDir /r "$INSTDIR\dink\tiles"
    Delete "$INSTDIR\dink\dmod.diz"
    Delete "$INSTDIR\dink\dink.ini"

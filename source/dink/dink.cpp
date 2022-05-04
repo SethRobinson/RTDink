@@ -1377,7 +1377,6 @@ void kill_cur_item( void )
 }
 
 
-
 void kill_cur_item_script( char name[20])
 {
 	int select = 0;
@@ -1808,12 +1807,15 @@ bool load_sprites(char org[512], int seq, int speed, int xoffset, int yoffset, r
 				  int frame = 0, bool *bLoadWasTruncated = NULL)
 {
 
+
 	char hold[5];
 
 	ToLowerCase(org);
 
 	string tempStr(org);
 	StringReplace("\\", "/", tempStr);
+
+
 
 	static FFReader reader;
 #ifdef _DEBUG
@@ -1823,6 +1825,9 @@ bool load_sprites(char org[512], int seq, int speed, int xoffset, int yoffset, r
 		LogMsg("Yeah");
 	}
 #endif
+
+	
+
 	reader.Init(g_dglo.m_gameDir, g_dglo.m_dmodGamePathWithDir, GetPathFromString(tempStr), g_dglo.m_bUsingDinkPak);
 
 	string fNameBase = GetFileNameFromString(tempStr);
@@ -1833,6 +1838,31 @@ bool load_sprites(char org[512], int seq, int speed, int xoffset, int yoffset, r
 		transType = TRANSPARENT_WHITE;
 	}
 
+		if (GetPlatformID() == PLATFORM_ID_ANDROID)
+		{
+			if (seq == 442)
+			{
+				int pMemSize = 0;
+				byte* pMem = reader.LoadFileIntoMemory(fNameBase + "01.bmp", &pMemSize, fNameBase + "01.bmp");
+
+				if (!pMem)
+				{
+
+					string crapStr = tempStr;
+					StringReplace("#", "", crapStr);
+					//pMem = reader.LoadFileIntoMemory(crapStr, &pMemSize, crapStr + "01.bmp");
+
+					//work around that we can't use # symbol in directories due to new android bundling rules
+					reader.Init(g_dglo.m_gameDir, g_dglo.m_dmodGamePathWithDir, GetPathFromString(crapStr), g_dglo.m_bUsingDinkPak);
+				}
+		
+				SAFE_DELETE_ARRAY(pMem);
+
+			}
+		}
+	
+
+	
 
 #ifdef _DEBUG
 	//LogMsg("Loading %s", org);
@@ -3346,10 +3376,9 @@ bool read_next_line(int script, char *line)
 
 	for (int k = g_scriptInstance[script]->current;  (k < g_scriptInstance[script]->end); k++)
 	{
-		//      Msg("..%d",k);
+		//LogMsg("..%d",k);
 		strchar(line, g_scriptBuffer[script][k]);
 		
-
 		g_scriptInstance[script]->current++;
 
 		if (  (g_scriptBuffer[script][k] == '\n') || (g_scriptBuffer[script][k] == '\r')  )
@@ -3519,7 +3548,6 @@ if (g_script_debug_mode)
 	return (script);
 }
 
-
 void strip_beginning_spaces(char *pInput)
 {
 	char * h;
@@ -3534,10 +3562,19 @@ void strip_beginning_spaces(char *pInput)
 	{
 		h = &h[1];
 	}
-	strcpy(pInput, h);
+#ifdef _DEBUG
+	char crap[512];
+	strcpy(crap, h);
+#endif
+
+	strcpy_safe(pInput, h);
+#ifdef _DEBUG
+if (strcmp(pInput, crap) != 0)
+{
+	LogMsg("Why don't these match, HUH?!");
 }
-
-
+#endif
+}
 
 bool locate(int script, char proc[20])
 {
@@ -3546,7 +3583,6 @@ bool locate(int script, char proc[20])
 	{
 		return(false);
 	}
-
 
 	int saveme = g_scriptInstance[script]->current;
 	g_scriptInstance[script]->current = 0;
@@ -5866,8 +5902,10 @@ void place_sprites_game(bool bBackgroundOnly )
 
 		if (g_dglos.g_smallMap.sprite[j].vision != 0)
 		{
+			/*
 			LogMsg("Found sprite %d with vision %d",
 				j, g_dglos.g_smallMap.sprite[j].vision);
+			*/
 		}
 #endif
 
@@ -10754,11 +10792,11 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 	}
 
 bad:
-	strcpy(pLineIn, h);
+	strcpy_safe(pLineIn, h);
 	return(0);
 
 good:
-	strcpy(pLineIn, h);
+	strcpy_safe(pLineIn, h);
 	//s = h
 	//Msg("ok, continuing with running %s..",s);
 	return(1);
@@ -10806,9 +10844,18 @@ void run_script (int script)
 				return;
 			}
 			*/
+#ifdef _DEBUG
+			if (g_scriptInstance[script]->current >236)
+			{
+				LogMsg("about to hit the make_global_int(&exp) that strcpy messes up in strip_beginning_spaces");
+			}
+			
+#endif
 
 			strip_beginning_spaces(line);
 			if (compare(line, "\n")) break;
+
+
 
 			result = process_line(script,line, false);
 			if (result == 3) 
@@ -16839,6 +16886,8 @@ string GetDMODRootPath(string *pDMODNameOutOrNull)
 	
 	for (int i = 0; i < parms.size(); i++)
 	{
+#
+
 		if (parms[i] == "--refdir" || parms[i] == "-dmodpath")
 		{
 			if (parms.size() > i + 1)
@@ -17809,7 +17858,7 @@ bool LoadState(string const &path, bool bLoadPathsOnly)
 		{
 			g_pSpriteSurface[i] = NULL;
 		}
-
+		 
 		load_hard();
 		load_info();
 

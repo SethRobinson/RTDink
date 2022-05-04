@@ -24,6 +24,7 @@
 #include "GUI/PopUpMenu.h"
 #include "GUI/PauseMenu.h"
 
+
 #ifdef PLATFORM_HTML5
 #include "html5/HTML5Utils.h"
 #include "html5/SharedJSLIB.h"
@@ -31,6 +32,7 @@
 
 #ifdef WINAPI
 
+extern HWND				g_hWnd;
 extern int g_winVideoScreenX;
 extern int g_winVideoScreenY;
 extern bool g_bUseBorderlessFullscreenOnWindows;
@@ -97,8 +99,11 @@ GamepadManager * GetGamepadManager() {return &g_gamepadManager;}
   AudioManagerSDL g_audioManager; //sound in windows and WebOS
   //AudioManager g_audioManager; //to disable sound
 #elif defined ANDROID_NDK
-#include "Audio/AudioManagerAndroid.h"
-  AudioManagerAndroid g_audioManager; //sound for android
+//#include "Audio/AudioManagerAndroid.h"
+//  AudioManagerAndroid g_audioManager; //sound for android
+
+#include "Audio/AudioManagerFMODStudio.h"
+AudioManagerFMOD g_audioManager;
 #elif defined PLATFORM_BBX
 #include "Audio/AudioManagerBBX.h"
   //AudioManager g_audioManager; //to disable sound
@@ -135,8 +140,6 @@ AudioManagerFMOD g_audioManager;
 #endif
 #endif
 
-
-
 #ifdef ANDROID_NDK
 void SetPreferSDCardForStorage(bool bNew);
 #endif
@@ -159,31 +162,40 @@ App * GetApp()
 	return g_pApp;
 }
 
-const char * GetAppName()
+void UpdateTitleBar()
 {
 
 #ifdef WINAPI
 
+	//Shouldn't do this because this name can also be used to decide the app save directory and it won't match between
+	//But I don't use RT_WIN_USE_APPDATA_SAVE_PATH so we should be ok
 	if (GetApp())
 	{
-		static char name[64];
-		sprintf(name, "Dink Smallwood HD %s", GetApp()->GetVersionString().c_str());
-		return name;
-   }
+		static char name[128];
+		string extra;
+#ifdef RT_IS_BETA
+		extra = " BETA";
 #endif
 
-	return "Dink Smallwood HD";
-
-
+		sprintf(name, "Dink Smallwood HD %s%s", GetApp()->GetVersionString().c_str(), extra.c_str());
+		SetWindowTextA(g_hWnd, name);
+	}
+#endif
 	
-};
+}
 
+const char * GetAppName()
+{
+
+
+	return "Dink Smallwood HD";
+};
 
 App::App()
 {
 	m_logFileHandle = NULL;
 
-	http://www.rtsoft.com
+	https://www.rtsoft.com
 
 	m_bGhostMode = false;
 #ifdef ANDROID_NDK
@@ -193,8 +205,8 @@ App::App()
 	m_bDidPostInit = false;
 	m_bHasDMODSupport = true;
 	//for mobiles
-	m_version = 1.93f;
-	m_versionString = "V1.93";
+	m_version = 1.95f;
+	m_versionString = "V1.95";
 	m_build = 1;
 	m_bCheatsEnabled = false;
 
@@ -209,10 +221,9 @@ App::App()
 App::~App()
 {
 
-	assert(m_logFileHandle);
+//	assert(m_logFileHandle);
 	if (m_logFileHandle)
 		fclose(m_logFileHandle);
-
 
 	//L_ParticleSystem::deinit();
 }
@@ -294,22 +305,9 @@ bool App::Init()
 	SetManualRotationMode(false);
 
 	bool bScaleScreenActive = true; //if true, we'll stretch every screen to the coords below
-	int scaleToX = 480;
-	int scaleToY = 320;
+	int scaleToX = 1024;
+	int scaleToY = 768;
 
-	//if (IsTabletSize() || IsDesktop())
-	{
-		scaleToX = 1024;
-		scaleToY = 768;
-	}
-
-
-	/*
-	if (IsIphoneSize || IsIphone4Size || IsIPADSize)
-	{
-		bScaleScreenActive = false;
-	}
-	*/
 
 	switch (GetEmulatedPlatformID())
 	{
@@ -367,7 +365,7 @@ bool App::Init()
 
 
 	LogMsg("Initializing Dink HD %s", GetVersionString().c_str());
-
+	UpdateTitleBar();
 	//add fake parms
 
 
@@ -375,7 +373,8 @@ bool App::Init()
 	
 	char *pStringTemp = JLIB_GetURL();
 
-	string crap = pStringTemp;
+	string 
+		p = pStringTemp;
 	free(pStringTemp); //emscripten thing, trust me
 
 	int n = crap.find_last_of('?');
@@ -414,7 +413,6 @@ bool App::Init()
 		AddTextToLog(text.c_str(), (GetSavePath() + "log.txt").c_str());
 	}
 
-
 	m_adManager.Init();
 
 #ifdef RT_CHARTBOOST_ENABLED
@@ -448,20 +446,21 @@ bool App::Init()
 		//g_dglo.m_bUsingDinkPak = true; //but we're not tho
 	}
 
-
-
+	if (GetPlatformID() == PLATFORM_ID_ANDROID)
+	{
+		//g_dglo.m_bUsingDinkPak = true; //I don't think we ever did it this way
+	}
+	
 	if (g_dglo.m_bUsingDinkPak)
 	{
-		FileSystemZip *pFileSystem = new FileSystemZip();
+		FileSystemZip *pFileSystem = new FileSystemZip ();
 		if (!pFileSystem->Init(GetBaseAppPath()+ "dink/dink.pak"))
 		{
 			LogMsg("Error finding APK file to load resources");
 		}
 
 		//pFileSystem->SetRootDirectory("dink");
-
 		GetFileManager()->MountFileSystem(pFileSystem);
-		
 	}
 
 	if (GetPlatformID() != PLATFORM_ID_ANDROID)
@@ -518,6 +517,27 @@ bool App::Init()
 		if (!GetFont(FONT_LARGE)->Load("interface/font_big.rtfont")) return false;
 	}
 
+#ifdef PLATFORM_ANDROID
+		string crtName = "curl-ca-bundle.crt";
+		//LogMsg("Writing %s", (GetSavePath() + crtName).c_str());
+
+		if (GetFileManager()->Copy(crtName, GetSavePath() + crtName, false))
+		{
+			if (FileExists(GetSavePath() + crtName))
+			{
+				//LogMsg("Setup crt ok.");
+			}
+			else
+			{
+				LogMsg("Can't read the crt we wrote");
+			}
+		}
+		else
+		{
+			LogMsg("Failed to write .crt so libssl can read it");
+		}
+#endif
+
 	//GetFont(FONT_SMALL)->SetSmoothing(false);
 	#ifndef FORCE_DMOD_SUPPORT
 
@@ -538,7 +558,7 @@ bool App::Init()
 
 	GetApp()->GetVarWithDefault("buttons",uint32(0));
 
-	GetApp()->GetVarWithDefault("music_vol",1.0f)->GetFloat();
+	GetApp()->GetVarWithDefault("music_vol",0.7f)->GetFloat();
 	GetApp()->GetVarWithDefault("gui_transparency",0.35f)->GetFloat();
 
   
@@ -547,16 +567,12 @@ bool App::Init()
 
 	#ifdef PLATFORM_WINDOWS
 	
-	
-	//If you don't have directx, just comment out this and remove the dx lib dependency, directx is only used for the
-		//gamepad input on windows
-		//If you don't have directx, just comment out this and remove the dx lib dependency, directx is only used for the
-	//gamepad input on windows
+	//XInput is newer and works better, doesn't require that the controller already be plugged in at start
 	GamepadProviderXInput* pTemp = new GamepadProviderXInput();
 	pTemp->PreallocateControllersEvenIfMissing(true);
 	GetGamepadManager()->AddProvider(pTemp); //use XInput joysticks
 
-	//do another scan for directx devices
+	//do another scan for the older style directx devices, it will ignore any sticks that are already initialized as XInput
 	GamepadProviderDirectX* pTempDirectX = new GamepadProviderDirectX;
 	pTempDirectX->SetIgnoreXInputCapableDevices(true);
 	GetGamepadManager()->AddProvider(pTempDirectX); //use directx joysticks
@@ -583,8 +599,6 @@ bool App::Init()
 	}
 #endif
 
-
-
 	if (GetEmulatedPlatformID() == PLATFORM_ID_WINDOWS || GetEmulatedPlatformID() == PLATFORM_ID_OSX || GetEmulatedPlatformID() == PLATFORM_ID_HTML5)
 	{
 		//should we draw that onscreen GUI stuff for Dink?	
@@ -600,36 +614,27 @@ bool App::Init()
 	}
 	
 	UpdateVideoSettings();
-	//preload audio
-
-
-if (GetEmulatedPlatformID() == PLATFORM_ID_IOS || GetEmulatedPlatformID() == PLATFORM_ID_HTML5 )
-{
-	//use our own DLS, as iPhone/iPad don't have any midi system
-	g_audioManager.SetDLS("dink/midi/TimGM6mbTiny.dls");
-}
-
+	
+	g_audioManager.SetDLS("dink/midi/GeneralUser GS 1.471_With Chaos Drums.dls");
+	
 #ifdef _WIN32
 
 	//temporary while I make movies
 	//GetApp()->SetCheatsEnabled(true);
 #endif
 	
-
 	bool bSound = m_varDB.GetVarWithDefault("sound", uint32(1))->GetUINT32() != 0;
 	GetAudioManager()->SetSoundEnabled(bSound);
 
 	//GetAudioManager()->SetMusicEnabled(!GetApp()->GetVar("musicDisabled")->GetUINT32());
 	GetAudioManager()->SetMusicVol(GetApp()->GetVar("music_vol")->GetFloat());
+	GetAudioManager()->SetMidiMusicModVol(0.3f);
+
 	GetAudioManager()->Preload("audio/click.wav");
 	InitDinkPaths(GetBaseAppPath(), "dink", "");
 	
-
 	GetBaseApp()->m_sig_pre_enterbackground.connect(1, boost::bind(&App::OnPreEnterBackground, this, _1));
-	
-	
 	GetBaseApp()->m_sig_loadSurfaces.connect(1, boost::bind(&App::OnLoadSurfaces, this));
-
 	//when screen size changes we'll unload surfaces
 	GetBaseApp()->m_sig_unloadSurfaces.connect(1, boost::bind(&App::OnUnloadSurfaces, this));
 	
@@ -639,6 +644,21 @@ if (GetEmulatedPlatformID() == PLATFORM_ID_IOS || GetEmulatedPlatformID() == PLA
 	int fullscreen = GetApp()->GetVarWithDefault("fullscreen", uint32(1))->GetUINT32();
 	bool borderlessfullscreen = GetApp()->GetVarWithDefault("fullscreen", uint32(0))->GetUINT32();
 		
+
+		if (DoesCommandLineParmExist("/?")|| DoesCommandLineParmExist("?") || DoesCommandLineParmExist("--help"))
+		{
+			std::string s;
+			s = std::string("-game <dmod directory> (Example:  dink.exe -game c:\\dmods\\island) (this also sets - dmodpath automatically to the dmods parent directory)\n\n") +
+				std::string("-dmodpath or --refdir <dir containing DMOD dirs> (Example:  dink.exe - game c:\\dmods)\n\n") +
+				std::string("-debug (turns on extra debug mode options for dmod authors, available from Dink HD menu as well)\n\n") +
+				std::string("-window (Forces windowed mode)\n\n") +
+				std::string("If a.dmod file is put in the Dink HD directory(where the.exe is) it will be automatically installed and then deleted\n");
+
+			MessageBox(GetForegroundWindow(), s.c_str(), "Command line options", MB_ICONSTOP);
+
+		}
+
+
 	if (DoesCommandLineParmExist("-window") || DoesCommandLineParmExist("-windowed"))
 	{
 		fullscreen = false;
@@ -651,6 +671,7 @@ if (GetEmulatedPlatformID() == PLATFORM_ID_IOS || GetEmulatedPlatformID() == PLA
 		g_script_debug_mode = true;
 	}
 
+	
 	if (fullscreen && g_bUseBorderlessFullscreenOnWindows)
 	{
 		LogMsg("Setting fullscreen...");
@@ -670,12 +691,15 @@ if (GetEmulatedPlatformID() == PLATFORM_ID_IOS || GetEmulatedPlatformID() == PLA
 	}
 	
 #endif
+	
 	return true;
 }
 
 void App::OnPreEnterBackground(VariantList *pVList)
 {
 	SaveAllData();
+
+
 }
 
 void App::OnExitApp(VariantList *pVarList)
@@ -836,6 +860,8 @@ void App::Update()
 		
 		CheckForHotkeys();
 	}
+
+	
 }
 
 void App::Draw()
@@ -862,6 +888,8 @@ void App::OnScreenSizeChange()
 
 	}
 
+	UpdateTitleBar();
+
 #ifdef WINAPI
 	GetApp()->GetVar("fullscreen")->Set(uint32(g_bIsFullScreen));
 	GetApp()->GetVar("videox")->Set(uint32(GetPrimaryGLX()));
@@ -880,12 +908,12 @@ void App::GetServerInfo( string &server, uint32 &port )
 //	server = "localhost";
 //	port = 8080;
 
-	server = "rtsoft.com";
+	server = "https://www.rtsoft.com";
 	port = 80;
 
 #else
 
-	server = "rtsoft.com";
+	server = "https://wwrtsoft.com";
 	port = 80;
 #endif
 }
@@ -1213,6 +1241,14 @@ void App::OnUnloadSurfaces()
 	//g_transitionSurf.Kill();
 }
 
+void App::FlushLog()
+{
+	if (m_logFileHandle != NULL)
+	{
+		fflush(m_logFileHandle);
+	}
+	
+}
 void App::AddTextToLog(const char *tex, const char *filename)
 	{
 		if (strlen(tex) < 1) return;
@@ -1221,7 +1257,7 @@ void App::AddTextToLog(const char *tex, const char *filename)
 		{
 
 			//open 'er up
-			m_logFileHandle = fopen(filename, "wb");
+			m_logFileHandle = fopen(filename, "ab");
 			if (!m_logFileHandle)
 			{
 				assert(!"huh?");
@@ -1232,6 +1268,7 @@ void App::AddTextToLog(const char *tex, const char *filename)
 		if (!m_logFileHandle) return;
 			fwrite(tex, strlen(tex), 1, m_logFileHandle);
 	
+		
 	}
 
 #ifdef WINAPI

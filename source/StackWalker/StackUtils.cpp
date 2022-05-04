@@ -2,6 +2,7 @@
 
 #include <tchar.h>
 #include <stdio.h>
+#include "App.h"
 
 
 // For more info about "PreventSetUnhandledExceptionFilter" see:
@@ -95,6 +96,10 @@ static LONG __stdcall CrashHandlerExceptionFilter(EXCEPTION_POINTERS* pExPtrs)
 	GetBaseAppPath().c_str()
 	); 
 
+	if (GetApp())
+	{
+		GetApp()->FlushLog();
+	}
 
 	FatalAppExit(-1, lString);
 	return EXCEPTION_CONTINUE_SEARCH;

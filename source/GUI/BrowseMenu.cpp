@@ -110,13 +110,14 @@ void BrowseMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity s
 
 		string dmodurl = pEntClicked->GetParent()->GetVar("dmodurl")->GetString();
 		string dmodName = pEntClicked->GetParent()->GetVar("dmodtitle")->GetString();
+		float dmodSize = pEntClicked->GetParent()->GetVar("dmodsize")->GetFloat();
 
 		SendFakeInputMessageToEntity(GetEntityRoot(), MESSAGE_TYPE_GUI_CLICK_END, pVList->m_variant[0].GetVector2()); //otherwise the menu may never get the touch release message
 	
 		DisableAllButtonsEntity(pMenu);
 		SlideScreen(pMenu, false);
 		GetMessageManager()->CallEntityFunction(pMenu, 500, "OnDelete", NULL);
-		DMODInstallMenuCreate(pEntClicked->GetParent()->GetParent()->GetParent()->GetParent()->GetParent(), dmodurl, GetDMODRootPath() , "", true, dmodName);
+		DMODInstallMenuCreate(pEntClicked->GetParent()->GetParent()->GetParent()->GetParent()->GetParent(), dmodurl, GetDMODRootPath() , "", true, dmodName, true, dmodSize);
 
 	}
 
@@ -145,7 +146,8 @@ void AddEntryBar(Entity *pParent, float &x, float &y, DMODEntry &s, int index)
 
 	pBG->GetVar("dmodurl")->Set(s.m_url); //save for later
 	pBG->GetVar("dmodtitle")->Set(s.m_name); //save for later
-	//title
+	pBG->GetVar("dmodsize")->Set(s.m_size); //save for later
+//title
 
 	string displayName = s.m_name;
 	int maxNameChars = 30;
@@ -185,11 +187,11 @@ void AddEntryBar(Entity *pParent, float &x, float &y, DMODEntry &s, int index)
 	{
 
 	case DMOD_SORT_DATE:
-		sprintf(stTemp, "#%d %s `6%s`` R:`6%.1f``", index+1, s.m_date.c_str(), displayName.c_str(), s.m_rating);
+		sprintf(stTemp, "#%d %s `6%s`` R:`6%.1f`` %.1f MB", index+1, s.m_date.c_str(), displayName.c_str(), s.m_rating, s.m_size);
 		break;
 
 	default:
-		sprintf(stTemp, "#%d `6%s`` R:`6%.1f``", index+1, displayName.c_str(), s.m_rating);
+		sprintf(stTemp, "#%d `6%s`` R:`6%.1f`` %.1f MB", index+1, displayName.c_str(), s.m_rating, s.m_size);
 		break;
 	}
 	
@@ -454,7 +456,7 @@ void DownloadDMODList(Entity *pMenu)
 	uint32 port = 80;
 	//GetApp()->GetServerInfo(url, port);
 
-	string host = "www.dinknetwork.com";
+	string host = "https://www.dinknetwork.com";
 	string url = "api";
 
 

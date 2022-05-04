@@ -354,6 +354,21 @@ void OptionsMenuAddScrollContent(Entity *pParent)
 	pEnt = CreateTextLabelEntity(pBG, "title", GetScreenSizeXf()/2, iPhoneMapY(40), "Options");
 	SetupTextEntity(pEnt, FONT_LARGE);
 	SetAlignmentEntity(pEnt, ALIGNMENT_CENTER);
+	if (IsDesktop())
+	{
+		string msg =
+			"`wNOTE:```8 Click and drag anywhere to scroll, this was originally written for mobile so it's weird.``\n\nGame Dir: " + g_dglo.m_gamePathWithDir + "\n"\
+			"DMOD Dir: " + g_dglo.m_dmodGamePathWithDir
+			;
+
+		CL_Vec2f vTextBoxPos(startX, y);
+		CL_Vec2f vTextBounds(iPhoneMapX(434), iPhoneMapY(200));
+
+
+		Entity* pEntTB = CreateTextBoxEntity(pBG, "", vTextBoxPos, vTextBounds, msg);
+		y += pEntTB->GetVar("size2d")->GetVector2().y;
+		y += spacerY;
+	}
 
 	if (IsDesktop())
 	{

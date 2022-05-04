@@ -1,5 +1,6 @@
 REM ** Make sure american code page is used, otherwise the %DATE environmental var might be wrong
 CHCP 437
+echo "Make sure you already built "Release GL" x64 before running this, it's just going to use the exe it finds!
 
 REM first clean out any bogus files
 cd ..\
@@ -15,7 +16,10 @@ call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary
 set C_TARGET_EXE=..\bin\dink.exe
 
 REM erase it so we know it got built right
-:del %C_TARGET_EXE% > NUL
+del %C_TARGET_EXE% > NUL
+
+copy "..\bin\winRTDink_Release GL.exe" %C_TARGET_EXE%
+copy "..\bin\winRTDink_Release GL.pdb" ..\bin\dink.pdb
 
 set CL=/DRT_SCRIPT_BUILD
 :This would need to be "Release GL|x64" for the 64 bit build.  But I don't think we really need to do one yet

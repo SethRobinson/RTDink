@@ -87,6 +87,7 @@ public:
 	void OnMessage( Message &m );
 	void OnLoadSurfaces();
 	void OnUnloadSurfaces();
+	void FlushLog();
 	void AddTextToLog(const char *tex, const char *filename);
 	void AddDroidKeyboardKeys();
 	void RemoveAndroidKeyboardKeys();

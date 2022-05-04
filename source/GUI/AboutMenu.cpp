@@ -3,8 +3,10 @@
 #include "MainMenu.h"
 #include "Entity/EntityUtils.h"
 #include "PopUpMenu.h"
+#include "dink/dink.h"
 
 void AboutMenuAddScrollContent(Entity *pParent);
+string DinkGetSavePath();
 
 void AboutMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity sent from
 {
@@ -25,14 +27,14 @@ void AboutMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity se
 
 	if (pEntClicked->GetName() == "mindwall_ad")
 	{
-		string url = "http://www.codedojo.com/?p=138";
+		string url = "https://www.codedojo.com/?p=138";
 
 		if (GetEmulatedPlatformID() == PLATFORM_ID_ANDROID)
 		{
 			url = "market://details?id=com.rtsoft.rtmindwall";
 		} else if (GetEmulatedPlatformID() == PLATFORM_ID_IOS)
 		{
-			url = "http://www.rtsoft.com/mindwall/purchase.php";
+			url = "https://www.rtsoft.com/mindwall/purchase.php";
 		}
 
 
@@ -51,13 +53,13 @@ void AboutMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity se
 		{
 
 		case PLATFORM_ID_WEBOS:
-			//	url = "http://www.rtsoft.com/mindwall/purchase_webos.php";
+			//	url = "https://www.rtsoft.com/mindwall/purchase_webos.php";
 			break;
 		case PLATFORM_ID_IOS:
 			break;
 
 		case PLATFORM_ID_OSX:
-			url = "http://itunes.apple.com/us/app/dink-smallwood-hd/id391690243?mt=8";
+			url = "https://itunes.apple.com/us/app/dink-smallwood-hd/id391690243?mt=8";
 			break;
 
 		case PLATFORM_ID_ANDROID:
@@ -72,7 +74,7 @@ void AboutMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity se
 
 	if (pEntClicked->GetName() == "fling_ad")
 	{
-		string url = "http://tenonedesign.com/fling";
+		string url = "https://tenonedesign.com/fling";
 		PopUpCreate(pEntClicked->GetParent()->GetParent()->GetParent(), "Would you like to visit Ten One Design's webpage and learn more about the `wFling``?", url,
 			"cancel", "`wCancel", "url", "`wLaunch", true);
 		return;
@@ -81,7 +83,7 @@ void AboutMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity se
 	if (pEntClicked->GetName() == "ds_ad")
 	{
 
-		string url = "http://www.rtsoft.com/pages/dscroll.php";
+		string url = "https://www.rtsoft.com/pages/dscroll.php";
 
 		if (GetEmulatedPlatformID() == PLATFORM_ID_ANDROID)
 		{
@@ -89,7 +91,7 @@ void AboutMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity se
 		} else if (GetEmulatedPlatformID() == PLATFORM_ID_IOS)
 
 		{
-			url = "http://www.rtsoft.com/dscroll_iphone/purchase.php";
+			url = "https://www.rtsoft.com/dscroll_iphone/purchase.php";
 		}
 
 		PopUpCreate(pEntClicked->GetParent()->GetParent()->GetParent(), "Would you like to check out `wDungeon Scroll``?", url,
@@ -98,7 +100,7 @@ void AboutMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity se
 	}
 	if (pEntClicked->GetName() == "dinknetwork")
 	{
-		PopUpCreate(pEntClicked->GetParent()->GetParent()->GetParent(), "Would you like to check out `wThe Dink Network``?", "http://www.dinknetwork.com?platform="+toString(GetEmulatedPlatformID()),
+		PopUpCreate(pEntClicked->GetParent()->GetParent()->GetParent(), "Would you like to check out `wThe Dink Network``?", "https://www.dinknetwork.com?platform="+toString(GetEmulatedPlatformID()),
 			"cancel", "`wCancel", "url", "`wLaunch", true);
 		return;
 	}
@@ -117,14 +119,14 @@ void AboutMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity se
 
 	if (pEntClicked->GetName() == "list")
 	{
-		PopUpCreate(pEntClicked->GetParent()->GetParent()->GetParent(), "Would you like to enter your email to subscribe to the `wRTsoft Newsletter``?", "http://www.rtsoft.com/lists/?p=subscribe",
+		PopUpCreate(pEntClicked->GetParent()->GetParent()->GetParent(), "Would you like to enter your email to subscribe to the `wRTsoft Newsletter``?", "https://www.rtsoft.com/lists/?p=subscribe",
 			"cancel", "`wCancel", "url", "`wOh yeah!", true);
 		return;
 	}
 
 	if (pEntClicked->GetName() == "forums")
 	{
-		PopUpCreate(pEntClicked->GetParent()->GetParent()->GetParent(), "Would you like to visit the `wRTsoft Dink Forums``?", "http://www.rtsoft.com/forums/forumdisplay.php?6-Dink-Smallwood",
+		PopUpCreate(pEntClicked->GetParent()->GetParent()->GetParent(), "Would you like to visit the `wRTsoft Dink Forums``?", "https://www.rtsoft.com/forums/forumdisplay.php?6-Dink-Smallwood",
 			"cancel", "`wCancel", "url", "`wLaunch", true);
 		return;
 	}
@@ -133,7 +135,7 @@ void AboutMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity se
 	/*
 	if (pEntClicked->GetName() == "rtsoft")
 	{
-	PopUpCreate(pEntClicked->GetParent()->GetParent()->GetParent(), "Leave the game and visit `wrtsoft.com``?", "http://www.rtsoft.com/iphone",
+	PopUpCreate(pEntClicked->GetParent()->GetParent()->GetParent(), "Leave the game and visit `wrtsoft.com``?", "https://www.rtsoft.com/iphone",
 	"cancel", "`wCancel", "url", "`wLaunch", true);
 	return;
 	}
@@ -149,7 +151,6 @@ void AddBlurb(Entity* pParent, float x, float y, string fileName, string msg)
 	EntityRetinaRemapIfNeeded(pLogo, false, false, true);
 	pLogo->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&AboutMenuOnSelect);
 
-
 	CL_Vec2f imageSize = pLogo->GetVar("size2d")->GetVector2();
 
 	float imagePaddingX = iPhoneMapX(20);
@@ -157,9 +158,7 @@ void AddBlurb(Entity* pParent, float x, float y, string fileName, string msg)
 	CL_Vec2f vTextBoxPos(iPhoneMapX(x)+imageSize.x+imagePaddingX,y);
 	CL_Vec2f vTextBounds(iPhoneMapX(400)-imageSize.x+imagePaddingX , iPhoneMapY(200));
 
-
 	Entity *pEnt = CreateTextBoxEntity(pParent, "", vTextBoxPos, vTextBounds, msg);
-
 
 }
 
@@ -172,7 +171,6 @@ void AboutMenuAddScrollContent(Entity *pParent)
 	float y = 0;
 	float ySpacer = iPhoneMapY(27);
 
-	
 	Entity *pTitle = CreateTextLabelEntity(pParent, "Title", x, 0, "About & Help"); 
 	SetupTextEntity(pTitle, FONT_LARGE);
 	y += iPhoneMapY(30);
@@ -193,19 +191,16 @@ void AboutMenuAddScrollContent(Entity *pParent)
 
 	string msg =
 		GetAppName()+string("`$ ")+GetApp()->GetVersionString()+" Build "+toString(GetApp()->GetBuild())+"``\nCopyright (c) 1997-2022 Robinson Technologies\n"\
-		"\nDink Script Version: `$1.10``\n\n"\
+		"\nDink Script Version: `$1.10``\nGame Dir: "+ g_dglo.m_gamePathWithDir +\
+		"\nDMOD Base Dir: " + GetDMODRootPath() + "\n\n"\
 		;
-
 	
-
-
+	
 if (IsDesktop())
 {
 
-
-
 	msg += \
-		"Keyboard controls:\n\n"\
+		"`wNOTE:```8 Click and drag anywhere to scroll, this was originally written for mobile so it's weird.``\n\nKeyboard controls:\n\n"\
 		"Esc ``-`8 Bring up the game menu/pause``\n"\
 		"Arrow keys ``-`8 Movement/menu selections``\n"\
 		"Ctrl ``- `8Attack\n``"\
@@ -300,7 +295,6 @@ if (IsDesktop())
 
 if (!IsDesktop())
 {
-
 
 msg += \
 "\n`wAdd-on warning:`` Depending on your device's speed and memory not all quest add-ons may be smoothly playable.\n"\

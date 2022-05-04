@@ -271,14 +271,12 @@ byte * FFReader::LoadFileIntoMemory( string const &fName, int *pSizeOut, const s
 		{
 			if (isBmpFile(fName) && FileExists(getPngPath(m_dmodGamePath + m_dmodBasePath + fName)))
 			{
-				//pBuff =  LoadFileIntoMemoryBasic(m_dmodGamePath+m_basePath+fName, &len, false, false);
 				pBuff = GetFileManager()->Get(getPngPath(m_dmodGamePath + m_dmodBasePath + fName), pSizeOut, false);
 				if (!pBuff) SetError(ERROR_LOW_MEM);
 				return pBuff;
 			}
 			else if (FileExists(m_dmodGamePath+m_dmodBasePath+fName))
 			{
-				//pBuff =  LoadFileIntoMemoryBasic(m_dmodGamePath+m_basePath+fName, &len, false, false);
 				pBuff = GetFileManager()->Get(m_dmodGamePath+m_dmodBasePath+fName, pSizeOut,false);
 				if (!pBuff) SetError(ERROR_LOW_MEM);
 				return pBuff;
@@ -289,14 +287,12 @@ byte * FFReader::LoadFileIntoMemory( string const &fName, int *pSizeOut, const s
 		{
 			if (isBmpFile(fName) && FileExists(getPngPath(m_gamePath + m_basePath + fName)))
 			{
-				//pBuff = LoadFileIntoMemoryBasic(m_gamePath+m_basePath+fName, &len, false, false);
 				pBuff = GetFileManager()->Get(getPngPath(m_gamePath + m_basePath + fName), pSizeOut, false);
 				if (*pSizeOut == UINT_MAX) SetError(ERROR_LOW_MEM);
 				return pBuff;
 			}
 			else if (FileExists(m_gamePath + m_basePath + fName))
 			{
-				//pBuff = LoadFileIntoMemoryBasic(m_gamePath+m_basePath+fName, &len, false, false);
 				pBuff = GetFileManager()->Get(m_gamePath + m_basePath + fName, pSizeOut, false);
 				if (*pSizeOut == UINT_MAX) SetError(ERROR_LOW_MEM);
 				return pBuff;

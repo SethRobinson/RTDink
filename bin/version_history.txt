@@ -254,14 +254,44 @@ use timing (Myster island camera sequence for example) easier though, not sure.
 * Applied Dan Walma's fix so DinkHD would not incorrectly interpret sp_frame(x, -1) as sp_frame(x, 1), this fixes an issue with the Malachi the Jerk DMOD
 
  ------ Change log for 1.92 ----------
+
  * (Bugfix) Fixed issue that caused graphical glitches in the DMOD Revolution
  * Looping sounds like fire/save machines now properly pause when app loses focus
 
  
  ------ Change log for 1.93 ----------
+
  * (Bugfix) Fixed crash in Windows 10/11.  What was the problem? I'm not sure, simply rebuilding the game with my current dev environment was enough to fix it
  * "Cheats" button renamed "Debug tools" and only show the cheat options if debug mode is enabled, then you re-enter the menu. Seemed like having cheats
     right in your face is a bad idea and probably caused people to ruin the game by cheating even when they didn't need it
  * XInput gamepads now supported, can be plugged/unplugged during play
  * Misc fixes to how windowing/resolutions worked, removed some code that caused weird buggy behavior in Win 10/11, was written long ago
  * Added quit button (Windows version)
+
+ ------ Change log for 1.94 ----------
+
+* Should work on Windows 7 again (in theory.. uhh.. )
+* Now using HTTPS for all communications/downloads on all platforms
+* Download & DMOD install is now much faster
+* Windows now using a 64 bit build and latest FMOD Studio version for audio
+* BUGFIX: All cheats now properly show up if DinkC Debug Toggle is used from the debug mode (previously, Ghostwalk didn't appear)
+* (Android) Fixed issue with Android 11 not being able to save
+* (Windows) Running dink.exe with /? or --help will now show a list of possible command line parms
+* (Android) Now using FMOD for the sound engine here, now all supported platforms have audio feature parity and should sound the same
+* BUGFIX (Android): Installing certain large DMODs will no longer crash due to JNI not being able to garbage collect strings fast enough, 
+  although this bug might be something that only happened on this build due to DMOD install optimizations, not sure
+* (Windows) Added note on about screen: "Click and drag to move this window, yeah, this GUI was originally made for mobile so it's weird",
+* (Desktop versions) In-game Options menu now shows active dink and DMOD paths, About page shows dink dir and dmod base dir
+* Midi improvements - using a new MIDI soundfont ( GeneralUser GS 1.471.sf2, but I converted it to .dls1 as FMOD only supports that) - 
+  I think it's probably better than the default Windows midi player so I went ahead and enabled it for Desktop versions too, but .. I don't know,
+  I feel like some instruments are a bit loud in some midis, but I guess it's probably because different midi authors worked with different
+  soundfonts and engineered them to different audio levels, so fixing volume for one song makes it too loud on another.  Hrmph
+* DMOD browse menu (showing things you can install) now shows file size
+* BUGFIX: Plugged in XInput devices no longer cause dink to stutter while walking if using keyboard to move
+* BUGFIX: Fixed some weirdness that happend if DPI scaling is enable
+
+
+ ------ Change log for 1.95 ----------
+ * Fixed 25 year old strcpy usage issue with overlapping the dest and src locations which you shouldn't do,
+   strangely the first time it actually caused a problem (AFAIK?) was on a recent Android build that
+   was crashing on some devices when New Game is clicked.

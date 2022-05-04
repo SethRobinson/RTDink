@@ -110,6 +110,7 @@ void DebugMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity se
 		{
 			g_script_debug_mode = true;
 			ShowQuickMessage("DinkC debug logging enabled");
+			GetApp()->SetCheatsEnabled(true);
 
 		}
 	}
@@ -149,7 +150,7 @@ Entity * DebugMenuCreate(Entity *pParentEnt)
 	pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&DebugMenuOnSelect);
 	//pButtonEntity->GetVar("alignment")->Set(uint32(ALIGNMENT_CENTER));
 
-if (GetApp()->GetCheatsEnabled())
+if (GetApp()->GetCheatsEnabled() || g_script_debug_mode)
 {
 	pButtonEntity = CreateTextButtonEntity(pBG, "empty_cache", x, y, "Empty graphic cache"); y += ySpacer;
 	pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&DebugMenuOnSelect);

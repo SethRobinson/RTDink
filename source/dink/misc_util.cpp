@@ -313,6 +313,7 @@ doit:
 
 bool separate_string (const char str[255], int num, char liney, char *return1) 
 {
+
 	int l;
 	int k;
 	l = 1;
@@ -350,6 +351,5 @@ done:
 
 	replace("\n","",return1); //Take the /n off it.
 
-	//Msg("Took %s and turned it to %s.",str, return1);
 	return(true);
 }
