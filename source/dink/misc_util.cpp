@@ -73,7 +73,7 @@ void dink_decompress( unsigned char *in, char * destBuf )
 			if (c == '\r') c = '\n';
 			if (c == 9) c = ' ';
 
-			strchar(destBuf,c);//     putc(c,out);
+			destBuf[outputSize] = c;
 			outputSize++;
 			}
 	}
@@ -84,69 +84,23 @@ void dink_decompress( unsigned char *in, char * destBuf )
 #endif
 }
 
-//this legacy code is very stupid, but I'll leave it for now, it works, whatever
 void decompress_nocomp (byte *in, char destBuf[])
 {
-	const int stackSize = 2*1024;
-	unsigned char stack[stackSize], pair[128][2];
-	
-	memset(stack, 0, stackSize);
 	int c, top = 0;
 
 	int outputSize = 0;
 
-	c = *in; in++;
-
-	if (0)
-	{
-		//read optional pair count and pair table
-		int readCount = (c-128)*2;
-		memcpy(&pair,in, readCount );
-		in += readCount;
-	}
-	else
-	{
-		if (c == '\r') c = '\n';
-		if (c == 9) c = ' ';
-
-		strchar(destBuf,c);
-	}
-	//    putc(c,out);
-
 	for (;;)
 	{
-
-		/* Pop byte from stack or read byte from file */
-		if (top)
-			c = stack[--top];
-		else
-		{
 			if ((c = *in) == 0) break;
 			in++;
-		}
-
-		/* Push pair on stack or output byte to file */
-		if (0)
-		{
-			if (top >= stackSize )
-			{
-#ifdef _DEBUG		
-				LogMsg("Malformed .c file, can't read it.  Would overwrite random memory on the old Dink versions.");
-				destBuf[outputSize] = 0;
-#endif
-				return;
-			}
-			stack[top++] = pair[c-128][1];
-			stack[top++] = pair[c-128][0];
-		}
-		else
-		{
+		
 			if (c == '\r') c = '\n';
 			if (c == 9) c = ' ';
 
-			strchar(destBuf,c);//     putc(c,out);
+			destBuf[outputSize] = c;
 			outputSize++;
-		}
+		
 	}
 
 	destBuf[outputSize] = 0;
@@ -267,14 +221,14 @@ void replace(const char *this1, char *that, char *line)
 
 start:
 
-	strcpy(hold,"");
-	strcpy(lineup,line);
-	strcpy(thisup,this1);
+	strcpy_safe(hold,"");
+	strcpy_safe(lineup,line);
+	strcpy_safe(thisup,this1);
 	ToUpperCase(lineup);
 	ToUpperCase(thisup);
 	if (strstr(lineup,thisup) == NULL) return;
 	checker = -1;
-	strcpy(hold,"");
+	strcpy_safe(hold,"");
 	for (u = 0; u < strlen(line); u++)
 	{
 		if (checker > -1)
@@ -294,7 +248,7 @@ doit:
 						hold[(u+strlen(that))+i] = line[(u+strlen(this1))+i];
 					}
 					hold[(strlen(line)-strlen(this1))+strlen(that)] = 0;
-					strcpy(line,hold);
+					strcpy_safe(line,hold);
 					goto start;
 				}
 				checker++;
@@ -317,7 +271,7 @@ bool separate_string (const char str[255], int num, char liney, char *return1)
 	int l;
 	int k;
 	l = 1;
-	strcpy(return1 ,"");
+	strcpy_safe(return1 ,"");
 
 	for (k = 0; k <= strlen(str); k++)
 	{
@@ -328,12 +282,12 @@ bool separate_string (const char str[255], int num, char liney, char *return1)
 			if (l == num+1)
 				goto done;
 
-			if (k < strlen(str)) strcpy(return1,"");
+			if (k < strlen(str)) strcpy_safe(return1,"");
 		}
 		if (str[k] != liney)
 			sprintf(return1, "%s%c",return1 ,str[k]);
 	}
-	if (l < num)  strcpy(return1,"");
+	if (l < num)  strcpy_safe(return1,"");
 
 	replace("\n","",return1); //Take the /n off it.
 
@@ -347,7 +301,7 @@ bool separate_string (const char str[255], int num, char liney, char *return1)
 
 done:
 
-	if (l < num)  strcpy(return1,"");
+	if (l < num)  strcpy_safe(return1,"");
 
 	replace("\n","",return1); //Take the /n off it.
 

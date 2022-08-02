@@ -94,6 +94,9 @@ void InventoryComponent::OnInput( VariantList *pVList )
 		*/
 			if (DinkSetInventoryPosition(NativeToDinkCoords(pt)))
 			{
+
+				//um, actually if we're playing with a keyboard/controller let's not auto shut the menu
+				
 				g_dglo.m_dirInput[DINK_INPUT_BUTTON1] = true;
 				g_dglo.m_dirInputFinished[DINK_INPUT_BUTTON1] = true;
 			}

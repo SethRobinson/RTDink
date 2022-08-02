@@ -34,7 +34,7 @@ void ShowQuickMessage(string msg)
 	SetAlignmentEntity(pEnt, ALIGNMENT_CENTER);
 
 	FadeInEntity(pEnt);
-	FadeOutAndKillEntity(pEnt, true, 1000, 1000);
+	FadeOutAndKillEntity(pEnt, true, 1000, 1000, TIMER_SYSTEM);
 
 }
 
@@ -53,7 +53,7 @@ void ShowQuickMessageBottom(string msg)
 	SetAlignmentEntity(pEnt, ALIGNMENT_CENTER);
 	pEnt->GetComponentByName("TextRender")->GetVar("shadowColor")->Set(MAKE_RGBA(0, 0, 0, 200));
 	FadeInEntity(pEnt);
-	FadeOutAndKillEntity(pEnt, true, 1000, 1000);
+	FadeOutAndKillEntity(pEnt, true, 1000, 1000, TIMER_SYSTEM);
 
 }
 
@@ -284,7 +284,7 @@ void KillControls(float fadeTimeMS)
 	g_dglo.m_lastGameMode = DINK_GAME_MODE_NONE;
 	g_dglo.m_bFullKeyboardActive = false;
 
-	KillEntity(pControls, fadeTimeMS);
+	KillEntity(pControls, fadeTimeMS, TIMER_SYSTEM);
 }
 
 void AddViewModeHotspot(Entity *pBG)
@@ -334,7 +334,7 @@ void AddViewModeHotspot(Entity *pBG)
 		//fade them in
 		FadeInEntity(pOverlay, true, 500, 1000);
 		//fade them out
-		FadeOutAndKillEntity(pOverlay, true, 1400, 2500);
+		FadeOutAndKillEntity(pOverlay, true, 1400, 2500, TIMER_SYSTEM);
 	}
 	
 }
@@ -829,6 +829,10 @@ void BuildDialogModeControls(float fadeTimeMS)
 	}
 
 	 
+#ifdef _DEBUG
+	pBG->PrintTreeAsText();
+
+#endif
 	pBG = pBG->AddEntity(new Entity("Controls"));
 
     EntityComponent *pCursor = pBG->AddComponent(new CursorComponent); //for mouse control of dialog
@@ -1086,7 +1090,7 @@ void OnGameMenuRender(VariantList *pVList)
 #endif
 		for (int i = 0; i < speedup; i++)
 		{
-			//GetApp()->SetGameTick(GetApp()->GetGameTick() + GetApp()->GetDeltaTick() * 3);
+			GetApp()->SetGameTick(GetApp()->GetGameTick() + (1000/60));
 			//GetApp()->GetGameTimer()->Update();
 
 			glClearColor(0, 0, 0, 1);
@@ -1142,7 +1146,7 @@ void OnArcadeInput(VariantList *pVList)
 		LogMsg("Quitting");
 		break;
 
-	case VIRTUAL_KEY_F4:
+	case VIRTUAL_KEY_F5:
 	
 		if (bIsDown)
 		SaveStateWithExtra();
@@ -1167,7 +1171,7 @@ void OnArcadeInput(VariantList *pVList)
 		break;
 
 
-	case VIRTUAL_KEY_F8:
+	case VIRTUAL_KEY_F9:
 		{
 			if (bIsDown)
 			{
@@ -1361,7 +1365,7 @@ void GameFinishLoading(Entity *pBG)
 		pButtonEntity->GetVar("alpha")->Set(trans);
 	}
 
-	FadeOutAndKillEntity(pBG->GetEntityByName("game_loading"), true, 300, 50);
+	FadeOutAndKillEntity(pBG->GetEntityByName("game_loading"), true, 300, 50, TIMER_SYSTEM);
 
 	pBG->GetShared()->GetFunction("OnRender")->sig_function.connect(&OnGameMenuRender);
 	pBG->GetShared()->GetFunction("OnDelete")->sig_function.connect(&OnGameMenuDelete);

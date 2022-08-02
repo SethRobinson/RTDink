@@ -320,12 +320,24 @@ void BrowseMenuAddScrollContent(Entity *pParent, TextScanner *t)
 		for (int i = 0; i < t->GetLineCount(); i++)
 		{
 
-			//LogMsg(line.c_str());
+			LogMsg(line.c_str());
+			
 			vector<string> p = StringTokenize(t->GetLine(i), "|");
-			if (p.size() < 8) continue; //don't care
+			if (p.size() < 8)
+			{
+				
+				continue; //don't care
+			}
 
+			
 			DMODEntry s;
 			s.m_name = p[0];
+#ifdef _DEBUG
+			if (s.m_name == "Cursed")
+			{
+				LogMsg("WoaH!");
+			}
+#endif
 			if (s.m_name == "Title") continue;
 			s.m_url = p[1];
 			s.m_author = p[2];

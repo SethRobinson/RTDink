@@ -781,6 +781,7 @@ string GetDMODStaticRootPath();
 void DinkReInitSurfacesAfterVideoChange();
 void WriteLastPathSaved(string dmodDir);
 string ReadLastPathSaved();
+void DinkUnfreezePlayer();
 //is the DMOD dir if applicable
 
 #endif // dink_h__

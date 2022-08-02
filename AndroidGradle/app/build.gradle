@@ -3,8 +3,8 @@ plugins {
 }
 
 void execute(String... args) {
-    println "Executing $args...";
-    def proc = args.execute();
+    println "Executing $args..."
+    def proc = args.execute()
 
     proc.in.eachLine {line -> println line}
     proc.err.eachLine {line -> println 'ERROR: ' + line}
@@ -24,7 +24,7 @@ android {
     def propsFile = rootProject.file('local.properties')
     if (!propsFile.exists())
     {
-        throw new GradleException('local.properties not found.  Rename local.properties.default to local.properties.  Oh, and edit it first.')
+        throw new RuntimeException('local.properties not found.  Rename local.properties.default to local.properties.  Oh, and edit it first.')
     }
     def props = new Properties()
     props.load(new FileInputStream(propsFile))
@@ -47,8 +47,8 @@ android {
         println 'Setting package name to '+applicationId
         minSdk 21
         targetSdk 32
-        versionCode 195
-        versionName "1.95"
+        versionCode 197
+        versionName "1.97"
 
         //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -82,13 +82,14 @@ android {
     buildFeatures {
         viewBinding true
     }
+    namespace 'com.rtsoft.RTAndroidApp'
 }
 
 dependencies {
 
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
-    implementation files('libs\\fmod.jar')
+    implementation files('libs/fmod.jar')
     //testImplementation 'junit:junit:4.13.2'
     //androidTestImplementation 'com.android.support.test:runner:1.0.2'
     //androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

@@ -255,8 +255,8 @@ use timing (Myster island camera sequence for example) easier though, not sure.
 
  ------ Change log for 1.92 ----------
 
- * (Bugfix) Fixed issue that caused graphical glitches in the DMOD Revolution
- * Looping sounds like fire/save machines now properly pause when app loses focus
+* (Bugfix) Fixed issue that caused graphical glitches in the DMOD Revolution
+* Looping sounds like fire/save machines now properly pause when app loses focus
 
  
  ------ Change log for 1.93 ----------
@@ -292,6 +292,38 @@ use timing (Myster island camera sequence for example) easier though, not sure.
 
 
  ------ Change log for 1.95 ----------
- * Fixed 25 year old strcpy usage issue with overlapping the dest and src locations which you shouldn't do,
-   strangely the first time it actually caused a problem (AFAIK?) was on a recent Android build that
-   was crashing on some devices when New Game is clicked.
+* Fixed 25 year old strcpy usage issue with overlapping the dest and src locations which you shouldn't do,
+  strangely the first time it actually caused a problem (AFAIK?) was on a recent Android build that
+  was crashing on some devices when New Game is clicked.
+
+ ------ Change log for 1.97 ---------- (July 2022)
+
+* BUGFIX: Fixed issue with black tiles at the start of Charlie's Legacy (Now properly rebuilds surfaces when dynamically switching from
+  8 bit to 32 bit color back buffer mode, it does this the first time it detects high color sprites in a dmod) (robj)
+* BUGFIX: Fixed issue with pushing animation code that caused Charlie's Legacy to freeze dink on frame 1 when pushing (robj)
+* Unless you're using touch controls, choosing an inventory item will no longer auto-close the menu, not really need for
+  keyboard/gamepad players (robj)
+* load_script gives a warning to log if you try to load a script to a sprite that doesn't exist instead of crashing
+* Added support for bmps using "bitfields" (to Proton), have never seen one in the wild, but Charlie's Legacy's map-03.bmp uses it
+* BUGFIX: Unknown procedures give correct error in log, before it would include weird garbage
+* HUGE speedup on script loading, fixes slowdowns in Charlie's Legacy sliding puzzles
+  (and pretty much any dmod that does intensive script processing)
+* (Windows) I see possible issues with the script "return var" statement and stack problems, it doesn't properly
+  handle recursion well and will kill the stack if enough calls are made in the same loop.  Instead of a real fix, I've increased the .exe's stack
+  from 1 mb to 50mb on Windows for now, will revisit issue later probably when handling mobile builds
+* No longer writes "drawing hardmap" to the log
+* BUGFIX: Fixed *.pdb open error which caused log.txt crash info to log less than it should have
+* Changed every single sp_<something> command so it won't crash on a bad sprite index, will log it and return -1 to indicate an error
+* BUGFIX: Fixed issue where reloading sequences in DMODS could eventually crash the game (robj)
+* Audio assigned to an invalid sprite owner no longer causes crashes (robj)
+* Say() command with invalid sprite no longer causes crashes (robj)
+* A manual draw_status dinkc command now causes status bar variables to be updated instead of animating the differences, to match other dink engine versions (robj)
+* BUGFIX: Reloading sprite sequences with longer ones no longer loses set_frame_frame info (robj)
+* Added "Unfreeze Player" command to the secret debug menu
+* Tab or Shift-Tab or Ctrl-Shift-Tab "speedups" now properly also speed up certain timers that it was skipping (robj)
+* Quicksave/quickload moved to F5-F9 the "standard" keys. (Skurn)
+* -game option now properly handles quotes and spaces in filenames (ebilV)
+* (android) External keyboards now fully work, you can turn down the onscreen controls and just play
+  with keyboard now
+* BUGFIX: "Use F1 to bring up the Dink menu" message will no longer get stuck on the screen (Robj)
+* BUGFIX: Fixed issue where sometimes the mouse cursor would stop showing up in the Dink HD F1 menu (ebilV)

@@ -124,9 +124,9 @@ void FFReader::Init( const string &gamePath, const string &dmodGamePath, const s
 
 	if (!m_fp) return; //no ff to scan in this case
 
-	int totalFiles;
+	int32 totalFiles;
 	FFFileInfo f;
-	fread(&totalFiles, sizeof(int), 1, m_fp);
+	fread(&totalFiles, sizeof(int32), 1, m_fp);
 	
 		for (int i=0; i < totalFiles; i++)
 	{

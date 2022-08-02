@@ -208,8 +208,8 @@ if (IsDesktop())
 		"Enter ``- `8Inventory screen/Inventory select\n``"\
 		"M ``- `8Show map\n\n``"\
 		"TAB ``- `8Speed up game (hold it down)\n``"\
-		"F4 ``- `8Quick state save\n``"\
-		"F8 ``- `8Quick state load\n``"\
+		"F5 ``- `8Quick state save\n``"\
+		"F9 ``- `8Quick state load\n``"\
 		"F1 ``- `8Dink HD Menu\n``"\
 		"Alt-Enter ``- `8Toggle fullscreen\n``"\
 		"Drag window corners ``- `8Changes screensize. Hold Shift to allow any aspect ratio\n``"\
@@ -388,7 +388,7 @@ msg += \
 
 	msg = "`8`$Dink Smallwood HD`` was created by `wSeth A. Robinson`` (code), `wJustin Martin`` (graphics) and includes additional contributions from Dan Walma.\n\n"\
 		"`8The original `$Dink Smallwood`` was created by `wSeth A. Robinson`` (engine/scripting/music), `wJustin Martin`` (graphics), `wGreg Smith`` (scripting/music), and `wShawn Teal``. It also featured music by `wJoel Bakker`` and `wMitch Brink``."\
-		"\n\nSpecial thanks to `wDan Walma`` and the `wdinksmallwood.net`` community for their `$Dink`` creations and support over the years!"\
+		"\n\nSpecial thanks to `wDan Walma``, `wRobc`` and the `wdinksmallwood.net`` community for their `$Dink`` creations and support over the years!"\
 		"\n\n"\
 		"This product is less buggy thanks to:\n\n`w"\
 		"Shawn Teal\n"\

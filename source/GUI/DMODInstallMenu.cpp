@@ -407,6 +407,10 @@ Entity * DMODInstallMenuCreate(Entity *pParentEnt, string dmodURL, string instal
 		VariantList vList(pCrapComp);
         GetMessageManager()->CallEntityFunction(pBG, 500, "StartInstall", &vList);
 		pStatus->GetVar("text")->Set("New .dmod file detected");
+	
+		//actually, let's set autoplay to true here too
+		pBG->GetVar("autoplay")->Set(uint32(1));
+
 	} else
 	{
 		pBG->GetVar("autoplay")->Set(uint32(1));

@@ -205,15 +205,15 @@ App::App()
 	m_bDidPostInit = false;
 	m_bHasDMODSupport = true;
 	//for mobiles
-	m_version = 1.95f;
-	m_versionString = "V1.95";
+	m_version = 1.97f;
+	m_versionString = "V1.97";
 	m_build = 1;
 	m_bCheatsEnabled = false;
 
 	//for Win/mac
 	m_desktopVersion = m_version;
 	m_desktopVersionString = m_versionString; 
-	m_desktopBuild = 1;
+	m_desktopBuild = 8;
 	m_bForceAspectRatio = true;
 	
 }
@@ -837,8 +837,8 @@ void App::Update()
 		AddKeyBinding(pComp, "Magic", VIRTUAL_KEY_SHIFT, VIRTUAL_KEY_GAME_MAGIC);
 		AddKeyBinding(pComp, "Fire", VIRTUAL_KEY_CONTROL, VIRTUAL_KEY_GAME_FIRE);
 		AddKeyBinding(pComp, "Speedup", 9, 9); //handle tab
-		AddKeyBinding(pComp, "Quicksave", VIRTUAL_KEY_F4, VIRTUAL_KEY_F4);
-		AddKeyBinding(pComp, "Quickload", VIRTUAL_KEY_F8, VIRTUAL_KEY_F8);
+		AddKeyBinding(pComp, "Quicksave", VIRTUAL_KEY_F5, VIRTUAL_KEY_F5);
+		AddKeyBinding(pComp, "Quickload", VIRTUAL_KEY_F9, VIRTUAL_KEY_F9);
 		AddKeyBinding(pComp, "DinkHDMenu", VIRTUAL_KEY_F1, VIRTUAL_KEY_F1);
 }
 
@@ -1237,7 +1237,7 @@ void App::OnUnloadSurfaces()
 {
 	LogMsg("Unloading dink engine surfaces");
 	DinkUnloadUnusedGraphicsByUsageTime(0);
-	
+
 	//g_transitionSurf.Kill();
 }
 

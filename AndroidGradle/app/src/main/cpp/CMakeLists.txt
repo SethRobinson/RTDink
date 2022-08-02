@@ -115,13 +115,13 @@ set_target_properties(lib_curl PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/
 add_library(lib_openssl STATIC IMPORTED)
 set_target_properties(lib_openssl PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/${SHARED}/android/optional_src/libs/libopenssl/${ANDROID_ABI}/libssl.a)
 
+#Change libfmod.so to libfmodL.so for the debug logging version, but don't forget to change "fmod" to System.loadLibrary("fmodL"); in Main.Java as well
+add_library(lib_fmod STATIC IMPORTED)
+set_target_properties(lib_fmod PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/${SHARED}/android/optional_src/libs/f/api/core/lib/${ANDROID_ABI}/libfmod.so)
+
 add_library(lib_crypto STATIC IMPORTED)
 set_target_properties(lib_crypto PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/${SHARED}/android/optional_src/libs/libopenssl/${ANDROID_ABI}/libcrypto.a)
 
-
-#Change libfmod.so to libfmodL.so for the debug logging version, but don't forget to change "fmod" to System.loadLibrary("fmodL"); in Main.Java as well
-add_library(lib_fmod STATIC IMPORTED)
-set_target_properties(lib_fmod PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/${SHARED}/android/optional_src/libs/fmodstudio/api/core/lib/${ANDROID_ABI}/libfmod.so)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by

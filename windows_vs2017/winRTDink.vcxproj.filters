@@ -1654,6 +1654,9 @@
     <None Include="..\..\shared\android\v3_src\SharedMultiTouchInput.java">
       <Filter>shared\android\v3_src</Filter>
     </None>
+    <None Include="..\AndroidGradle\app\build.gradle">
+      <Filter>source\platform\AndroidGradle\App</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\shared\Entity\TemplateComponent.h">

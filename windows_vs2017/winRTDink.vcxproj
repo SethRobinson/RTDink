@@ -46,7 +46,7 @@
     <ProjectGuid>{AD1D1337-0F3F-4AC5-B9EE-EE151B0193FE}</ProjectGuid>
     <RootNamespace>winRTDink</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.22000.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GL|Win32'" Label="Configuration">
@@ -335,12 +335,13 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;fmodL_vc.lib;zlibwapi.lib;ws2_32.lib;dinput8.lib;dxguid.lib;libcurl.dll.a;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;fmod_vc.lib;zlibwapi.lib;ws2_32.lib;dinput8.lib;dxguid.lib;libcurl.dll.a;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>..\..\shared\win\fmodstudio\api\core\lib\x64;..\dxsdk\Lib\x64;..\..\shared\win\lib\64;..\..\shared\win\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
+      <StackReserveSize>52428800</StackReserveSize>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -411,6 +412,8 @@
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <StackReserveSize>52428800</StackReserveSize>
+      <ProgramDatabaseFile>$(OutDir)dink.pdb</ProgramDatabaseFile>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -435,6 +438,8 @@
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <StackReserveSize>52428800</StackReserveSize>
+      <ProgramDatabaseFile>$(OutDir)dink.pdb</ProgramDatabaseFile>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -2787,6 +2792,7 @@
     <None Include="..\..\shared\OSX\app\MyApplication.mm" />
     <None Include="..\..\shared\OSX\app\MyOpenGLView.mm" />
     <None Include="..\..\shared\OSX\OSXUtils.mm" />
+    <None Include="..\AndroidGradle\app\build.gradle" />
     <None Include="..\AndroidGradle\app\src\main\java\com\rtsoft\RTAndroidApp\Main.java" />
     <None Include="..\AndroidGradle\local.properties" />
     <None Include="..\AndroidGradle\PrepareResources.bat" />

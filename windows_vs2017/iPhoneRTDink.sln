@@ -13,6 +13,8 @@ Global
 		Common Release|x64 = Common Release|x64
 		Debug GL|Win32 = Debug GL|Win32
 		Debug GL|x64 = Debug GL|x64
+		Release GL Beta|Win32 = Release GL Beta|Win32
+		Release GL Beta|x64 = Release GL Beta|x64
 		Release GL|Win32 = Release GL|Win32
 		Release GL|x64 = Release GL|x64
 	EndGlobalSection
@@ -29,6 +31,10 @@ Global
 		{AD1D1337-0F3F-4AC5-B9EE-EE151B0193FE}.Debug GL|Win32.Build.0 = Debug GL|Win32
 		{AD1D1337-0F3F-4AC5-B9EE-EE151B0193FE}.Debug GL|x64.ActiveCfg = Debug GL|x64
 		{AD1D1337-0F3F-4AC5-B9EE-EE151B0193FE}.Debug GL|x64.Build.0 = Debug GL|x64
+		{AD1D1337-0F3F-4AC5-B9EE-EE151B0193FE}.Release GL Beta|Win32.ActiveCfg = Release GL Beta|Win32
+		{AD1D1337-0F3F-4AC5-B9EE-EE151B0193FE}.Release GL Beta|Win32.Build.0 = Release GL Beta|Win32
+		{AD1D1337-0F3F-4AC5-B9EE-EE151B0193FE}.Release GL Beta|x64.ActiveCfg = Release GL Beta|x64
+		{AD1D1337-0F3F-4AC5-B9EE-EE151B0193FE}.Release GL Beta|x64.Build.0 = Release GL Beta|x64
 		{AD1D1337-0F3F-4AC5-B9EE-EE151B0193FE}.Release GL|Win32.ActiveCfg = Release GL Beta|Win32
 		{AD1D1337-0F3F-4AC5-B9EE-EE151B0193FE}.Release GL|Win32.Build.0 = Release GL Beta|Win32
 		{AD1D1337-0F3F-4AC5-B9EE-EE151B0193FE}.Release GL|x64.ActiveCfg = Release GL|x64

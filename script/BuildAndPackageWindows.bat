@@ -13,13 +13,13 @@ cd script
 :setup for VS 2017
 call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\"vcvars32.bat
 
-set C_TARGET_EXE=..\bin\dink.exe
+set C_TARGET_EXE=..\bin\winRTDink_Release GL.exe
 
 REM erase it so we know it got built right
 del %C_TARGET_EXE% > NUL
 
 copy "..\bin\winRTDink_Release GL.exe" %C_TARGET_EXE%
-copy "..\bin\winRTDink_Release GL.pdb" ..\bin\dink.pdb
+
 
 set CL=/DRT_SCRIPT_BUILD
 :This would need to be "Release GL|x64" for the 64 bit build.  But I don't think we really need to do one yet

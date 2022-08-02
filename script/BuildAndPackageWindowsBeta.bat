@@ -19,7 +19,7 @@ REM erase it so we know it got built right
 del %C_TARGET_EXE% > NUL
 
 copy "..\bin\winRTDink_Release GL Beta.exe" %C_TARGET_EXE%
-copy "..\bin\winRTDink_Release GL Beta.pdb" ..\bin\dink.pdb
+
 
 set CL=/DRT_SCRIPT_BUILD
 :This would need to be "Release GL|x64" for the 64 bit build.  But I don't think we really need to do one yet

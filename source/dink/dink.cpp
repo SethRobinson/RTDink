@@ -21,7 +21,7 @@ bool pre_figure_out(const char *line, int load_seq, bool bLoadSpriteOnly);
 #define C_DINK_SCREEN_TRANSITION_TIME_MS 400
 
 
-const float SAVE_FORMAT_VERSION = 3.1f;
+const float SAVE_FORMAT_VERSION = 3.2f; //make higher to invalidate all saves
 const int C_DINK_FADE_TIME_MS = 300;
 
 const float G_TRANSITION_SCALE_TRICK = 1.01f;
@@ -159,6 +159,7 @@ int getpic(int h);
 bool check_pic_status(int picID);
 bool get_box (int spriteID, rtRect32 * box_crap, rtRect32 * box_real );
 void fill_screen(int num);
+void UnloadAllGraphics();
 
 #ifdef WINAPI
 #define C_MAX_BACKGROUND_SPRITES_AT_ONCE 300 //too many and it will slow down
@@ -450,7 +451,7 @@ int getpic(int h)
 	if (g_sprite[h].pseq == 0) return(0);
 	if (g_sprite[h].pseq > C_MAX_SEQUENCES)
 	{
-
+		
 		LogMsg("Sequence %d?  But max is %d!", g_sprite[h].pseq, C_MAX_SEQUENCES);
 		return(0);
 	}
@@ -507,7 +508,6 @@ void add_hardness (int sprite, int num)
 		}   
 	}
 }
-
 
 void setup_anim (int seq, int sequence,int delay)
 {
@@ -1050,7 +1050,7 @@ void save_game(int num)
 	strncpy(g_dglos.g_playerInfo.dinkdat, g_dglos.current_dat, 50);
 
 	//redink1 code for custom save game names
-	strcpy(info_temp,g_dglos.save_game_info);
+	strcpy_safe(info_temp,g_dglos.save_game_info);
 	decipher_string(info_temp, 0);
 	strncpy(g_dglos.g_playerInfo.gameinfo,info_temp,77);
 	//sprintf(play.gameinfo, "Level %d",*plevel);
@@ -1144,6 +1144,112 @@ bool attach(void)
 
 }
 
+void ReplacePicID(int16 *picToChange, int *pCurNewPicIndex, std::map<int, int> &used_pic_ids, pic_info *picInfo)
+{
+	
+	if (used_pic_ids.find(*picToChange) == used_pic_ids.end())
+	{
+		//we don't have this mapped yet
+		used_pic_ids[*picToChange] = *pCurNewPicIndex;
+		g_dglos.g_picInfo[*pCurNewPicIndex] = picInfo[*picToChange];
+
+		
+		(*pCurNewPicIndex)++;
+	}
+
+	assert(!g_pSpriteSurface[*picToChange] && "No pics should be loaded right now!");
+
+	//replace it
+	*picToChange = used_pic_ids[*picToChange];
+}
+
+
+
+void DefragUsedPicIDs()
+{
+
+	UnloadAllGraphics();
+
+	//an std::map of int holding an int
+	std::map<int, int> used_pic_ids;
+	
+	int maxPicsUsed = g_dglos.g_curPicIndex;
+	if (maxPicsUsed >= C_MAX_SPRITES)
+	{
+		LogError("Why did we used %d pics?", maxPicsUsed);
+		maxPicsUsed = C_MAX_SPRITES - 1;
+	}
+		
+	int newID = 1;
+	
+	//we need to do two passes
+	
+	//first just full sequences, ignore any frame replacements
+	
+	pic_info picInfoTemp[C_MAX_SPRITES];       // Sprite data
+	
+	//make a backup
+	memcpy(picInfoTemp, g_dglos.g_picInfo, sizeof(g_dglos.g_picInfo));
+
+	//interate through all g_dglos.g_seq and find used graphic ids
+	for (int i = 0; i < C_MAX_SEQUENCES; i++)
+	{
+		
+	
+		if (g_dglos.g_seq[i].active)
+		{
+
+			if (g_dglos.g_seq[i].s >= 0)
+			{
+				for (int n = 1; n < g_dglos.g_seq[i].last+1; n++)
+				{
+					if (used_pic_ids.find(g_dglos.g_seq[i].s + n) == used_pic_ids.end())
+					{
+						g_dglos.g_picInfo[newID] = picInfoTemp[g_dglos.g_seq[i].s + n];
+						//we don't have this mapped yet
+						used_pic_ids[g_dglos.g_seq[i].s + n] = newID;
+						
+						newID++;
+					}
+				}
+
+			}
+			
+		}
+
+	}
+
+	//second pass, actually replace stuff
+	for (int i = 0; i < C_MAX_SEQUENCES; i++)
+	{
+		
+		if (g_dglos.g_seq[i].active)
+		{
+
+			if (g_dglos.g_seq[i].s >= 0)
+			{
+				//this is tricky because we don't want the actual first picindex, we want one less as the frame is added to it
+				g_dglos.g_seq[i].s++;
+				ReplacePicID(&g_dglos.g_seq[i].s, &newID, used_pic_ids, picInfoTemp);
+				g_dglos.g_seq[i].s--;
+			}
+
+			//go through and replace graphic IDs
+			for (int j = 0; j < C_MAX_SPRITE_FRAMES; j++)
+			{
+				
+				if (g_dglos.g_seq[i].frame[j] > 0)
+					ReplacePicID(&g_dglos.g_seq[i].frame[j], &newID, used_pic_ids, picInfoTemp);
+
+				if (g_dglos.g_seq[i].originalFrame[j] > 0)
+					ReplacePicID(&g_dglos.g_seq[i].originalFrame[j], &newID, used_pic_ids, picInfoTemp);
+	
+			}
+
+		}
+	}
+	g_dglos.g_curPicIndex = newID;
+}
 
 bool add_time_to_saved_game(int num)
 {
@@ -1220,8 +1326,11 @@ bool load_game(int num)
 		
 		kill_sprite_all(i);
 	}
+	DinkUnloadUnusedGraphicsByUsageTime(0);
+    SetDefaultVars(false);
+	
+	DefragUsedPicIDs(); //only save to do after all images are unloaded
 
-	SetDefaultVars(false);
 	
 	g_sprite[1].active = true;
 	g_dglos.g_gameMode = 2;
@@ -1245,8 +1354,8 @@ bool load_game(int num)
 		//redink1 - new map, if exist
 		if (strlen(g_dglos.g_playerInfo.mapdat) > 0 && strlen(g_dglos.g_playerInfo.dinkdat) > 0)
 		{
-			strcpy(g_dglos.current_map, g_dglos.g_playerInfo.mapdat);
-			strcpy(g_dglos.current_dat, g_dglos.g_playerInfo.dinkdat);
+			strcpy_safe(g_dglos.current_map, g_dglos.g_playerInfo.mapdat);
+			strcpy_safe(g_dglos.current_dat, g_dglos.g_playerInfo.dinkdat);
 			ToLowerCase(g_dglos.current_map);
 			ToLowerCase(g_dglos.current_dat);
 			load_info();
@@ -1501,7 +1610,7 @@ bool load_game_small(int num, char * line, int *mytime)
 		fread(&short_play,sizeof(player_short_info),1,fp);
 		fclose(fp);
 		*mytime = short_play.minutes;               
-		strcpy(line, short_play.gameinfo); 
+		strcpy_safe(line, short_play.gameinfo); 
 		return(true);
 	
 }
@@ -1557,7 +1666,6 @@ bool load_hard(void)
 
 void blit_background(void)
 {
-
 	rtRect32 rcRect( 0,0,C_DINK_SCREENSIZE_X,C_DINK_SCREENSIZE_Y);
 	lpDDSBack->BltFast( 0, 0, lpDDSBackGround,
 		&rcRect, DDBLTFAST_NOCOLORKEY);
@@ -1574,11 +1682,17 @@ bool LoadSpriteSingleFrame(string fNameBase, int seq, int oo, int picIndex, eTra
 {
 
 #ifdef _DEBUG
-	if (seq == 12)
-	{
-		//LogMsg("LoadSpriteSingleFrame");
-	}
+	
+		//LogMsg("Loading sprite into picindex %d", picIndex);
+	
 #endif
+
+	if (picIndex >= C_MAX_SPRITES)
+	{
+		LogError("Can't load any more sprites, already mapped out %d of 'em.  Starting from a real savegame will help.", g_dglos.g_curPicIndex);
+		return false;
+	}
+
 	int work;
 	string fName = fNameBase;
 	if (oo < 10) fName += "0";
@@ -1629,7 +1743,6 @@ bool LoadSpriteSingleFrame(string fNameBase, int seq, int oo, int picIndex, eTra
 
 #endif	
 
-
 		bool bUseCheckerboardFix = GetApp()->GetVar("checkerboard_fix")->GetUINT32() != 0;
 
 		//hack so dialog box doesn't look bad:
@@ -1643,14 +1756,12 @@ bool LoadSpriteSingleFrame(string fNameBase, int seq, int oo, int picIndex, eTra
 				bUseCheckerboardFix = false;
 			}
 			*/
-			
-
 		}
 
 #ifdef _DEBUG
-		if (seq == 868 && oo == 17)
+		if (seq == 14 )
 		{
-			//LogMsg("hey");
+			//LogMsg("idle");
 
 		}
 #endif
@@ -1687,10 +1798,7 @@ bool LoadSpriteSingleFrame(string fNameBase, int seq, int oo, int picIndex, eTra
 		g_dglos.g_picInfo[picIndex].box.left = 0;
 		g_dglos.g_picInfo[picIndex].box.right = surfSizeX;
 		g_dglos.g_picInfo[picIndex].box.bottom = surfSizeY;
-
-		
 	}
-
 
 	if (oo == 1)
 	{
@@ -1763,8 +1871,6 @@ bool LoadSpriteSingleFrame(string fNameBase, int seq, int oo, int picIndex, eTra
 			}
 		}
 	}
-
-	
 
 
 	if (!g_dglos.g_picInfo[picIndex].m_bCustomSettingsApplied)
@@ -1909,7 +2015,7 @@ bool load_sprites(char org[512], int seq, int speed, int xoffset, int yoffset, r
 	
 		for (int oo = 1; oo <= C_MAX_SPRITE_FRAMES+1; oo++) //the +1 is so we can detect when we go over our limit
 		{
-			if (oo < 10) strcpy(hold, "0"); else strcpy(hold,"");
+			if (oo < 10) strcpy_safe(hold, "0"); else strcpy_safe(hold,"");
 
 #ifdef _DEBUG
 			if (seq == 35 && oo == 22)
@@ -1968,7 +2074,7 @@ bool load_sprites(char org[512], int seq, int speed, int xoffset, int yoffset, r
 		if (LoadSpriteSingleFrame(fNameBase, seq, oo, g_dglos.g_curPicIndex, transType, &reader, hardbox, xoffset, yoffset, false, bLoadWasTruncated))
 		{
 			g_dglos.g_curPicIndex++;
-
+	
 			if (!reload)
 				save_cur++;
 		} else
@@ -1982,12 +2088,10 @@ bool load_sprites(char org[512], int seq, int speed, int xoffset, int yoffset, r
 				//make reloaded anims of different lengths work right, without breaking anims like idle that replay frames, confusing the length
 				if (g_dglos.g_seq[seq].frame[g_dglos.g_seq[seq].last] == g_dglos.g_seq[seq].s+g_dglos.g_seq[seq].last && !g_dglos.g_seq[seq].m_bFrameSetUsed)
 				{
-					
-
 					//looks like it was a standard anim without any extra frames added, truncate it here
 					g_dglos.g_seq[seq].frame[g_dglos.g_seq[seq].last+1] = 0;
 				}
-				//setup_anim(seq,seq,speed);
+				
 				
 			}
 			break;
@@ -2065,7 +2169,7 @@ void ReadFromLoadSequenceString(char ev[15][100] )
 #endif
 
 	assert(strlen(ev[2]) < C_SPRITE_MAX_FILENAME_SIZE);
-	strcpy(g_dglos.g_seq[seqID].m_fileName, ev[2]);
+	strcpy_safe(g_dglos.g_seq[seqID].m_fileName, ev[2]);
 
 	g_dglos.g_seq[seqID].m_transType = TRANSPARENT_WHITE;
 
@@ -2108,6 +2212,7 @@ void ReadFromLoadSequenceString(char ev[15][100] )
 bool ReloadSequence(int seqID, int frame, bool bScanOnly)
 {
 
+	
 	//handle a possible case where we need to always load frame 1 before any other frame to get the correct offset for anims
 	if (frame > 1 && !bScanOnly && g_dglos.g_seq[seqID].m_bIsAnim)
 	{
@@ -2125,17 +2230,41 @@ bool ReloadSequence(int seqID, int frame, bool bScanOnly)
 		//ok, here's the deal, an INI was set that specified X frames, but now we're suddenly loading a different anim which has more.  The original Dink allowed this,
 		//but Dink HD doesn't due to how it has to have the ability to re-load all graphic data at any point for quick saves.  So we're going to "forget" the amount
 		//we reserved previously, and reallocate it
-		
-		
+		sequence origSeq = g_dglos.g_seq[seqID];
+
 		//force frames to get recalculated completely
 		g_dglos.g_seq[seqID].m_bDidFileScan = false;
 		g_dglos.g_seq[seqID].last = 0;
 		g_dglos.g_seq[seqID].s = -1;
 		g_dglos.g_seq[seqID].m_spaceAllowed = 0;
 		g_dglos.g_seq[seqID].frame[1] = 0;
-		g_dglos.g_seq[seqID].m_bFrameSetUsed = false;
+		
+		
+		//g_dglos.g_seq[seqID].m_bFrameSetUsed = false;
+		//future seth says:  Uhh.. we can't just say m_bFrameSetUsed  = false and ignore everything, let's fix it up
+		
+		bReturn = ReloadSequence(seqID, frame, bScanOnly);
 
-		return ReloadSequence(seqID, frame, bScanOnly);
+		
+		if (bReturn && !bScanOnly && origSeq.m_bFrameSetUsed)
+		{
+			//update set_frame_frame stuff, it's been overwritten with new frames, but we want the manually set ones back (using the new image
+			//data we loaded), even if they overwrite frames we just loaded, because that's how dink did it. 
+			
+			for (int i = 0; i <= g_dglos.g_seq[seqID].last; i++)
+			{
+				if (origSeq.frame[i] != 0 && origSeq.frame[i] != origSeq.originalFrame[i] && origSeq.special[i] <= 0)
+				{
+					//LogMsg("Need to fix frame %d", i);
+					int framePicOffset = origSeq.frame[i] - origSeq.s;
+					g_dglos.g_seq[seqID].frame[i] = g_dglos.g_seq[seqID].s + framePicOffset;
+				}
+			}
+		}
+		
+		
+		return bReturn;
+		
 	}
 	if (g_dglos.g_seq[seqID].m_bFrameSetUsed)
 	{
@@ -2189,16 +2318,11 @@ bool figure_out(const char *line, int load_seq)
 	if (    (compare(ev[1],"LOAD_SEQUENCE_NOW")) | ( compare(ev[1],"LOAD_SEQUENCE"))  ) 
 	{
 		//           name   seq    speed       offsetx     offsety       hardx      hardy   
-		
-		
 		int seqID = atol(ev[3]);
-
 
 		if (!g_dglos.g_seq[seqID].active)
 		{
 			ReadFromLoadSequenceString(ev);
-
-
 			//first time, actually init it
 			bReturn = load_sprites(g_dglos.g_seq[seqID].m_fileName,seqID,g_dglos.g_seq[seqID].m_speed,g_dglos.g_seq[seqID].m_xoffset,g_dglos.g_seq[seqID].m_yoffset, g_dglos.g_seq[seqID].m_hardbox
 				, g_dglos.g_seq[seqID].m_transType, g_dglos.g_seq[seqID].m_bLeftAlign, true);
@@ -2481,15 +2605,15 @@ void draw_exp(bool bDraw)
 	char final[30];
 
 	//Msg("Drawing exp.. which is %d and %d",fexp, *pexp);
-	strcpy(final, "");
-	strcpy(nums,rt_ltoa(g_dglos.g_guiExp, buffer, 10));
+	strcpy_safe(final, "");
+	strcpy_safe(nums,rt_ltoa(g_dglos.g_guiExp, buffer, 10));
 	if (strlen(nums) < 5)
 		for (int i = 1; i < (6 - strlen(nums)); i++)
 			strcat(final, "0");
 	strcat(final, nums);
 	strcat(final,"/");
 
-	strcpy(nums,rt_ltoa(g_dglos.g_guiRaise, buffer, 10));
+	strcpy_safe(nums,rt_ltoa(g_dglos.g_guiRaise, buffer, 10));
 	if (strlen(nums) < 5)
 		for (int i = 1; i < (6 - strlen(nums)); i++)
 			strcat(final, "0");
@@ -2507,9 +2631,9 @@ void draw_strength(bool bDraw)
 	char buffer[30];
 	char nums[30];
 	//Msg("Drawing exp.. which is %d and %d",fexp, *pexp);
-	strcpy(final, "");
+	strcpy_safe(final, "");
 
-	strcpy(nums,rt_ltoa(g_dglos.g_guiStrength, buffer, 10));
+	strcpy_safe(nums,rt_ltoa(g_dglos.g_guiStrength, buffer, 10));
 	if (strlen(nums) < 3)
 		for (int i = 1; i < (4 - strlen(nums)); i++)
 			strcat(final, "0");
@@ -2528,8 +2652,8 @@ void draw_defense(bool bDraw)
 	char buffer[30];
 	char nums[30];
 	//Msg("Drawing exp.. which is %d and %d",fexp, *pexp);
-	strcpy(final, "");
-	strcpy(nums,rt_ltoa(g_dglos.g_guiDefense, buffer, 10));
+	strcpy_safe(final, "");
+	strcpy_safe(nums,rt_ltoa(g_dglos.g_guiDefense, buffer, 10));
 	if (strlen(nums) < 3)
 		for (int i = 1; i < (4 - strlen(nums)); i++)
 			strcat(final, "0");
@@ -2546,8 +2670,8 @@ void draw_magic(bool bDraw)
 	char buffer[30];
 	char nums[30];
 	//Msg("Drawing exp.. which is %d and %d",fexp, *pexp);
-	strcpy(final, "");
-	strcpy(nums,rt_ltoa(g_dglos.g_guiMagic, buffer, 10));
+	strcpy_safe(final, "");
+	strcpy_safe(nums,rt_ltoa(g_dglos.g_guiMagic, buffer, 10));
 	if (strlen(nums) < 3)
 		for (int i = 1; i < (4 - strlen(nums)); i++)
 			strcat(final, "0");
@@ -2563,7 +2687,7 @@ void draw_level()
 
 	//*plevel = 15;
 	//Msg("Drawing level.. which is %d ",*plevel);
-	strcpy(final, rt_ltoa(*plevel, buffer, 10));
+	strcpy_safe(final, rt_ltoa(*plevel, buffer, 10));
 
 	if (strlen(final) == 1)
 
@@ -2580,8 +2704,8 @@ void draw_gold(bool bDraw)
 	char buffer[30];
 	char nums[30];
 	//Msg("Drawing exp.. which is %d and %d",fexp, *pexp);
-	strcpy(final, "");
-	strcpy(nums,rt_ltoa(g_dglos.g_guiGold, buffer, 10));
+	strcpy_safe(final, "");
+	strcpy_safe(nums,rt_ltoa(g_dglos.g_guiGold, buffer, 10));
 	if (strlen(nums) < 5)
 		for (int i = 1; i < (6 - strlen(nums)); i++)
 			strcat(final, "0");
@@ -3372,7 +3496,7 @@ bool read_next_line(int script, char *line)
 		return(false);
 	}
 
-	strcpy(line, "");
+	strcpy_safe(line, "");
 
 	for (int k = g_scriptInstance[script]->current;  (k < g_scriptInstance[script]->end); k++)
 	{
@@ -3396,6 +3520,12 @@ bool read_next_line(int script, char *line)
 int load_script(const char *pScript, int sprite, bool set_sprite, bool bQuietError)
 {
 
+	if (sprite != 0 && sprite != 1000 && sprite >= C_MAX_SPRITES)
+	{
+		LogError("load_script tried to load script %s into sprite %d?  That would crash, so ignoring.", pScript, sprite);
+		return 0;
+	}
+	
 	string fName = "story/"+ToLowerCaseString(pScript);
 
     StringReplace("\\", "/", fName);
@@ -3511,6 +3641,7 @@ if (g_script_debug_mode)
 		{
 			
 			decompress_nocomp(scriptFile.GetAsBytes(), pMemBuffer);
+
 		}
 
 		//LogMsg("file in cbuf");
@@ -3534,13 +3665,13 @@ if (g_script_debug_mode)
 	
 
 	//LogMsg("Script loaded by sprite %d into space %d.", sprite,script);
-	strcpy(g_scriptInstance[script]->name, pScript);
+	strcpy_safe(g_scriptInstance[script]->name, pScript);
 	g_scriptInstance[script]->sprite = sprite;
 
 	if (set_sprite)
 	{
 		if (sprite != 0) if (sprite != 1000)
-			g_sprite[sprite].script = script;
+				g_sprite[sprite].script = script;
 	}
 	
 	//LogMsg("Returning script");
@@ -3564,7 +3695,7 @@ void strip_beginning_spaces(char *pInput)
 	}
 #ifdef _DEBUG
 	char crap[512];
-	strcpy(crap, h);
+	strcpy_safe(crap, h);
 #endif
 
 	strcpy_safe(pInput, h);
@@ -4010,7 +4141,7 @@ void decipher_string(char line[512], int script)
 
 bool get_parms(char proc_name[20], int32 script, char *h, int32 p[10])
 {
-	memset(g_nlist, 0, 10 * sizeof(int));
+	memset(g_nlist, 0, 10 * sizeof(int32)); //oops:  https://www.dinknetwork.com/forum.cgi?MID=207892&Posts=10
 	char crap[256];
 	strip_beginning_spaces(h);
 	if (h[0] == '(')
@@ -4060,7 +4191,7 @@ bool get_parms(char proc_name[20], int32 script, char *h, int32 p[10])
 				h = &h[strlen(crap)+2];     
 
 				//Msg("Found %s",crap);    
-				strcpy(slist[i], crap);
+				strcpy_safe(slist[i], crap);
 			}
 
 			if ( p[i+1] == 0)
@@ -4108,11 +4239,12 @@ bool get_parms(char proc_name[20], int32 script, char *h, int32 p[10])
 
 			} else
 			{
+				/*
 				if (strcmp("external", proc_name) != 0)
 				{
-					LogMsg("Procedure %s does not take %d parms in %s, offset %d. (%s?)", proc_name, i + 1, g_scriptInstance[script]->name, g_scriptInstance[script]->current, h);
+					LogMsg("Fake error? Procedure %s does not take %d parms in %s, offset %d. (%s?)", proc_name, i + 1, g_scriptInstance[script]->name, g_scriptInstance[script]->current, h);
 				}
-				else
+				else*/
 				{
 					//fake error, external commands always generate this error because of Dan's weird user-function overloading thing
 					return true;
@@ -4174,7 +4306,7 @@ int add_callback(char name[20], int n1, int n2, int script)
 			g_dglos.g_scriptCallback[k].min = n1;
 			g_dglos.g_scriptCallback[k].max = n2;
 			g_dglos.g_scriptCallback[k].owner = script;
-			strcpy(g_dglos.g_scriptCallback[k].name, name);
+			strcpy_safe(g_dglos.g_scriptCallback[k].name, name);
 
 			if (g_script_debug_mode) LogMsg("Callback added to %d.", k);
 			return(k);
@@ -4286,7 +4418,17 @@ void FreeSequence(int seq)
 			//command allows some frames to be reused.
 			assert(g_dglos.g_seq[seq].s+1 == g_dglos.g_seq[seq].frame[1]);
 			//LogMsg("Deleting seq %d, frame %d  (%d) (image: %d)", seq, i, g_dglos.g_seq[seq].frame[1]+i, g_dglos.g_picInfo[g_dglos.g_seq[seq].frame[1]+i] );
-			SAFE_DELETE(g_pSpriteSurface[g_dglos.g_seq[seq].frame[1] + i]);
+			int picIndex = g_dglos.g_seq[seq].frame[1] + i;
+			
+			if (picIndex  >= C_MAX_SPRITES)
+			{
+				LogError("FreeSequence trying to delete illegal picindex %d", picIndex);
+				
+			}
+			else
+			{
+				SAFE_DELETE(g_pSpriteSurface[picIndex]);
+			}
 		}
 
 	}
@@ -4400,6 +4542,13 @@ void check_sprite_status_full(int spriteID)
 
 int say_text(char text[512], int h, int script)
 {
+
+	if (h < 0 || h>= C_MAX_SPRITES_AT_ONCE)
+	{
+		LogError("say: Illegal sprite handle %d", h);
+		return 0;
+	}
+	
 	int crap2;
 	//Msg("Creating new sprite with %s connect to %d.",text, h);
 	if (h == 1000) crap2 = add_sprite(100,100,8,0,0);
@@ -4412,7 +4561,7 @@ int say_text(char text[512], int h, int script)
 
 	}
 	*plast_text = crap2;    
-	strcpy(g_sprite[crap2].text, text);
+	strcpy_safe(g_sprite[crap2].text, text);
 	g_sprite[crap2].kill = strlen(text) * text_timer;
 	if (g_sprite[crap2].kill < text_min) g_sprite[crap2].kill = text_min;
 	g_sprite[crap2].damage = -1;
@@ -4446,7 +4595,7 @@ int say_text_xy(char text[512], int mx, int my, int script)
 
 	}
 	*plast_text = crap2;    
-	strcpy(g_sprite[crap2].text, text);
+	strcpy_safe(g_sprite[crap2].text, text);
 	g_sprite[crap2].kill = strlen(text) * text_timer;
 	if (g_sprite[crap2].kill < text_min) g_sprite[crap2].kill = text_min;
 	g_sprite[crap2].damage = -1;
@@ -4563,7 +4712,7 @@ void make_int(char name[80], int value, int scope, int script)
 
 			g_dglos.g_playerInfo.var[i].active = true;
 			g_dglos.g_playerInfo.var[i].scope = scope;
-			strcpy(g_dglos.g_playerInfo.var[i].name, name); 
+			strcpy_safe(g_dglos.g_playerInfo.var[i].name, name); 
 			//g("var %s created, used slot %d ", name,i);
 			g_dglos.g_playerInfo.var[i].var = value;
 			return;
@@ -4588,7 +4737,7 @@ int var_equals(char name[20], char newname[20], char math, int script, char rest
 #ifdef _DEBUG
 	if (string(name) == "&vision")
 	{
-		LogMsg("Var!");
+		//LogMsg("Var!");
 	}
 #endif
 	int i = get_var(script, name);
@@ -4733,7 +4882,7 @@ void get_word(char line[300], int word, char *crap)
 			if (line[k] != ' ')
 			{
 				space_mode = false;
-				strcpy(save_word, "");
+				strcpy_safe(save_word, "");
 
 			}
 		}
@@ -4745,7 +4894,7 @@ void get_word(char line[300], int word, char *crap)
 				cur++;        
 				if (word == cur) goto done;
 				space_mode = true;
-				strcpy(save_word, "");
+				strcpy_safe(save_word, "");
 
 				goto dooba;
 			} else
@@ -4762,12 +4911,12 @@ dooba:;
 	if (space_mode == false)
 	{
 
-		if (cur+1 != word) strcpy(save_word, "");
+		if (cur+1 != word) strcpy_safe(save_word, "");
 	} 
 
 done:
 
-	strcpy(crap, save_word);
+	strcpy_safe(crap, save_word);
 
 	//Msg("word %d of %s is %s.", word, line, crap);
 }
@@ -4934,7 +5083,7 @@ void kill_returning_stuff( int script)
 	{
 		if (g_sprite[i].active) if (g_sprite[i].brain == 8) if (g_sprite[i].callback == script)
 		{
-			LogMsg("Killed sprites callback command");
+			//LogMsg("Killed sprites callback command");
 			g_sprite[i].callback = 0;
 		}
 	}    
@@ -4990,7 +5139,7 @@ morestuff:
 		{
 			while(read_next_line(script, line))
 			{
-				strcpy(check, line);    
+				strcpy_safe(check, line);    
 				strip_beginning_spaces(line);
 				get_word(line, 1, checker);
 				separate_string(line, 1, '(', check);
@@ -5077,10 +5226,10 @@ morestuff:
 
 			p = &line[strlen(check)+1];
 
-			strcpy(check, p);
+			strcpy_safe(check, p);
 
 
-			strcpy(line, check);
+			strcpy_safe(line, check);
 
 			//Msg("new line is %s, happy?", line);
 			goto morestuff;
@@ -5093,14 +5242,14 @@ morestuff:
 #endif
 		if (strcmp(check, "Quit to Windows") == 0)
 		{
-			strcpy(check, "Quit");
+			strcpy_safe(check, "Quit");
 		}
 
 		retnum++;
 		decipher_savegame = retnum;
 		decipher_string(check, script);              
 		decipher_savegame = 0;
-		strcpy(g_dglos.g_talkInfo.line[cur], check);
+		strcpy_safe(g_dglos.g_talkInfo.line[cur], check);
 		g_dglos.g_talkInfo.line_return[cur] = retnum;
 		cur++;
 	}
@@ -5246,21 +5395,21 @@ void get_right(char line[512], char thing[100], char *ret)
 	char *dumb;
 	int pos = strcspn(line, thing );
 
-	if (pos == 0){ strcpy(ret, ""); return; }
+	if (pos == 0){ strcpy_safe(ret, ""); return; }
 
 	dumb = &ret[pos+1];
-	strcpy(ret, dumb);
+	strcpy_safe(ret, dumb);
 }
 
 void int_prepare(char line[256], int script)
 {
 	int def = 0;
 	char hold[256];
-	strcpy(hold, line);
+	strcpy_safe(hold, line);
 	char name[100];
 	char crap[256];
 	replace("="," ",line);
-	strcpy(crap, line);
+	strcpy_safe(crap, line);
 	separate_string(crap, 1,';',line);
 	get_word(line, 2, name);
 
@@ -5273,7 +5422,7 @@ void int_prepare(char line[256], int script)
 
 	make_int(name, def,script, script);
 
-	strcpy(line, hold);
+	strcpy_safe(line, hold);
 
 }
 
@@ -5438,8 +5587,10 @@ void draw_sprite_game(LPDIRECTDRAWSURFACE lpdest,int h)
 				assert(lpdest == lpDDSBackGround);
 				//convert it to a high color surface on the fly, without losing the data on it
 				LPDIRECTDRAWSURFACE pNewSurf = InitOffscreenSurface(C_DINK_SCREENSIZE_X, C_DINK_SCREENSIZE_Y, IDirectDrawSurface::MODE_SHADOW_GL, true, lpdest->m_pSurf);
-				LogMsg("Detected high color bmps that need to drawn to the static landscape, converting backbuffers to 32 bit on the fly.");
+				LogMsg("Detected high color bmps that need to be drawn to the static landscape, converting backbuffers to 32 bit on the fly.");
 				delete lpDDSBackGround;
+
+				g_forceBuildBackgroundFromScratch = true; //need this here too, otherwise you get black tiles at the start of Charlie's house
 
 				lpdest = lpDDSBackGround = pNewSurf;
 				
@@ -5496,7 +5647,7 @@ void changedir( int dir1, int k,int base)
 		if (hspeed > 49)
 		{
 #ifdef _DEBUG
-			LogMsg("Speed was %d", hspeed);
+			//LogMsg("Speed was %d", hspeed);
 #endif
 			g_sprite[k].speed = 49;
 		} else
@@ -5710,7 +5861,7 @@ void update_play_changes( void )
 
 				g_dglos.g_smallMap.sprite[j].seq = g_dglos.g_playerInfo.spmap[*pmap].seq[j];
 				g_dglos.g_smallMap.sprite[j].frame = g_dglos.g_playerInfo.spmap[*pmap].frame[j];
-				strcpy(g_dglos.g_smallMap.sprite[j].script, "");
+				strcpy_safe(g_dglos.g_smallMap.sprite[j].script, "");
 			}
 	}
 }
@@ -6213,7 +6364,7 @@ int get_pan(int h)
 
 	if (h < 0 || h > C_MAX_SPRITES_AT_ONCE)
 	{
-		LogMsg("ignoring get_pan (probably initiated by sound play command) as it's connected to an invalid sprite #");
+		LogMsg("ignoring get_pan on sprite %d (probably initiated by sound play command) as it's connected to an invalid sprite #", h);
 		return 0;
 	}
 
@@ -6241,7 +6392,7 @@ int get_vol(int h)
 {
 	if (h < 0 || h > C_MAX_SPRITES_AT_ONCE)
 	{
-		LogMsg("ignoring get_vol (probably initiated by sound play command) as it's connected to an invalid sprite #");
+		LogMsg("ignoring get_vol on sprite %d (probably initiated by sound play command) as it's connected to an invalid sprite #", h);
 		return 0;
 	}
 
@@ -6355,6 +6506,14 @@ void update_sound(void)
 				//Msg("Sound %d playing.. owner is %d.", i,soundinfo[i].owner);
 				if (soundinfo[i].owner != 0)
 				{
+
+					if (soundinfo[i].owner < 0 || soundinfo[i].owner >= C_MAX_SPRITES_AT_ONCE)
+					{
+#ifdef _DEBUG
+						LogError("Ignoring updating sound that claims its owner is sprite %d, impossible", soundinfo[i].owner);
+#endif
+						continue;
+					}
 					if (g_sprite[soundinfo[i].owner].active == false)
 					{
 						//Msg("Killed bank %d", i); 
@@ -6927,6 +7086,16 @@ void LoadGame(int gameSlot)
 }
 
 
+bool IsBadSpriteIndex(int sprite, char* pName)
+{
+	if (sprite < 0 || sprite >= C_MAX_SPRITES_AT_ONCE)
+	{
+		LogMsg("Avoided crash by ignoring %s trying to change sprite %d", pName, sprite);
+		return true;
+	}
+
+	return false;
+}
 int process_line (int script, char *pLineIn, bool doelse)
 {
 	char * h, *p;
@@ -6950,7 +7119,7 @@ int process_line (int script, char *pLineIn, bool doelse)
 		goto bad;
 	}
 
-	
+
 	for ( i=1; i <= 14; i++)
 	{
 		if (separate_string(h, i,' ',ev[i]) == false) goto pass;
@@ -6960,6 +7129,8 @@ pass:
 #ifdef _DEBUG
 	//LogMsg("first line is %s (second is %s), third is %s", ev[1], ev[2], ev[3]);
 #endif
+
+
 
 	if (compare(ev[1], (char*)"VOID"))
 	{
@@ -6989,7 +7160,9 @@ pass:
 		//Msg("We found %s, woah!", temp);
 		separate_string(h, 1,')',ev[1]);
 
-		// Msg("Ok, turned h %s to  ev1 %s.",h,ev[1]);
+#ifdef _DEBUG
+        //LogMsg("Ok, turned h %s to  ev1 %s.",h,ev[1]);
+#endif
 		p = &p[strlen(ev[1])+1];  
 
 		strip_beginning_spaces(p);
@@ -7005,7 +7178,7 @@ pass:
 			replace("==", "", temp);
 			sprintf(line, "%d == %s", g_dglos.g_returnint, temp); 
 			g_dglos.g_returnint = var_figure(line, script);                   
-			strcpy(h, "\n");
+			strcpy_safe(h, "\n");
 			return(0);
 		}
 
@@ -7017,7 +7190,7 @@ pass:
 			replace("==", "", temp);
 			sprintf(line, "%d > %s", g_dglos.g_returnint, temp); 
 			g_dglos.g_returnint = var_figure(line, script);                   
-			strcpy(h, "\n");
+			strcpy_safe(h, "\n");
 			return(0);
 		}
 
@@ -7029,7 +7202,7 @@ pass:
 			replace("==", "", temp);
 			sprintf(line, "%d < %s", g_dglos.g_returnint, temp); 
 			g_dglos.g_returnint = var_figure(line, script);                   
-			strcpy(h, "\n");
+			strcpy_safe(h, "\n");
 			return(0);
 		}
 		
@@ -7041,7 +7214,7 @@ pass:
 			replace("==", "", temp);
 			sprintf(line, "%d <= %s", g_dglos.g_returnint, temp);
 			g_dglos.g_returnint = var_figure(line, script);
-			strcpy(h, "\n");
+			strcpy_safe(h, "\n");
 			return(0);
 		}
 		if (strchr(temp, '>=') != NULL) 
@@ -7052,7 +7225,7 @@ pass:
 			replace("==", "", temp);
 			sprintf(line, "%d >= %s", g_dglos.g_returnint, temp);
 			g_dglos.g_returnint = var_figure(line, script);
-			strcpy(h, "\n");
+			strcpy_safe(h, "\n");
 			return(0);
 		}
 		
@@ -7065,7 +7238,7 @@ pass:
 			replace("==", "", temp);
 			sprintf(line, "%d != %s", g_dglos.g_returnint, temp); 
 			g_dglos.g_returnint = var_figure(line, script);                   
-			strcpy(h, "\n");
+			strcpy_safe(h, "\n");
 			return(0);
 		}
 		
@@ -7074,13 +7247,13 @@ pass:
 			//its a procedure in the if statement!!!  
 			h = &h[1];
 			p = &p[1];
-			strcpy(line, p); 
+			strcpy_safe(line, p); 
 			process_line(script, h, false);
 
 			//8
 			//LogMsg("Returned %d for the returnint", g_dglos.g_returnint);
 			h = pLineIn; 
-			strcpy(pLineIn, line); 
+			strcpy_safe(pLineIn, line); 
 
 			//  Msg("Returing %s..", s);
 			return(0);
@@ -7091,7 +7264,7 @@ pass:
 			separate_string(h, 1,')',line);
 			h = &h[strlen(line)+1];
 			g_dglos.g_returnint = var_figure(line, script);         
-			strcpy(pLineIn, h); 
+			strcpy_safe(pLineIn, h); 
 
 			return(0);
 		}
@@ -7138,7 +7311,7 @@ pass:
 		if (g_scriptInstance[script]->onlevel > 0) if (g_scriptInstance[script]->level == g_scriptInstance[script]->onlevel)
 		{
 			strip_beginning_spaces(h);
-			strcpy(pLineIn, h);
+			strcpy_safe(pLineIn, h);
 			return(4);
 		}   
 		goto good;
@@ -7152,7 +7325,7 @@ pass:
 	if (compare(ev[1], (char*)"void"))
 	{
 		//     Msg("Next procedure starting, lets quit");
-		strcpy(pLineIn, h);
+		strcpy_safe(pLineIn, h);
 		if (g_scriptInstance[script]->proc_return != 0)
 		{
 			run_script(g_scriptInstance[script]->proc_return);
@@ -7175,7 +7348,7 @@ pass:
 		{
 			//sorry, can't do it, you were told to skip the next thing
 			g_scriptInstance[script]->skipnext = false;
-			strcpy(pLineIn, h);
+			strcpy_safe(pLineIn, h);
 			return(3);
 		}
 
@@ -7185,7 +7358,7 @@ pass:
 		if (compare(ev[1], (char*)"void"))
 		{
 			LogMsg("ERROR: Missing } in %s, offset %d.", g_scriptInstance[script]->name,g_scriptInstance[script]->current);
-			strcpy(pLineIn, h);
+			strcpy_safe(pLineIn, h);
 			return(2);
 		}
 
@@ -7201,7 +7374,7 @@ pass:
 				//Msg("No to else...");
 
 			}
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(1);
 
 		}
@@ -7228,7 +7401,7 @@ pass:
 
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7254,7 +7427,7 @@ pass:
 
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7285,11 +7458,16 @@ pass:
 
 			h = &h[strlen(ev[1])];
 			strip_beginning_spaces(h);
+			
+#ifdef _DEBUG
 			//LogMsg("running if with string of %s", h);
+#endif
 
 			process_line(script, h, false);
 
-			//Msg("Result is %d", returnint);    
+#ifdef _DEBUG
+			//LogMsg("Result is %d", g_dglos.g_returnint);
+#endif
 
 			if (g_dglos.g_returnint != 0)
 			{
@@ -7304,7 +7482,7 @@ pass:
 			}
 
 			//DO STUFF HERE! 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			//g("continuing to run line %s..", h);
 			return(5);
 
@@ -7316,6 +7494,14 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
+				
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].dir);
 
 				if (g_nlist[1] != -1) changedir(g_sprite[g_nlist[0]].dir, g_nlist[0], g_sprite[g_nlist[0]].base_walk);
@@ -7325,15 +7511,20 @@ pass:
 			return(0);
 		}
 
-
 		if (compare(ev[2], "="))
 		{
+#ifdef _DEBUG
+     //       LogMsg("in =:  h is %s", h);
+#endif
 			h = &h[strlen(ev[1])];
 			strip_beginning_spaces(h);
 			h = &h[1];
 			strip_beginning_spaces(h);
+#ifdef _DEBUG
+     //       LogMsg("in =:  h post is %s", h);
+#endif
 			var_equals(ev[1], ev[3], '=', script, h);
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7350,7 +7541,7 @@ pass:
 				g_dglos.g_returnint = cb;
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7367,7 +7558,7 @@ pass:
 					g_dglos.g_scriptCallback[g_nlist[0]].active = false;
 				}
 			}
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7381,7 +7572,7 @@ pass:
 				g_dglos.dinkspeed = g_nlist[0];
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7395,7 +7586,7 @@ pass:
 			{
 				g_dglos.mDinkBasePush = g_nlist[0];
 			}
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7404,7 +7595,7 @@ pass:
 			h = &h[strlen(ev[1])];
 			g_dglos.time_start = GetBaseApp()->GetGameTick();
 			g_dglos.g_playerInfo.minutes = 0;
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7420,7 +7611,7 @@ pass:
 
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7437,7 +7628,7 @@ pass:
 				add_item(slist[0], g_nlist[1], g_nlist[2], false);
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7451,7 +7642,7 @@ pass:
 				add_exp(g_nlist[0], g_nlist[1], true);
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7466,7 +7657,7 @@ pass:
 				add_item(slist[0], g_nlist[1], g_nlist[2], true);
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7481,7 +7672,7 @@ pass:
 				kill_cur_item_script(slist[0]);
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7495,7 +7686,7 @@ pass:
 				kill_cur_magic_script(slist[0]);
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7512,7 +7703,7 @@ pass:
 				show_bmp(slist[0], g_nlist[1], g_nlist[2], script);
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(2);
 		}
 
@@ -7520,7 +7711,7 @@ pass:
 		{
 			//LogMsg("waiting for button with script %d", script);
 			h = &h[strlen(ev[1])];
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			g_dglos.g_wait_for_button.script = script;
 			g_dglos.g_wait_for_button.active = true;
 			g_dglos.g_wait_for_button.button = 0;
@@ -7546,7 +7737,7 @@ pass:
 				SetBitmapCopy(slist[0]);
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7571,7 +7762,7 @@ pass:
 				//Msg("Just said %s.", slist[0]);
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7642,6 +7833,18 @@ pass:
 
 		if (compare(ev[1], (char*)"draw_status"))
 		{
+			//Force everything to be updates
+			g_dglos.g_guiStrength = *pstrength;
+			g_dglos.g_guiMagic = *pmagic;
+			g_dglos.g_guiGold = *pgold;
+			g_dglos.g_guiDefense = *pdefense;
+			g_dglos.g_guiLife = *plife;
+			g_dglos.g_guiLifeMax = *plifemax;
+			g_dglos.g_guiExp = *pexper;
+			g_dglos.g_guiMagicLevel = *pmagic_level;
+			g_dglos.g_guiRaise = next_raise();
+
+			
 			draw_status_all();
 			return(0);
 		}
@@ -7721,11 +7924,11 @@ pass:
 				g_dglos.g_playerInfo.last_talk = script;     
 				//Msg("Sprite %d marked callback true.", sprite);
 
-				strcpy(pLineIn, h);  
+				strcpy_safe(pLineIn, h);  
 				return(2);
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7749,13 +7952,13 @@ pass:
 				sprite = say_text(slist[0], g_nlist[1], script);
 				g_dglos.g_returnint = sprite;
 				g_sprite[sprite].callback = script;
-				strcpy(pLineIn, h);  
+				strcpy_safe(pLineIn, h);  
 
 				return(2);
 
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7775,13 +7978,13 @@ pass:
 				g_sprite[sprite].callback = script;
 				g_sprite[sprite].live = true;
 				g_dglos.g_playerInfo.last_talk = script;     
-				strcpy(pLineIn, h);  
+				strcpy_safe(pLineIn, h);  
 
 				return(2);
 
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7797,12 +8000,12 @@ pass:
 				decipher_string(slist[0], script);               
 				sprite = say_text_xy(slist[0], g_nlist[1], g_nlist[2], script);                             
 				g_dglos.g_returnint = sprite;
-				strcpy(pLineIn, h);               
+				strcpy_safe(pLineIn, h);               
 				return(0);
 
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7838,7 +8041,7 @@ pass:
 			if (get_parms(ev[1], script, h, p))
 			{
 				//           Msg("Wait called for %d.", nlist[0]);
-				strcpy(pLineIn, h);  
+				strcpy_safe(pLineIn, h);  
 				kill_returning_stuff(script);
 				
 				
@@ -7851,7 +8054,7 @@ pass:
 				return(2);
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7866,7 +8069,7 @@ pass:
 				check_seq_status(g_nlist[0]);
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			*/
 			return(0);
 		}
@@ -7881,7 +8084,7 @@ pass:
 
 				g_scriptInstance[script]->sprite = g_nlist[0];
 			}
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7904,7 +8107,7 @@ pass:
 
 
 			}
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7934,7 +8137,7 @@ pass:
 
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7972,7 +8175,7 @@ pass:
 				g_dglos.g_returnint = tempreturn;
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -7996,7 +8199,7 @@ pass:
 				g_dglos.g_returnint = tempreturn;
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8014,7 +8217,7 @@ pass:
 
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8023,12 +8226,12 @@ pass:
 		if (compare(ev[1], (char*)"draw_hard_map"))
 		{
 			// (sprite, direction, until, nohard);
-			LogMsg("Drawing hard map.."); 
+			//LogMsg("Drawing hard map.."); 
 			update_play_changes();
 			fill_whole_hard();     
 			fill_hard_sprites();
 			fill_back_sprites();
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8037,7 +8240,7 @@ pass:
 		{
 			g_forceBuildBackgroundFromScratch = true;
 			BuildScreenBackground(false, true);
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8050,7 +8253,7 @@ pass:
 		
 			g_dglos.cycle_script = script;
 
-			strcpy(pLineIn, h);
+			strcpy_safe(pLineIn, h);
 
 			return(2);
 		}
@@ -8064,7 +8267,7 @@ pass:
 			g_dglos.cycle_clock = g_dglos.g_dinkTick;
 			g_dglos.cycle_script = script; 
 			g_dinkFadeAlpha = 1;
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(2);
 		}
 
@@ -8142,7 +8345,7 @@ pass:
 
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 		if (compare(ev[1], (char*)"stopmidi"))
@@ -8150,7 +8353,7 @@ pass:
 			// (sprite, direction, until, nohard);
 			h = &h[strlen(ev[1])];
 			StopMidi();
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8163,7 +8366,7 @@ pass:
 				LogMsg(slist[0]);
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8171,7 +8374,7 @@ pass:
 		if (compare(ev[1], (char*)"kill_all_sounds"))
 		{
 			kill_repeat_sounds_all();
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 
 		}
@@ -8179,20 +8382,19 @@ pass:
 		if (compare(ev[1], (char*)"turn_midi_off"))
 		{
 			g_dglos.midi_active = false;
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 
 		}
 		if (compare(ev[1], (char*)"turn_midi_on"))
 		{
 			g_dglos.midi_active = true;
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
 		if (compare(ev[1], (char*)"Playsound"))
 		{
-			// (sprite, direction, until, nohard);
 			h = &h[strlen(ev[1])];
 			int32 p[20] = {1,1,1,1,1,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
@@ -8204,7 +8406,7 @@ pass:
 			} else
 				g_dglos.g_returnint = 0;
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8224,7 +8426,7 @@ pass:
 				}
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8248,7 +8450,7 @@ pass:
 				}
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8270,7 +8472,7 @@ pass:
 				}
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8284,7 +8486,7 @@ pass:
 				save_game(g_nlist[0]);
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8302,7 +8504,7 @@ pass:
 				BuildScreenBackground(true, true);
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8321,7 +8523,7 @@ pass:
 
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8363,7 +8565,7 @@ pass:
 				return(2);
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8385,7 +8587,7 @@ pass:
 				if (FileExists(temp)) g_dglos.g_returnint = 1; else g_dglos.g_returnint = 0;
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8410,14 +8612,14 @@ pass:
 					g_sprite[g_nlist[0]].move_num = g_nlist[2];
 					g_sprite[g_nlist[0]].move_nohard = g_nlist[3];
 					g_sprite[g_nlist[0]].move_script = script;
-					strcpy(pLineIn, h);
+					strcpy_safe(pLineIn, h);
 					if (g_script_debug_mode) LogMsg("Move_stop: Sprite %d, dir %d, num %d", g_nlist[0], g_nlist[1], g_nlist[2]);
 					return(2);
 				}
 
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8437,7 +8639,7 @@ pass:
 				}
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8452,7 +8654,7 @@ pass:
 				LogMsg(slist[0]);
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8474,7 +8676,7 @@ pass:
 				make_function(slist[0], slist[1]);
 				//Msg(slist[0]);
 			}
-			strcpy(pLineIn, h);
+			strcpy_safe(pLineIn, h);
 			return(0);
 		}
 
@@ -8490,7 +8692,7 @@ pass:
 				//Msg(slist[0]);
 			}
 
-			strcpy(pLineIn, h);
+			strcpy_safe(pLineIn, h);
 			return(0);
 		}
 
@@ -8504,12 +8706,14 @@ pass:
 
 			h = &h[strlen(ev[1])];
 
-			//Msg("Int is studying %s..", h);
+#ifdef _DEBUG
+		//	LogMsg("Int %s created at index %d", ev[1], h);
+#endif
 			if (strchr(h, '=') != NULL)
 			{
 				strip_beginning_spaces(h);
 				//Msg("Found =...continuing equation");
-				strcpy(pLineIn, h);  
+				strcpy_safe(pLineIn, h);
 				return(4);
 			}
 
@@ -8531,13 +8735,13 @@ pass:
 
 					g_dglos.g_returnint = does_sprite_have_text(g_nlist[0]);
 
-					LogMsg("Busy: Return int is %d and %d.  Nlist got %d.", g_dglos.g_returnint,does_sprite_have_text(g_nlist[0]), g_nlist[0]);
+					//LogMsg("Busy: Return int is %d and %d.  Nlist got %d.", g_dglos.g_returnint,does_sprite_have_text(g_nlist[0]), g_nlist[0]);
 
 				}
 
 			}  else LogMsg("Failed getting parms for Busy()");
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8553,6 +8757,7 @@ pass:
 				if (g_nlist[0] < 0 || g_nlist[0] > C_MAX_SPRITES_AT_ONCE)
 				{
 					LogMsg("sp_freeze ignored, sprite %d is no good", g_nlist[0]);
+					g_dglos.g_returnint = -1;
 				}
 				else
 				{
@@ -8578,7 +8783,7 @@ pass:
 				}
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8601,7 +8806,7 @@ pass:
 
 			}  else LogMsg("Failed getting parms for inside_box");
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8615,7 +8820,7 @@ pass:
 				g_dglos.g_returnint = (rand() % g_nlist[0])+g_nlist[1];
 			}  else LogMsg("Failed getting parms for Random()");
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 		
@@ -8623,7 +8828,7 @@ pass:
 		{
 			h = &h[strlen(ev[1])];
 			g_dglos.g_returnint = C_DINK_VERSION;
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8632,7 +8837,7 @@ pass:
 			h = &h[strlen(ev[1])];
 			g_dglos.g_returnint = 1;
 			if (!g_dglo.m_dmodGameDir.empty()) g_dglos.g_returnint = 0;
-			strcpy(pLineIn, h);
+			strcpy_safe(pLineIn, h);
 			return(0);
 		}
 
@@ -8640,7 +8845,7 @@ pass:
 		{
 			h = &h[strlen(ev[1])];
 			g_dglos.g_returnint = GetApp()->GetVersion()*100;
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8649,7 +8854,7 @@ pass:
 			//h = &h[strlen(ev[1])];
 			g_dglos.g_returnint = GetEmulatedPlatformID();
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 	
@@ -8668,7 +8873,7 @@ pass:
 				GetMessageManager()->CallEntityFunction(pBG, g_nlist[1], "ShowQuickTip", &vList); 
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8685,7 +8890,7 @@ pass:
 			if (g_dglo.m_dmodGameDir == "lyna/") return 0;
 			
 			g_dglos.g_returnint = 1;
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8693,7 +8898,7 @@ pass:
 		{
 			h = &h[strlen(ev[1])];
 			g_dglos.g_returnint = 0;
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8708,7 +8913,7 @@ pass:
 				//if (g_dglos.g_gameMode == )
 			}  else LogMsg("Failed to set mode");
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8731,7 +8936,7 @@ pass:
 				}
 			}  
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -8810,6 +9015,8 @@ pass:
 			{
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].speed);
 
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) { return 0; }
+
 				if (g_nlist[1] != -1) changedir(g_sprite[g_nlist[0]].dir, g_nlist[0], g_sprite[g_nlist[0]].base_walk);
 
 				return(0);
@@ -8825,6 +9032,11 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0; 
+				}
+
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].range);
 
 				return(0);
@@ -8840,6 +9052,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].nocontrol);
 				return(0);
 			}
@@ -8853,6 +9069,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].nodraw);
 				return(0);
 			}
@@ -8867,6 +9087,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].picfreeze);
 				return(0);
 			}
@@ -8985,6 +9209,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].sound);
 
 				if (g_nlist[1] > 0)
@@ -9004,7 +9232,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
-
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1]+g_dglos.g_dinkTick, &g_sprite[g_nlist[0]].attack_wait);
 				return(0);
 			}
@@ -9019,7 +9250,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
-
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].active);
 
 
@@ -9035,7 +9269,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
-
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].disabled);
 
 
@@ -9051,6 +9288,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].size);
 				return(0);
 			}
@@ -9082,6 +9323,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].que);
 				return(0);
 			}
@@ -9095,6 +9340,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].gold);
 				return(0);
 			}
@@ -9108,6 +9357,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite_noreturn(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].base_walk);
 				return(0);
 			}
@@ -9122,6 +9375,11 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].target);
 				return(0);
 			}
@@ -9144,6 +9402,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite_noreturn(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].base_hit);
 				return(0);
 			}
@@ -9157,6 +9419,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite_noreturn(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].base_attack);
 				return(0);
 			}
@@ -9171,6 +9437,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite_noreturn(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].base_idle);
 				return(0);
 			}
@@ -9185,6 +9455,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite_noreturn(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].base_die);
 				return(0);
 			}
@@ -9213,6 +9487,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].pseq);
 				return(0);
 			}
@@ -9227,6 +9505,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].pframe);
 				return(0);
 			}
@@ -9237,10 +9519,21 @@ pass:
 
 		if (compare(ev[1], (char*)"sp_seq"))
 		{     
+
 			h = &h[strlen(ev[1])];
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+
+
+				if (g_nlist[0] < 0 || g_nlist[0] >= C_MAX_SPRITES_AT_ONCE)
+				{
+					LogMsg("sp_seq: Bad sprite, no %d", g_nlist[0]);
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
+
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].seq);
 				return(0);
 			}
@@ -9297,7 +9590,7 @@ pass:
 			{
 				if (g_nlist[0] < 0 || g_nlist[0] >= C_MAX_SPRITES_AT_ONCE)
 				{
-					g_dglos.g_returnint = 0;
+					g_dglos.g_returnint = -1;
 					return 0;
 				}
 				g_dglos.g_returnint = g_sprite[g_nlist[0]].sp_index;
@@ -9316,7 +9609,8 @@ pass:
 
 				if (g_nlist[0] < 0 || g_nlist[0] >= C_MAX_SPRITES_AT_ONCE)
 				{
-					LogMsg("so_brain sent bad sprite %d", g_nlist[0]);
+					LogMsg("sp_brain sent bad sprite %d", g_nlist[0]);
+					g_dglos.g_returnint = -1;
 				}
 				else
 				{
@@ -9341,6 +9635,11 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0; 
+				}
+
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].exp);
 				return(0);
 			}
@@ -9369,6 +9668,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].reverse);
 				return(0);
 			}
@@ -9383,6 +9686,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].noclip);
 				return(0);
 			}
@@ -9396,6 +9703,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite_noreturn(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].touch_damage);
 				return(0);
 			}
@@ -9410,6 +9721,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].brain_parm);
 				return(0);
 			}
@@ -9422,6 +9737,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].brain_parm2);
 				return(0);
 			}
@@ -9435,6 +9754,10 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) {
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].follow);
 				return(0);
 			}
@@ -9468,12 +9791,24 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) 
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+				
 				//Allow -1, in case a script needs to get the current frame.
 				if (g_nlist[1] < -1 || g_nlist[1] >= C_MAX_SPRITE_FRAMES)
 				{
 					LogMsg("sp_frame trying to set something to frame %d?  Illegal, forcing to 1.", g_nlist[1]);
 					g_nlist[1] = 1;
 				}
+
+#ifdef _DEBUG
+		//		LogMsg("Sprite %d changing sp_frame to %d", g_nlist[0], g_nlist[1]);
+				
+#endif
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].frame);
 				
 				
@@ -9489,6 +9824,12 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) 
+				{
+					g_dglos.g_returnint = -1;
+					return 0; 
+				}
+
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].frame_delay);
 				return(0);
 			}
@@ -9572,6 +9913,11 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].move_nohard);
 				return(0);
 			}
@@ -9584,6 +9930,12 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+				
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].flying);
 				return(0);
 			}
@@ -9704,6 +10056,11 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].x);
 				return(0);
 			}
@@ -9764,6 +10121,12 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+				
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].mx);
 				return(0);
 			}
@@ -9789,6 +10152,12 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+				
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].my);
 				return(0);
 			}
@@ -9802,6 +10171,11 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					return 0;
+				}
+				
 				change_sprite_noreturn(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].my);
 				return(0);
 			}
@@ -9827,6 +10201,13 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].hitpoints);
 
 				return(0);
@@ -9841,6 +10222,13 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].attack_hit_sound);
 
 				return(0);
@@ -9855,6 +10243,13 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].attack_hit_sound_speed);
 
 				return(0);
@@ -9870,6 +10265,13 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].strength);
 
 				return(0);
@@ -9884,6 +10286,13 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].defense);
 
 				return(0);
@@ -9911,6 +10320,13 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].distance);
 				return(0);
 			}
@@ -9924,6 +10340,13 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].nohit);
 				return(0);
 			}
@@ -9937,6 +10360,13 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].notouch);
 				return(0);
 			}
@@ -10040,6 +10470,12 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].y);
 				return(0);
 			}
@@ -10054,6 +10490,13 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
+				
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].timer);
 				return(0);
 			}
@@ -10094,7 +10537,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				}
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10135,12 +10578,12 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {2,2,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
-				strcpy(g_dglos.current_map,slist[0]);
-				strcpy(g_dglos.current_dat,slist[1]);
+				strcpy_safe(g_dglos.current_map,slist[0]);
+				strcpy_safe(g_dglos.current_dat,slist[1]);
 				load_info();
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10153,7 +10596,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			{
 				assert(!"We don't support this");
 			}
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10178,7 +10621,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 																					   //BuildScreenBackground(true); //trigger full rebuild, this could be optimized by setting a flag and only doing it once...
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10190,9 +10633,9 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {2,0,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
-				strcpy(g_dglos.save_game_info,slist[0]);
+				strcpy_safe(g_dglos.save_game_info,slist[0]);
 			}
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10206,7 +10649,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				g_dglo.SetViewOverride(DinkGlobals::VIEW_ZOOMED);
 			}
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10227,7 +10670,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 		}
 		}
 		}
-		strcpy(s, h);  
+		strcpy_safe(s, h);  
 		return(0);
 		}*/
 
@@ -10238,7 +10681,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 
 			g_dglos.g_returnint = (GetBaseApp()->GetGameTick()-g_dglos.time_start) / (1000*60);
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10257,7 +10700,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			g_dglos.g_returnint = atoi(mytime);
 			strftime(mytime,5,"%H",time_now);
 			g_dglos.g_returnint += 60*atoi(mytime);
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10272,7 +10715,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			time_now = localtime(&ct);
 			strftime(mytime,5,"%Y",time_now);
 			g_dglos.g_returnint = atoi(mytime);
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10287,7 +10730,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			time_now = localtime(&ct);
 			strftime(mytime,5,"%m",time_now);
 			g_dglos.g_returnint = atoi(mytime);
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10302,7 +10745,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			time_now = localtime(&ct);
 			strftime(mytime,5,"%d",time_now);
 			g_dglos.g_returnint = atoi(mytime);
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10315,7 +10758,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			{
 				g_dglos.g_returnint = abs(g_nlist[0]);
 			}
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10328,7 +10771,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 		{
 		returnint = sin((double)nlist[0]);
 		}
-		strcpy(s, h);  
+		strcpy_safe(s, h);  
 		return(0);
 		}
 
@@ -10341,7 +10784,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 		{
 		returnint = cos((double)nlist[0]);
 		}
-		strcpy(s, h);  
+		strcpy_safe(s, h);  
 		return(0);
 		}
 
@@ -10354,7 +10797,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 		{
 		returnint = tan((double)nlist[0]);
 		}
-		strcpy(s, h);  
+		strcpy_safe(s, h);  
 		return(0);
 		}*/
 
@@ -10367,7 +10810,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			{
 				g_dglos.g_returnint = sqrt((double)abs(g_nlist[0]));
 			}
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10380,7 +10823,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			{
 				g_dglos.g_returnint = (g_nlist[0] % g_nlist[1]);
 			}
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10396,14 +10839,23 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 		{     
 			h = &h[strlen(ev[1])];
 			int32 p[20] = {2,1,1,0,0,0,0,0,0,0};  
-			if ( get_parms(ev[1], script, h, p) && g_sprite[g_nlist[1]].active == true )
+			if ( get_parms(ev[1], script, h, p) )
 			{
-				if ( g_nlist[1] < 1 || g_sprite[g_nlist[1]].active == false )
+				if ( g_nlist[1] < 1 || g_nlist[1] >= C_MAX_SPRITES_AT_ONCE ||  g_sprite[g_nlist[1]].active == false )
 				{
+					LogMsg("sp_custom ignoring command to sprite %d, it doesn't exist or it isn't active",
+						g_nlist[1]);
 					g_dglos.g_returnint = -1;
 				}
 				else
 				{
+
+					if (!g_customSpriteMap[g_nlist[1]])
+					{
+						LogError("ERROR: sp_custom is going to fail because sprite %d has no spritemap. Initting it now to avoid crash", g_nlist[1]);
+
+						g_customSpriteMap[g_nlist[1]] = new std::map<std::string, int32>;
+					}
 					// If key doesn't exist, create it.
 					if ( g_customSpriteMap[g_nlist[1]]->find( slist[0] ) == g_customSpriteMap[g_nlist[1]]->end() )
 					{
@@ -10432,6 +10884,13 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
 				change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].bloodseq);
 
 				g_dglos.g_returnint = g_sprite[g_nlist[0]].bloodseq;
@@ -10449,6 +10908,14 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
+				
 				change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].bloodnum);
 
 				g_dglos.g_returnint = g_sprite[g_nlist[0]].bloodseq;
@@ -10516,6 +10983,14 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
+				
 				change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].alt.left);
 
 				g_dglos.g_returnint = g_sprite[g_nlist[0]].alt.left;
@@ -10533,6 +11008,14 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
+				
 				change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].alt.top);
 
 				g_dglos.g_returnint = g_sprite[g_nlist[0]].alt.top;
@@ -10550,6 +11033,13 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
 				change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].alt.right);
 
 				g_dglos.g_returnint = g_sprite[g_nlist[0]].alt.right;
@@ -10567,6 +11057,14 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+
+				if (IsBadSpriteIndex(g_nlist[0], ev[1]))
+				{
+					g_dglos.g_returnint = -1;
+					return 0;
+				}
+
+				
 				change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].alt.bottom);
 
 				g_dglos.g_returnint = g_sprite[g_nlist[0]].alt.bottom;
@@ -10631,7 +11129,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			h = &h[2];
 			strip_beginning_spaces(h);
 			var_equals(ev[1], ev[3], '+', script, h);
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10642,7 +11140,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			h = &h[2];
 			strip_beginning_spaces(h);
 			var_equals(ev[1], ev[3], '*', script, h);
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10657,7 +11155,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 			var_equals(ev[1], ev[3], '-', script, h);
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10671,7 +11169,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 			var_equals(ev[1], ev[3], '/', script, h);
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10684,11 +11182,12 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 			var_equals(ev[1], ev[3], '*', script, h);
 
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 		if (compare(ev[1], (char*)"external"))
 		{
+
 			h = &h[strlen(ev[1])];
 			int32 p[20] = {2,2,1,1,1,1,1,1,1,1};
 			for (int i = 0; i < 10; i++) slist[i][0] = 0;
@@ -10696,6 +11195,13 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			if (slist[0][0] && slist[1][0])
 			{
 				int myscript1 = load_script(slist[0],g_scriptInstance[script]->sprite, false);
+				
+#ifdef _DEBUG
+
+				LogMsg("Running EXTERNAL from script %d, spawned script %d (owned by sprite %d)", script, myscript1,
+					g_scriptInstance[script]->sprite);
+#endif
+
 				if (myscript1 == 0)
 				{
 					LogMsg("Error:  Couldn't find %s.c (for procedure %s)", slist[0], slist[1]);
@@ -10721,7 +11227,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 					kill_script(myscript1);
 				}
 			}    
-			strcpy(pLineIn, h);  
+			strcpy_safe(pLineIn, h);  
 			return(0);
 		}
 
@@ -10778,8 +11284,8 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 						break;
 					}
 				}
-				LogMsg("ERROR:  Procedure void %s( void ); not found in script %s. (word 2 was %s) ", line,
-					ev[2], g_scriptInstance[myscript]->name); 
+				LogMsg("ERROR:  Procedure void %s not found in script %s.", 
+					ev[1], g_scriptInstance[myscript]->name);
 				kill_script(myscript);          
 			}
 
@@ -10830,35 +11336,16 @@ void run_script (int script)
 
 	while(read_next_line(script, line))
 	{
-		while(1)
+
+	while(1)
 		{
-
-			/*
-			if (ScriptEOF(script)) 
-			{
-				if (g_scriptInstance[script]->proc_return != 0)
-				{
-					run_script(g_scriptInstance[script]->proc_return);
-					kill_script(script);
-				}
-				return;
-			}
-			*/
-#ifdef _DEBUG
-			if (g_scriptInstance[script]->current >236)
-			{
-				LogMsg("about to hit the make_global_int(&exp) that strcpy messes up in strip_beginning_spaces");
-			}
-			
-#endif
-
-			strip_beginning_spaces(line);
+            strip_beginning_spaces(line);
 			if (compare(line, "\n")) break;
 
 
-
 			result = process_line(script,line, false);
-			if (result == 3) 
+
+            if (result == 3)
 			{
 redo:
 				if (!read_next_line(script, line))
@@ -10892,7 +11379,6 @@ crappa:
 
 			if (result == 4) 
 			{
-				//   Msg("Was sent %s, length %d", line, strlen(line));
 
 				if (strlen(line) < 2)
 				{
@@ -10907,6 +11393,7 @@ redo2:
 					if (compare(line, "\n")) goto redo2;
 					if (compare(line, "\\\\")) goto redo2;
 				}
+
 				result = process_line(script,line, true);
 			}
 
@@ -11133,7 +11620,7 @@ void text_draw(int h)
     if (g_sprite[h].damage == -1)
     {
         //redink1 fix for : and '%deee bugs?
-        strcpy(crap, g_sprite[h].text);
+        strcpy_safe(crap, g_sprite[h].text);
         //sprintf(crap, "%s", spr[h].text);
         cr = &crap[0];
         color = 14;
@@ -11458,6 +11945,9 @@ void check_joystick(void)
 
         if (g_dglos.g_wait_for_button.button != 0)
         {
+#ifdef _DEBUG
+			LogMsg("Running wait for button script %d", g_dglos.g_wait_for_button.script);
+#endif
             *presult = g_dglos.g_wait_for_button.button;
             g_dglos.g_wait_for_button.active = false;
             run_script(g_dglos.g_wait_for_button.script);
@@ -13877,8 +14367,21 @@ void human_brain(int h)
 
     if (g_dglos.g_playerInfo.push_active) if (g_dglos.g_playerInfo.push_timer + 600 < g_dglos.g_dinkTick)
     {
-        g_sprite[h].seq = g_dglos.mDinkBasePush+g_sprite[h].dir;
-        g_sprite[h].frame = 1;
+
+
+		
+		if (g_sprite[h].seq != g_dglos.mDinkBasePush + g_sprite[h].dir)
+		{
+			g_sprite[h].seq = g_dglos.mDinkBasePush + g_sprite[h].dir;
+			g_sprite[h].frame = 1; //redid this so frame is only changed if the seq also changed, this fixes graphical glitch in 
+			//Charlie's DMOD.  Although I wonder if the true problem is push_active shouldn't be on every frame or something
+		}
+       
+		//old way was to just always set frame to 1
+		//g_sprite[h].seq = g_dglos.mDinkBasePush + g_sprite[h].dir;
+		//g_sprite[h].frame = 1;
+		
+      
         g_sprite[h].nocontrol = true;
         //play.push_active = false;
         run_through_tag_list_push(h);
@@ -15580,8 +16083,9 @@ void process_item( void )
         virt = ((g_dglos.g_playerInfo.curitem-1) / 4);
 
         //choosing weapon/item
+		if (sjoy.button[1] || (GetApp()->GetUsingTouchScreen() && sjoy.button[4]))
 
-        if (sjoy.button[1]|| sjoy.button[4])
+        //if (sjoy.button[1]|| sjoy.button[4])
         {
             if (g_dglos.g_playerInfo.g_itemData[g_dglos.g_playerInfo.curitem].active)
             {
@@ -15653,8 +16157,10 @@ void process_item( void )
         hor = (g_dglos.g_playerInfo.curitem - (((g_dglos.g_playerInfo.curitem-1) / 2) * 2));
         virt = ((g_dglos.g_playerInfo.curitem-1) / 2);
 
-        if (sjoy.button[1]|| sjoy.button[4])
+		if (sjoy.button[1] || (GetApp()->GetUsingTouchScreen() && sjoy.button[4]))
+		//if (sjoy.button[1] || sjoy.button[4])
         {
+			
             if (g_dglos.g_playerInfo.g_MagicData[g_dglos.g_playerInfo.curitem].active)
             {
                 //arm magic
@@ -15734,7 +16240,7 @@ void process_item( void )
     // process_callbacks_special();
     flip_it(); 
 
-    if (sjoy.button[1] || sjoy.button[4])
+    if ( (sjoy.button[1] && GetApp()->GetUsingTouchScreen()) || sjoy.button[4])
     {
         SoundPlayEffect(17, 22050,0,0,0);
         g_itemScreenActive = false;
@@ -16003,7 +16509,8 @@ animate:
 		if (g_dglos.flub_mode != -500)
 		{
 #ifdef _DEBUG
-			LogMsg("move result is %d", g_dglos.flub_mode);
+			//if (g_sprite[h].brain == 1)
+			//LogMsg("move result is %d", g_dglos.flub_mode);
 #endif
 			move_result = g_dglos.flub_mode;
 			g_dglos.flub_mode = -500;
@@ -16020,6 +16527,12 @@ animate:
 			//reverse instructions
 			if (g_sprite[h].seq > 0)
 			{
+
+#ifdef _DEBUG
+			/*	if (g_sprite[h].brain == 1)
+				LogMsg("REV Animate: Brain %d, sprite %d, seq %d", g_sprite[h].brain, h, g_sprite[h].seq);*/
+#endif
+
 				if (g_sprite[h].frame < 1)
 				{
 					// new anim
@@ -16083,10 +16596,31 @@ animate:
 		} else
 		{
 
+#ifdef _DEBUG
+			/*if (g_sprite[h].brain == 1)
+			{
+
+				LogMsg("PLAYER DATA: Brain %d, sprite %d, seq %d frame: %d pframe: %d delay: %d frame_delay: %d", g_sprite[h].brain,
+					h, g_sprite[h].seq, g_sprite[h].frame, g_sprite[h].pframe,
+					g_sprite[h].delay, g_sprite[h].frame_delay);
+			}*/
+
+#endif
+
+			
 			if (g_sprite[h].seq > 0) if (g_sprite[h].picfreeze == 0)
 			{
-				if (g_sprite[h].frame < 1)
+#ifdef _DEBUG
+				/*if (g_sprite[h].brain == 1)
 				{
+					LogMsg("Animate: Brain %d, sprite %d, seq %d frame: %d pframe: %d delay: %d frame_delay: %d", g_sprite[h].brain, 
+						h, g_sprite[h].seq, g_sprite[h].frame, g_sprite[h].pframe,
+						g_sprite[h].delay, g_sprite[h].frame_delay);
+				}*/
+#endif
+					if (g_sprite[h].frame < 1)
+				{
+	
 					// new anim
 					g_sprite[h].pseq = g_sprite[h].seq;
 					g_sprite[h].pframe = 1;
@@ -16102,7 +16636,22 @@ animate:
 
 					if (g_dglos.g_dinkTick > g_sprite[h].delay)
 					{
+
+		
 						g_sprite[h].frame++;
+
+#ifdef _DEBUG
+						/*if (g_sprite[h].brain == 1)
+						{
+
+							LogMsg("Advacing frame to %d.  Last framedata: %d, new frame data: %d", g_sprite[h].frame,
+								g_dglos.g_seq[g_sprite[h].seq].frame[g_sprite[h].frame-1],
+								g_dglos.g_seq[g_sprite[h].seq].frame[g_sprite[h].frame]);
+						}*/
+
+#endif
+
+						
 						if (g_sprite[h].frame_delay != 0) g_sprite[h].delay = g_dglos.g_dinkTick + g_sprite[h].frame_delay; else
 
 							g_sprite[h].delay = (g_dglos.g_dinkTick + g_dglos.g_seq[g_sprite[h].seq].delay[g_sprite[h].frame]);
@@ -16112,6 +16661,7 @@ animate:
 
 						if (g_dglos.g_seq[g_sprite[h].seq].frame[g_sprite[h].frame] == -1)
 						{
+
 							g_sprite[h].frame = 1;
 							g_sprite[h].pseq = g_sprite[h].seq;
 							g_sprite[h].pframe = g_sprite[h].frame;
@@ -16142,6 +16692,7 @@ animate:
 								if (g_dglos.g_playerInfo.push_dir == 4) if (sjoy.left) g_dglos.g_playerInfo.push_active = true;
 								if (g_dglos.g_playerInfo.push_dir == 6) if (sjoy.right) g_dglos.g_playerInfo.push_active = true;
 								if (g_dglos.g_playerInfo.push_dir == 8) if (sjoy.up) g_dglos.g_playerInfo.push_active = true;
+								
 								goto past;
 							}
 						}
@@ -16204,7 +16755,7 @@ void SetupFirstScript()
 
 	g_sprite[crap2].hard = 1;
 	g_sprite[crap2].noclip = 1;
-	strcpy(g_sprite[crap2].text, g_dglos.dversion_string);
+	strcpy_safe(g_sprite[crap2].text, g_dglos.dversion_string);
 
 	g_sprite[crap2].damage = -1;
 	g_sprite[crap2].owner = 1000;
@@ -16836,13 +17387,13 @@ void SetDefaultVars(bool bFullClear)
 		//memset(g_id, '\0', sizeof(idata) * max_idata);
 		memset(g_dglos.g_seq, 0, sizeof(sequence) * C_MAX_SEQUENCES);
 		kill_all_vars(); //it zero's out the player struct
-		strcpy(g_dglos.current_map, "map.dat");
-		strcpy(g_dglos.current_dat,"dink.dat");
+		strcpy_safe(g_dglos.current_map, "map.dat");
+		strcpy_safe(g_dglos.current_dat,"dink.dat");
 		memset(&short_play, 0, sizeof(player_short_info));
 
 		//redink1 code for version change
-		strcpy(g_dglos.dversion_string, "v1.10");
-		strcpy(g_dglos.save_game_info, "Level &level");
+		strcpy_safe(g_dglos.dversion_string, "v1.10");
+		strcpy_safe(g_dglos.save_game_info, "Level &level");
 		g_dglos.g_curPicIndex = 1;
 		//GetBaseApp()->SetGameTick(0); //can cause problems .. don't do it here
 		g_dglos.time_start = GetBaseApp()->GetGameTick();
@@ -16933,6 +17484,26 @@ string GetDMODRootPath(string *pDMODNameOutOrNull)
 			if (parms.size() > i + 1)
 			{
 				dmodpath = parms[i + 1]; i++;
+				if (dmodpath[0] == '\"')
+				{
+					//special handling for quotes
+
+					dmodpath = ""; //try again
+
+					for (; i < parms.size(); i++)
+					{
+						if (!dmodpath.empty())
+						{
+							dmodpath += " ";
+						}
+						dmodpath += parms[i];
+					}
+
+					//pull just the part we want out
+					dmodpath = SeparateStringSTL(dmodpath, 1, '\"');
+
+				}
+
 
 				if (!refdir.empty())
 				{
@@ -16947,6 +17518,7 @@ string GetDMODRootPath(string *pDMODNameOutOrNull)
 					}
 				}
 				StringReplace("\\", "/", dmodpath);
+			
 				if (dmodpath[dmodpath.size() - 1] != '/') dmodpath += '/'; //need a trailing slash
 
 				int len = dmodpath.find_last_of("/", dmodpath.length() - 2);
@@ -17348,6 +17920,20 @@ bool IsCorruptedSeq(int seq)
 
 //send in 1000*60 and all images not used in the last one minute will be destroyed
 
+
+void UnloadAllGraphics()
+{
+	for (int i=0; i < C_MAX_SPRITES; i++)
+	{
+		SAFE_DELETE(g_pSpriteSurface[i]);
+	}
+
+	for (int i = 1; i < C_TILE_SCREEN_COUNT; i++)
+	{
+		SAFE_DELETE(g_tileScreens[i]);
+	}
+		
+}
 void DinkUnloadUnusedGraphicsByUsageTime(unsigned int timeMS)
 {
 	
@@ -17358,13 +17944,20 @@ void DinkUnloadUnusedGraphicsByUsageTime(unsigned int timeMS)
 	{
 			for (int g=0; g < g_dglos.g_seq[i].last; g++)
 			{
-				//assert(g_dglos.g_picInfo[g_dglos.g_seq[i].frame[1]+g].pSurface);
-				if (g_pSpriteSurface[g_dglos.g_seq[i].frame[1] + g])
+				int picIndex = g_dglos.g_seq[i].frame[1] + g;
+				if (picIndex < C_MAX_SPRITES) //avoid crash
 				{
-					if (g_pSpriteSurface[g_dglos.g_seq[i].frame[1] + g]->m_gameTickOfLastUse+timeMS <= tickMS)
+					if (g_pSpriteSurface[picIndex])
 					{
-						SAFE_DELETE(g_pSpriteSurface[g_dglos.g_seq[i].frame[1] + g]);
+						if (g_pSpriteSurface[picIndex]->m_gameTickOfLastUse + timeMS <= tickMS)
+						{
+							SAFE_DELETE(g_pSpriteSurface[picIndex]);
+						}
 					}
+				}
+				else
+				{
+					LogError("Avoided crash by not trying to free illegal picindex %d", picIndex);
 				}
 			}
 	}
@@ -17379,6 +17972,7 @@ void DinkUnloadUnusedGraphicsByUsageTime(unsigned int timeMS)
 			}
 		}
 	}
+
 }
 
 void ProcessGraphicGarbageCollection()
@@ -17733,8 +18327,8 @@ bool SaveState(string const &path, bool bSyncSaves)
 
 	if (bOk)
 	{
-		int dinkGloSize = sizeof(DinkGlobalsStatic);
-		fwrite(&dinkGloSize, 1, sizeof(int), fp);
+		int32 dinkGloSize = sizeof(DinkGlobalsStatic);
+		fwrite(&dinkGloSize, 1, sizeof(int32), fp);
 		
 		fwrite(&g_dglos, 1, dinkGloSize, fp);
 	}
@@ -17880,6 +18474,9 @@ bool LoadState(string const &path, bool bLoadPathsOnly)
 		return false;
 	}
 
+	DefragUsedPicIDs();
+	
+
 	if ( g_dglos.g_gameMode > 2  || g_dglos.m_bRenderBackgroundOnLoad)
 	{
 		if (g_dglos.m_bRenderBackgroundOnLoad && g_sprite[1].brain != 13)
@@ -17926,6 +18523,13 @@ void DinkModLifeMax(int mod)
 {
 	*plifemax += mod;
 	*plife += mod;
+	GetAudioManager()->Play("dink/sound/secret.wav");
+}
+
+void DinkUnfreezePlayer()
+{
+
+	g_sprite[1].freeze = 0;
 	GetAudioManager()->Play("dink/sound/secret.wav");
 }
 

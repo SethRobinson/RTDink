@@ -10,8 +10,8 @@ Thanks for installing Dink Smallwood HD, here are some features of this version:
 
 Controls (or use a gamepad):
 
-F4 - Quick save
-F10 - Quick load
+F5 - Quick save
+F9 - Quick load
 Control - Attack
 Arrow keys - Movement
 Space - Talk
@@ -23,6 +23,7 @@ Drag on window borders - scale the play area (when windowed)
 Alt-Enter - Toggle between windowed fullscreen
 (Hold) Tab - Turbo mode, entire game runs 3x speed
 (Hold) Shift + Tab - Super Turbo mode, entire game runs up to 6x speed
+(Hold) Shift + Tab + Ctrl - Ludicrous Speed mode, entire game runs up to 18x speed
 
 Looking for the Dink files? They are installed to %USERPROFILE%\AppData\Local\DinkSmallwoodHD by default.
 

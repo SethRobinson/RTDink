@@ -98,6 +98,12 @@ void DebugMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity se
 		}
 	}
 
+	if (pEntClicked->GetName() == "unfreeze")
+	{
+		DinkUnfreezePlayer();
+		ShowQuickMessage("Main player unfrozen by force");
+	}
+
 	if (pEntClicked->GetName() == "debug_mode")
 	{
 		
@@ -158,6 +164,10 @@ if (GetApp()->GetCheatsEnabled() || g_script_debug_mode)
 	pButtonEntity = CreateTextButtonEntity(pBG, "ghost_walk", x, y, "Ghost walk toggle"); y += ySpacer;
 	pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&DebugMenuOnSelect);
 
+	pButtonEntity = CreateTextButtonEntity(pBG, "unfreeze", x, y, "Unfreeze Player"); y += ySpacer;
+	pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&DebugMenuOnSelect);
+
+	
 }
 	pButtonEntity = CreateTextButtonEntity(pBG, "log", x, y, "View log"); y += ySpacer;
 	pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&DebugMenuOnSelect);
