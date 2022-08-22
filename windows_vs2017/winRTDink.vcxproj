@@ -325,7 +325,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\source;..\..\shared;..\..\shared\win\;..\..\shared\util\boost;..\..\shared\ClanLib-2.0\Sources;..\..\shared\win\include;..\..\shared\FliteTTS\include;..\..\shared\Irrlicht\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;C_GL_MODE;_HAS_ITERATOR_DEBUGGING=0;_SECURE_SCL=0;_NO_DEBUG_HEAP=1;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_RUNS_IN_BACKGROUND;RT_IPV6;RT_PNG_SUPPORT;RT_CUSTOM_LOGMSG;RT_USE_LIBCURL;_WIN32_WINNT=0x06030000;WINVER=0x06030000;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;C_GL_MODE;_HAS_ITERATOR_DEBUGGING=0;_SECURE_SCL=0;_NO_DEBUG_HEAP=1;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_RUNS_IN_BACKGROUND;RT_IPV6;RT_PNG_SUPPORT;RT_CUSTOM_LOGMSG;RT_USE_LIBCURL;_WIN32_WINNT=0x06030000;WINVER=0x06030000;C_TREAT_MOUSE_AS_TOUCH_REMOVETHISPARTTOUSEIT;RT_DISABLE_WINDOWS_MENU;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BufferSecurityCheck>true</BufferSecurityCheck>
@@ -402,7 +402,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4267;4244;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_IPV6;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;C_GL_MODE;RT_USE_LIBCURL;_WIN32_WINNT=0x0601;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_IPV6;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;C_GL_MODE;RT_USE_LIBCURL;_WIN32_WINNT=0x0601;RT_DISABLE_WINDOWS_MENU;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;fmod_vc.lib;zlibwapi.lib;ws2_32.lib;dinput8.lib;dxguid.lib;libcurl.dll.a;%(AdditionalDependencies)</AdditionalDependencies>
@@ -428,7 +428,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4267;4244;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_IPV6;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;C_GL_MODE;RT_USE_LIBCURL;RT_IS_BETA=1;_WIN32_WINNT=0x0601;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_IPV6;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;C_GL_MODE;RT_USE_LIBCURL;RT_IS_BETA=1;_WIN32_WINNT=0x0601;RT_DISABLE_WINDOWS_MENU;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;fmod_vc.lib;zlibwapi.lib;ws2_32.lib;dinput8.lib;dxguid.lib;libcurl.dll.a;%(AdditionalDependencies)</AdditionalDependencies>
@@ -449,18 +449,6 @@
     <ClCompile Include="..\..\shared\Ad\AdProvider.cpp" />
     <ClCompile Include="..\..\shared\Ad\AdProviderChartBoost.cpp" />
     <ClCompile Include="..\..\shared\android\AndroidUtils.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Common Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Common Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Common Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Common Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug GL|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug GL|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release GL|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release GL|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\shared\android\v2_src\cpp\AndroidApp.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Common Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Common Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Common Release|Win32'">true</ExcludedFromBuild>
@@ -2030,7 +2018,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|x64'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\shared\Network\NetHTTP.cpp" />
-    <ClCompile Include="..\..\shared\Network\NetHTTP_libCURL.cpp" />
+    <ClCompile Include="..\..\shared\Network\NetHTTP_libCURL.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Common Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release GL|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug GL|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Common Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\shared\Network\NetSocket.cpp" />
     <ClCompile Include="..\..\shared\Network\NetUtils.cpp" />
     <ClCompile Include="..\..\shared\PlatformPrecomp.cpp">
@@ -2477,6 +2471,7 @@
     <ClCompile Include="..\source\Component\ActionButtonComponent.cpp" />
     <ClCompile Include="..\source\Component\CursorComponent.cpp" />
     <ClCompile Include="..\source\Component\DragControlComponent.cpp" />
+    <ClCompile Include="..\source\Component\EmulatedPointerComponent.cpp" />
     <ClCompile Include="..\source\Component\FPSControlComponent.cpp" />
     <ClCompile Include="..\source\Component\InventoryComponent.cpp" />
     <ClCompile Include="..\source\dink\dink.cpp" />
@@ -2609,12 +2604,14 @@
     <ClInclude Include="..\..\shared\Gamepad\Gamepad60Beat.h" />
     <ClInclude Include="..\..\shared\Gamepad\GamepadDirectX.h" />
     <ClInclude Include="..\..\shared\Gamepad\GamepadiCade.h" />
+    <ClInclude Include="..\..\shared\Gamepad\GamepadIOS.h" />
     <ClInclude Include="..\..\shared\Gamepad\GamepadManager.h" />
     <ClInclude Include="..\..\shared\Gamepad\GamepadProvider.h" />
     <ClInclude Include="..\..\shared\Gamepad\GamepadProvider60Beat.h" />
     <ClInclude Include="..\..\shared\Gamepad\GamepadProvider60BeatNative.h" />
     <ClInclude Include="..\..\shared\Gamepad\GamepadProviderDirectX.h" />
     <ClInclude Include="..\..\shared\Gamepad\GamepadProvideriCade.h" />
+    <ClInclude Include="..\..\shared\Gamepad\GamepadProviderIOS.h" />
     <ClInclude Include="..\..\shared\Gamepad\GamepadProviderXInput.h" />
     <ClInclude Include="..\..\shared\Gamepad\GamepadXInput.h" />
     <ClInclude Include="..\..\shared\GUI\RTFont.h" />
@@ -2713,6 +2710,7 @@
     <ClInclude Include="..\source\Component\ActionButtonComponent.h" />
     <ClInclude Include="..\source\Component\CursorComponent.h" />
     <ClInclude Include="..\source\Component\DragControlComponent.h" />
+    <ClInclude Include="..\source\Component\EmulatedPointerComponent.h" />
     <ClInclude Include="..\source\Component\FPSControlComponent.h" />
     <ClInclude Include="..\source\Component\InventoryComponent.h" />
     <ClInclude Include="..\source\dink\dink.h" />
@@ -2757,14 +2755,6 @@
     <Xml Include="..\android\build.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\shared\android\v2_src\java\BillingReceiver.java" />
-    <None Include="..\..\shared\android\v2_src\java\BillingService.java" />
-    <None Include="..\..\shared\android\v2_src\java\Consts.java" />
-    <None Include="..\..\shared\android\v2_src\java\PurchaseObserver.java" />
-    <None Include="..\..\shared\android\v2_src\java\ResponseHandler.java" />
-    <None Include="..\..\shared\android\v2_src\java\Security.java" />
-    <None Include="..\..\shared\android\v2_src\java\SharedActivity.java" />
-    <None Include="..\..\shared\android\v2_src\java\SharedMultiTouchInput.java" />
     <CustomBuild Include="..\..\shared\Audio\AudioManagerOS.mm">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Common Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Common Release|x64'">true</ExcludedFromBuild>
@@ -2779,8 +2769,10 @@
     <None Include="..\..\shared\flash\app\flash\com\adobe\utils\AGALMiniAssembler.as" />
     <None Include="..\..\shared\flash\app\flash\com\adobe\utils\PerspectiveMatrix3D.as" />
     <None Include="..\..\shared\Gamepad\Gamepad60Beat.mm" />
+    <None Include="..\..\shared\Gamepad\GamepadIOS.mm" />
     <None Include="..\..\shared\Gamepad\GamepadProvider60Beat.mm" />
     <None Include="..\..\shared\Gamepad\GamepadProvider60BeatNative.mm" />
+    <None Include="..\..\shared\Gamepad\GamepadProviderIOS.mm" />
     <None Include="..\..\shared\html5\SharedJSLIB.js" />
     <None Include="..\..\shared\iOS\app\EAGLView.mm" />
     <None Include="..\..\shared\iOS\app\main.mm" />
@@ -2809,6 +2801,7 @@
     <None Include="..\android\jni\Application.mk" />
     <None Include="..\android\src\Main.java" />
     <None Include="..\android\ViewLogDefaultPhone.bat" />
+    <None Include="..\Entitlements.plist" />
     <None Include="..\flash\app_info_setup.bat" />
     <None Include="..\flash\BuildDebug.bat" />
     <None Include="..\flash\BuildRelease.bat" />

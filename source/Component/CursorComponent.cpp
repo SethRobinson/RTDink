@@ -49,7 +49,6 @@ void CursorComponent::OnKillingControls(VariantList *pVList)
 
 void CursorComponent::OnUpdatePos(CL_Vec2f vPos)
 {
-	//LogMsg("Got %s", PrintVector2(vPos).c_str());
 	DinkSetCursorPosition(NativeToDinkCoords(vPos));
 }
 
@@ -69,8 +68,6 @@ void CursorComponent::OnInput( VariantList *pVList )
 	//0 = message type, 1 = parent coordinate offset
 	CL_Vec2f pt = pVList->Get(1).GetVector2();
 	//pt += GetAlignmentOffset(*m_pSize2d, eAlignment(*m_pAlignment));
-
-
 
 	if (IsDesktop() || (GetEmulatedPlatformID() == PLATFORM_ID_HTML5 && !GetApp()->GetUsingTouchScreen()) )
 	{
@@ -104,6 +101,7 @@ void CursorComponent::OnInput( VariantList *pVList )
 			break;
 		case MESSAGE_TYPE_GUI_CLICK_MOVE:
 		case MESSAGE_TYPE_GUI_CLICK_MOVE_RAW:
+			
 			OnUpdatePos(pt);
 			break;
 

@@ -23,6 +23,7 @@
 #include "Gamepad/GamepadProvideriCade.h"
 #include "GUI/PopUpMenu.h"
 #include "GUI/PauseMenu.h"
+#include "Component/EmulatedPointerComponent.h"
 
 
 #ifdef PLATFORM_HTML5
@@ -78,6 +79,7 @@ GamepadManager * GetGamepadManager() {return &g_gamepadManager;}
 
   //AudioManagerDenshion g_audioManager;
 
+  #include "Gamepad/GamepadProviderIOS.h"
   #include "Audio/AudioManagerFMODStudio.h"
   AudioManagerFMOD g_audioManager;
 #else
@@ -186,8 +188,6 @@ void UpdateTitleBar()
 
 const char * GetAppName()
 {
-
-
 	return "Dink Smallwood HD";
 };
 
@@ -205,17 +205,17 @@ App::App()
 	m_bDidPostInit = false;
 	m_bHasDMODSupport = true;
 	//for mobiles
-	m_version = 1.97f;
-	m_versionString = "V1.97";
+	m_version = 1.99f;
+	m_versionString = "V1.99";
 	m_build = 1;
 	m_bCheatsEnabled = false;
 
 	//for Win/mac
 	m_desktopVersion = m_version;
 	m_desktopVersionString = m_versionString; 
-	m_desktopBuild = 8;
+	m_desktopBuild = 1;
 	m_bForceAspectRatio = true;
-	
+
 }
 
 App::~App()
@@ -247,6 +247,7 @@ bool App::GetForceAspectRatio()
 bool App::UseClassicEscapeMenu()
 {
 
+	/*
 	if (GetEmulatedPlatformID() == PLATFORM_ID_HTML5 && !GetApp()->GetUsingTouchScreen())
 	{
 		return true;
@@ -256,8 +257,9 @@ bool App::UseClassicEscapeMenu()
 	{
 		return true;
 	}
-
-	return false;
+	*/
+	
+	return true;
 }
 
 void App::OniCadeDisconnected(GamepadProvider *pProvider)
@@ -349,7 +351,6 @@ bool App::Init()
 			SetupFakePrimaryScreenSize(scaleToX,scaleToY); //game will think it's this size, and will be scaled up
 	}
 
-
 	//L_ParticleSystem::init(2000);
 	SetInputMode(INPUT_MODE_SEPARATE_MOVE_TOUCHES); //this game has so much move touching, I handle them separately for performance reasons
 
@@ -363,18 +364,16 @@ bool App::Init()
 		return false;
 	}
 
-
 	LogMsg("Initializing Dink HD %s", GetVersionString().c_str());
 	UpdateTitleBar();
 	//add fake parms
 
-
 #ifdef PLATFORM_HTML5
+	
 	
 	char *pStringTemp = JLIB_GetURL();
 
-	string 
-		p = pStringTemp;
+	string crap = pStringTemp;
 	free(pStringTemp); //emscripten thing, trust me
 
 	int n = crap.find_last_of('?');
@@ -389,7 +388,7 @@ bool App::Init()
 		string final = crap.substr(n + 1, crap.length() - n);
 		GetBaseApp()->AddCommandLineParm(final);
 	}
-
+	
 
 #endif
 	//string crap = "http://www.rtsoft.com/web/dink/?-game http://www.rtsoft.com/web/srchmili.dmod";
@@ -428,8 +427,6 @@ bool App::Init()
 	pProvider->SetupInfo("", ""); //Dink HD iOS 
 
 #endif
-	
-	
 	
 	m_adManager.AddProvider(pProvider);
 	pProvider->CacheShowInterstitial();
@@ -555,21 +552,17 @@ bool App::Init()
 	m_varDB.Load("save.dat", &bFileExisted);
 	
 	GetApp()->GetVarWithDefault("smoothing",uint32(0))->GetUINT32();
-
 	GetApp()->GetVarWithDefault("buttons",uint32(0));
-
 	GetApp()->GetVarWithDefault("music_vol",0.7f)->GetFloat();
 	GetApp()->GetVarWithDefault("gui_transparency",0.35f)->GetFloat();
-
-  
 	GetApp()->GetVarWithDefault("checkerboard_fix", uint32(1)); //default to on for Windows
-
 
 	#ifdef PLATFORM_WINDOWS
 	
 	//XInput is newer and works better, doesn't require that the controller already be plugged in at start
+	//XInput MUST be added first!
 	GamepadProviderXInput* pTemp = new GamepadProviderXInput();
-	pTemp->PreallocateControllersEvenIfMissing(true);
+	//pTemp->PreallocateControllersEvenIfMissing(true); //no longer need this
 	GetGamepadManager()->AddProvider(pTemp); //use XInput joysticks
 
 	//do another scan for the older style directx devices, it will ignore any sticks that are already initialized as XInput
@@ -578,27 +571,28 @@ bool App::Init()
 	GetGamepadManager()->AddProvider(pTempDirectX); //use directx joysticks
 	#endif
 
-#ifdef RT_MOGA_ENABLED
-		GetGamepadManager()->AddProvider( new GamepadProviderMoga);
-		GetBaseApp()->SetAllowScreenDimming(false);
-#endif
-
-	if (GetVar("check_icade")->GetUINT32() != 0)
+    if (GetVar("check_icade")->GetUINT32() != 0)
 	{
 		AddIcadeProvider();
 	}
 
-#if defined(PLATFORM_IOS) && defined(RT_IOS_60BEAT_GAMEPAD_SUPPORT)
-	//startup the 60beat gamepad stuff.. really, we should only do this if they've checked to use it in options
-	//or such because their driver may slow us down.. unsure
-	if (GetVar("check_60beat")->GetUINT32() != 0)
-	{
-		//startup the 60beat gamepad stuff
-		GetGamepadManager()->AddProvider(new GamepadProvider60Beat);
-		GetBaseApp()->SetAllowScreenDimming(false);
-	}
+    
+#if defined(PLATFORM_IOS)
+        GetGamepadManager()->AddProvider(new GamepadProviderIOS);
+        //GetBaseApp()->SetAllowScreenDimming(false); //I don't think this matters anymore,
+        //the controller support will automatically handle that
 #endif
+    
+    GetGamepadManager()->m_sig_gamepad_connected.connect(1, boost::bind(&App::OnGamepadConnected, this, _1));
+    GetGamepadManager()->m_sig_gamepad_disconnected.connect(1, boost::bind(&App::OnGamepadDisconnected, this, _1));
 
+
+#ifdef _DEBUG
+
+	GetApp()->SetCheatsEnabled(true);
+	g_script_debug_mode = true;
+#endif
+	
 	if (GetEmulatedPlatformID() == PLATFORM_ID_WINDOWS || GetEmulatedPlatformID() == PLATFORM_ID_OSX || GetEmulatedPlatformID() == PLATFORM_ID_HTML5)
 	{
 		//should we draw that onscreen GUI stuff for Dink?	
@@ -695,11 +689,21 @@ bool App::Init()
 	return true;
 }
 
+
+void App::OnGamepadConnected(Gamepad* pPad)
+{
+	LogMsg("Pad was connected");
+	RemoveAndAttachAllAvailableGamepads();
+}
+
+void App::OnGamepadDisconnected(eGamepadID id)
+{
+	LogMsg("Pad was disconnected");
+}
+
 void App::OnPreEnterBackground(VariantList *pVList)
 {
 	SaveAllData();
-
-
 }
 
 void App::OnExitApp(VariantList *pVarList)
@@ -729,11 +733,13 @@ void App::Kill()
 void App::RemoveAndAttachAllAvailableGamepads()
 {
 	ArcadeInputComponent *pComp = (ArcadeInputComponent*) GetEntityRoot()->GetComponentByName("ArcadeInput");
+	if (!pComp) return;
+	
 	assert(pComp);
 
 	for (int i=0; i < GetGamepadManager()->GetGamepadCount(); i++)
 	{
-		Gamepad *pPad = GetGamepadManager()->GetGamepad((eGamepadID)i);
+		Gamepad *pPad = GetGamepadManager()->GetGamepad(i);
 		pPad->ConnectToArcadeComponent(pComp, true, true);
 
 		//if we cared about the analog sticks too, we'd do this:
@@ -762,6 +768,7 @@ void App::AddDroidKeyboardKeys()
 
 	//I think the ASWZ binding thing is for the control pad on the xperia play??
 
+	/*
 	AddKeyBinding(pComp, "KeyboardLeft",'A', VIRTUAL_KEY_DIR_LEFT);
 	AddKeyBinding(pComp, "KeyboardRight",'S', VIRTUAL_KEY_DIR_RIGHT);
 	AddKeyBinding(pComp, "KeyboardUp", 'W', VIRTUAL_KEY_DIR_UP);
@@ -770,9 +777,10 @@ void App::AddDroidKeyboardKeys()
 
 	AddKeyBinding(pComp, "KeyboardInventory", 'I', VIRTUAL_KEY_GAME_INVENTORY);
 	//AddKeyBinding(pComp, "KeyboardAltTalk", 13, VIRTUAL_KEY_GAME_TALK); //not sure what this was for, special android key?  It caused ineventory to open AND dink to talk so was bad I think
-	AddKeyBinding(pComp, "KeyboardFire", VIRTUAL_KEY_DIR_CENTER, VIRTUAL_KEY_GAME_FIRE);
+	//AddKeyBinding(pComp, "KeyboardFire", VIRTUAL_KEY_DIR_CENTER, VIRTUAL_KEY_GAME_FIRE);
 	AddKeyBinding(pComp, "KeyboardFire2", 'X', VIRTUAL_KEY_GAME_FIRE);
-//	AddKeyBinding(pComp, "KeyboardAltFire", VIRTUAL_KEY_SHIFT, VIRTUAL_KEY_GAME_FIRE);
+	AddKeyBinding(pComp, "KeyboardAltFire", VIRTUAL_KEY_SHIFT, VIRTUAL_KEY_GAME_FIRE);
+	*/
 	}
 }
 
@@ -786,6 +794,8 @@ void App::Update()
 	{
 		m_bDidPostInit = true;
 		m_special = GetSystemData() != C_PIRATED_NO;
+		
+		
 		
 		//build a GUI node
 		Entity *pGUIEnt = GetEntityRoot()->AddEntity(new Entity("GUI"));
@@ -817,9 +827,9 @@ void App::Update()
 		AddKeyBinding(pComp, "Down", VIRTUAL_KEY_DIR_DOWN, VIRTUAL_KEY_DIR_DOWN);
 		AddKeyBinding(pComp, "Talk", ' ', VIRTUAL_KEY_GAME_TALK);
 
-		AddKeyBinding(pComp, "GamePadInventory", VIRTUAL_DPAD_SELECT, VIRTUAL_KEY_GAME_INVENTORY);
+		AddKeyBinding(pComp, "GamePadInventory", VIRTUAL_DPAD_SELECT, VIRTUAL_KEY_BACK);
 		AddKeyBinding(pComp, "GamePadInventory2", VIRTUAL_DPAD_BUTTON_UP, VIRTUAL_KEY_GAME_INVENTORY);
-		AddKeyBinding(pComp, "GamePadEscape", VIRTUAL_DPAD_START, VIRTUAL_KEY_BACK, true);
+		AddKeyBinding(pComp, "GamePadEscape", VIRTUAL_DPAD_START, VIRTUAL_KEY_F1);
 		AddKeyBinding(pComp, "GamePadFire", VIRTUAL_DPAD_BUTTON_DOWN, VIRTUAL_KEY_GAME_FIRE);
 		AddKeyBinding(pComp, "GamePadTalk", VIRTUAL_DPAD_BUTTON_RIGHT, VIRTUAL_KEY_GAME_TALK);
 		AddKeyBinding(pComp, "GamePadMagic", VIRTUAL_DPAD_BUTTON_LEFT, VIRTUAL_KEY_GAME_MAGIC);
@@ -827,12 +837,13 @@ void App::Update()
 		AddKeyBinding(pComp, "GamePadSpeedup", VIRTUAL_DPAD_LBUTTON, 'M', true);
 		AddKeyBinding(pComp, "GamePadSpeedup2", VIRTUAL_DPAD_RBUTTON, 9);
 	
-		AddKeyBinding(pComp, "GamePadInventory3", VIRTUAL_DPAD_LTRIGGER, VIRTUAL_KEY_GAME_INVENTORY);
-		AddKeyBinding(pComp, "GamePadPause", VIRTUAL_DPAD_RTRIGGER, VIRTUAL_KEY_BACK, true);
+		if (GetEmulatedPlatformID() == PLATFORM_ID_ANDROID)
+		{
+			//certain joysticks might have shoulder buttons that don't work, but triggers do so...
+			//AddKeyBinding(pComp, "GamePadInventory3", VIRTUAL_DPAD_LTRIGGER, VIRTUAL_KEY_GAME_INVENTORY);
+			//AddKeyBinding(pComp, "GamePadPause", VIRTUAL_DPAD_RTRIGGER, VIRTUAL_KEY_BACK, true);
+		}
 
-
-//if (IsDesktop())
-{
 		AddKeyBinding(pComp, "Inventory", 13, VIRTUAL_KEY_GAME_INVENTORY);
 		AddKeyBinding(pComp, "Magic", VIRTUAL_KEY_SHIFT, VIRTUAL_KEY_GAME_MAGIC);
 		AddKeyBinding(pComp, "Fire", VIRTUAL_KEY_CONTROL, VIRTUAL_KEY_GAME_FIRE);
@@ -840,27 +851,31 @@ void App::Update()
 		AddKeyBinding(pComp, "Quicksave", VIRTUAL_KEY_F5, VIRTUAL_KEY_F5);
 		AddKeyBinding(pComp, "Quickload", VIRTUAL_KEY_F9, VIRTUAL_KEY_F9);
 		AddKeyBinding(pComp, "DinkHDMenu", VIRTUAL_KEY_F1, VIRTUAL_KEY_F1);
-}
 
 		if (GetVar("check_icade")->GetUINT32() == 0)
 		{
-
 			AddDroidKeyboardKeys();
 		}
 
+		//let's add our fake pointer so the gamepad can also be used to control things on the main menu
+		Entity* pPointer = GetEntityRoot()->AddEntity(new Entity("Pointer"));
+		pPointer->AddComponent(new EmulatedPointerComponent);
+		AddFocusIfNeeded(pPointer, false, 0, 0, 2); //note the higher priority, so this will always render last
+	
 #ifdef _DEBUG
 //		BrowseMenuCreate(pGUIEnt);
-	MainMenuCreate(pGUIEnt);
+		MainMenuCreate(pGUIEnt);
+		GetEntityRoot()->PrintTreeAsText();
 #else
 		MainMenuCreate(pGUIEnt);
 #endif
+
+	
 	}
 	else
 	{
-		
 		CheckForHotkeys();
 	}
-
 	
 }
 
@@ -885,7 +900,6 @@ void App::OnScreenSizeChange()
 		{
 			PrepareForGL();
 		}
-
 	}
 
 	UpdateTitleBar();
@@ -913,7 +927,7 @@ void App::GetServerInfo( string &server, uint32 &port )
 
 #else
 
-	server = "https://wwrtsoft.com";
+	server = "https://www.rtsoft.com";
 	port = 80;
 #endif
 }
@@ -991,8 +1005,7 @@ void App::OnEnterBackground()
 	//SaveAllData();
 //	DinkUnloadGraphicsCache();
 
-
-/*
+    /*
 //I don't think we really need to uncache everything.  If low memory is a problem we could though..
 
 	GetAudioManager()->KillCachedSounds(false, true, 0, 1, false);
@@ -1331,6 +1344,21 @@ void LogMsg(const char* traceStr, ...)
 
 #endif
 
+bool App::GetSystemNeedsTouchControls()
+{
+	bool bSystemNeedsTouchcontrols = false;
+
+	//uh, because we sometimes turn off the touch controls, we kind of need this now to force them to be initially on
+	if (
+		GetEmulatedPlatformID() == PLATFORM_ID_ANDROID
+		|| GetEmulatedPlatformID() == PLATFORM_ID_IOS
+		)
+	{
+		bSystemNeedsTouchcontrols = true;
+	}
+
+	return bSystemNeedsTouchcontrols;
+}
 
 bool TouchesHaveBeenReceived()
 {

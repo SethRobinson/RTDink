@@ -299,8 +299,8 @@ use timing (Myster island camera sequence for example) easier though, not sure.
  ------ Change log for 1.97 ---------- (July 2022)
 
 * BUGFIX: Fixed issue with black tiles at the start of Charlie's Legacy (Now properly rebuilds surfaces when dynamically switching from
-  8 bit to 32 bit color back buffer mode, it does this the first time it detects high color sprites in a dmod) (robj)
-* BUGFIX: Fixed issue with pushing animation code that caused Charlie's Legacy to freeze dink on frame 1 when pushing (robj)
+  8 bit to 32 bit color back buffer mode, it does this the first time it detects high color sprites in a dmod) (Robj)
+* BUGFIX: Fixed issue with pushing animation code that caused Charlie's Legacy to freeze dink on frame 1 when pushing (Robj)
 * Unless you're using touch controls, choosing an inventory item will no longer auto-close the menu, not really need for
   keyboard/gamepad players (robj)
 * load_script gives a warning to log if you try to load a script to a sprite that doesn't exist instead of crashing
@@ -314,11 +314,11 @@ use timing (Myster island camera sequence for example) easier though, not sure.
 * No longer writes "drawing hardmap" to the log
 * BUGFIX: Fixed *.pdb open error which caused log.txt crash info to log less than it should have
 * Changed every single sp_<something> command so it won't crash on a bad sprite index, will log it and return -1 to indicate an error
-* BUGFIX: Fixed issue where reloading sequences in DMODS could eventually crash the game (robj)
-* Audio assigned to an invalid sprite owner no longer causes crashes (robj)
-* Say() command with invalid sprite no longer causes crashes (robj)
+* BUGFIX: Fixed issue where reloading sequences in DMODS could eventually crash the game (Robj)
+* Audio assigned to an invalid sprite owner no longer causes crashes (Robj)
+* Say() command with invalid sprite no longer causes crashes (Robj)
 * A manual draw_status dinkc command now causes status bar variables to be updated instead of animating the differences, to match other dink engine versions (robj)
-* BUGFIX: Reloading sprite sequences with longer ones no longer loses set_frame_frame info (robj)
+* BUGFIX: Reloading sprite sequences with longer ones no longer loses set_frame_frame info (Robj)
 * Added "Unfreeze Player" command to the secret debug menu
 * Tab or Shift-Tab or Ctrl-Shift-Tab "speedups" now properly also speed up certain timers that it was skipping (robj)
 * Quicksave/quickload moved to F5-F9 the "standard" keys. (Skurn)
@@ -327,3 +327,36 @@ use timing (Myster island camera sequence for example) easier though, not sure.
   with keyboard now
 * BUGFIX: "Use F1 to bring up the Dink menu" message will no longer get stuck on the screen (Robj)
 * BUGFIX: Fixed issue where sometimes the mouse cursor would stop showing up in the Dink HD F1 menu (ebilV)
+* NEW DINKC COMMAND: set_disable_savestates(1) to disabled. 0 to enable, -1 to return the current status.  Note: Autosaves will continue to
+  function normally, and the current savestate status will be respected in autosaves as well
+* NEW DINKC COMMAND: show_quick_message("Hello! `4This is red``.  `2Green``."); shows a quick message over the dink screen, useful for showing quick messages, I used it
+  for testing stuff.  Works with SANSI color codes. Oh, I guess all Dink text works with color codes actually.
+* get_version() now returns 111.  (dinkC version incremented by one due to added new scripting commands).  
+  Reminder: you can use get_client_version if you want 197, the client exe version.
+* If dinkc debug mode is on, now logs extra info about "external" calls being done
+* Reworked dinkc to use much less stack memory, fixes issue on Android with nested "external" calls
+* Controller support improved on Windows and Android, 8Bit Do, Nintendo Pro, PS4,PS5,XBOX should be auto-mapped right. Start on controllers
+  now always opens the Dink HD menu, pushing left/right allows selecting save/load state easily.  Select button will open
+  the classic Dink menu.
+* Changed default sorting for the in-game DMOD browser to "Newest", this way active DMOD authors might get an extra boost of motivation by getting
+  more downloads.  A player can always tap it to change to sort by rating or alphabetical of course
+* Improved the DMOD browser a bit, more text fits when browsing the list to install
+* BUGFIX: No longer sometimes crashes if you resize the window moving crazy while holding down Shift (non proportional resize mode)
+
+ ------ Change log for 1.98 ---------- (August 2022)
+
+* (iOS) Native Bluetooth controller & keyboard support added, same as Win and Android builds
+* Added an emulated pointer where needed, all GUI screens can now be 100% controlled by controller or keyboard, 
+  mouse/touch not required anymore
+* DinkC addition: get_client_fork() added.  Always returns 1. 
+* get_version() incremented one due to the above change.  Now returns 112
+* (iOS/Android) BUGFIX: show_bmp dinkc command will no longer fail on some dmods due to case sensitivity of linux based systems
+* No longer drawing a black square behind the active magic icon.  No idea why I was doing that. (Robj)
+
+ ------ Change log for 1.99 ---------- (August 2022)
+
+* map_tile dinkc command now checks ranges and if there is actually source tile data to write in that index (ebilV, Robj)
+* Detects and fixes a rare situation where a sprite is connected to a dead script (Robj)
+* Disabled the window bar menu, alt would appear to freeze the game (Robj)
+* Properly shows correct dinkc version when starting a dmod, before showed incorrect version (Robj)
+* if update_status is disabled, it doesn't blank out that area, it just leaves whatever was there (Robj)

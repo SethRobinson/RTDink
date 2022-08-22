@@ -92,15 +92,6 @@
     <Filter Include="shared\android">
       <UniqueIdentifier>{36319205-3573-439b-8aa3-4f1acb3bac7b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shared\android\v2_src">
-      <UniqueIdentifier>{4f6cce6b-7af2-42e8-beaa-affa38cb14eb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="shared\android\v2_src\java">
-      <UniqueIdentifier>{53528dcf-04de-4f6c-93af-2fe3cc9929c0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="shared\android\v2_src\cpp">
-      <UniqueIdentifier>{246ffcc3-8587-4642-bd8b-692895d20287}</UniqueIdentifier>
-    </Filter>
     <Filter Include="shared\WebOS">
       <UniqueIdentifier>{af79d20f-4176-4344-a620-094c0582c90a}</UniqueIdentifier>
     </Filter>
@@ -730,9 +721,6 @@
     <ClCompile Include="..\..\shared\android\AndroidUtils.cpp">
       <Filter>shared\android</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\shared\android\v2_src\cpp\AndroidApp.cpp">
-      <Filter>shared\android\v2_src\cpp</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\shared\WebOS\SDLMain.cpp">
       <Filter>shared\WebOS</Filter>
     </ClCompile>
@@ -861,6 +849,9 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\Network\NetHTTP_libCURL.cpp">
       <Filter>shared\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\Component\EmulatedPointerComponent.cpp">
+      <Filter>source\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1446,6 +1437,15 @@
     <ClInclude Include="..\..\shared\Gamepad\GamepadXInput.h">
       <Filter>shared\Gamepad</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\Gamepad\GamepadProviderIOS.h">
+      <Filter>shared\Gamepad</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\Gamepad\GamepadIOS.h">
+      <Filter>shared\Gamepad</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Component\EmulatedPointerComponent.h">
+      <Filter>source\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\android\proguard\config.txt">
@@ -1579,30 +1579,6 @@
     <None Include="..\..\shared\iOS\app\MyViewController.mm">
       <Filter>shared\iOS\app</Filter>
     </None>
-    <None Include="..\..\shared\android\v2_src\java\BillingReceiver.java">
-      <Filter>shared\android\v2_src\java</Filter>
-    </None>
-    <None Include="..\..\shared\android\v2_src\java\BillingService.java">
-      <Filter>shared\android\v2_src\java</Filter>
-    </None>
-    <None Include="..\..\shared\android\v2_src\java\Consts.java">
-      <Filter>shared\android\v2_src\java</Filter>
-    </None>
-    <None Include="..\..\shared\android\v2_src\java\PurchaseObserver.java">
-      <Filter>shared\android\v2_src\java</Filter>
-    </None>
-    <None Include="..\..\shared\android\v2_src\java\ResponseHandler.java">
-      <Filter>shared\android\v2_src\java</Filter>
-    </None>
-    <None Include="..\..\shared\android\v2_src\java\Security.java">
-      <Filter>shared\android\v2_src\java</Filter>
-    </None>
-    <None Include="..\..\shared\android\v2_src\java\SharedActivity.java">
-      <Filter>shared\android\v2_src\java</Filter>
-    </None>
-    <None Include="..\..\shared\android\v2_src\java\SharedMultiTouchInput.java">
-      <Filter>shared\android\v2_src\java</Filter>
-    </None>
     <None Include="..\..\shared\OSX\OSXUtils.mm">
       <Filter>shared\OSX</Filter>
     </None>
@@ -1656,6 +1632,15 @@
     </None>
     <None Include="..\AndroidGradle\app\build.gradle">
       <Filter>source\platform\AndroidGradle\App</Filter>
+    </None>
+    <None Include="..\..\shared\Gamepad\GamepadProviderIOS.mm">
+      <Filter>shared\Gamepad</Filter>
+    </None>
+    <None Include="..\..\shared\Gamepad\GamepadIOS.mm">
+      <Filter>shared\Gamepad</Filter>
+    </None>
+    <None Include="..\Entitlements.plist">
+      <Filter>source\platform\iOS</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

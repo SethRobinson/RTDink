@@ -8,12 +8,15 @@ cd media
 set NO_PAUSE=1
 :call update_media.bat
 cd ..
+
+goto testy
+
 cd script
 
 :setup for VS 2017
 call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\"vcvars32.bat
 
-set C_TARGET_EXE=..\bin\winRTDink_Release GL.exe
+set C_TARGET_EXE=..\bin\dink.exe
 
 REM erase it so we know it got built right
 del %C_TARGET_EXE% > NUL
@@ -82,4 +85,43 @@ call %RT_PROJECTS%\Signing\sign.bat %C_FILENAME% "Dink Smallwood HD"
 
 :call FTPToSiteWin.bat
 cd script
+
+:testy
+:Um, great.  But now let's put all the stuff in a standalone directory so other methods can package it easier
+mkdir builds
+rmdir /S /Q builds\win
+mkdir builds\win
+cd builds\win
+
+copy "..\..\bin\dink.exe" .
+ 
+
+  copy "..\..\bin\dink.exe" .
+  ;dink.pdf is optional, it's like 11 MB but it allows auto logged crash stacks to contain useful info
+  copy "..\..\bin\dink.pdb" .
+  copy "readme.txt" .
+  copy "..\..\bin\fmod.dll" .
+  copy "..\..\bin\zlib1.dll" .
+  copy "..\..\bin\version_history.txt" .
+  
+  
+   copy "..\..\bin\zlibwapi.dll" .
+   copy "..\..\bin\libcrypto-1_1-x64.dll" .
+   copy "..\..\bin\libcurl-x64.dll" .
+   copy "..\..\bin\libssl-1_1-x64.dll" .
+   copy "..\..\bin\curl-ca-bundle.crt" .
+  
+ mkdir audio
+ xcopy /r /E ..\..\bin\audio audio
+
+ mkdir dink
+ xcopy /r /E "..\..\bin\dink" dink
+
+ mkdir interface
+ xcopy /r /E "..\..\bin\interface" interface
+
+ mkdir dmods
+  
+copy "..\..\bin\dmods\info.txt" dmods
+
 pause

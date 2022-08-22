@@ -265,17 +265,18 @@ doit:
 	}
 }
 
+//OPTIMIZE - this function is dumb, especially the way it tries to remove the last /n
 bool separate_string (const char str[255], int num, char liney, char *return1) 
 {
 
 	int l;
 	int k;
 	l = 1;
+
 	strcpy_safe(return1 ,"");
 
 	for (k = 0; k <= strlen(str); k++)
 	{
-
 		if (str[k] == liney)
 		{
 			l++;
@@ -285,8 +286,13 @@ bool separate_string (const char str[255], int num, char liney, char *return1)
 			if (k < strlen(str)) strcpy_safe(return1,"");
 		}
 		if (str[k] != liney)
-			sprintf(return1, "%s%c",return1 ,str[k]);
+		{
+		   
+		   strncat(return1, &str[k], 1);//replaced with this method, fixes issue with emscripten due to overlapping memory probably
+		  //sprintf(return1, "%s%c", return1, str[k]);
+		}
 	}
+
 	if (l < num)  strcpy_safe(return1,"");
 
 	replace("\n","",return1); //Take the /n off it.

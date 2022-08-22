@@ -17,24 +17,12 @@ copy /Y %APP_NAME%.html index.html
 
 ssh %_FTP_USER_%@%_FTP_SITE_% "mkdir ~/www/%WEB_SUB_DIR%"
 ssh %_FTP_USER_%@%_FTP_SITE_% "rm -rf ~/www/%WEB_SUB_DIR%/WebLoaderData"
-rsync -avzr --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r  -e "ssh" %APP_NAME%*.* %_FTP_USER_%@%_FTP_SITE_%:www/%WEB_SUB_DIR%
-rsync -avzr --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r  -e "ssh" WebLoaderData %_FTP_USER_%@%_FTP_SITE_%:www/%WEB_SUB_DIR%
-rsync -avzr --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r  -e "ssh" index.html %_FTP_USER_%@%_FTP_SITE_%:www/%WEB_SUB_DIR%
+scp %APP_NAME%*.* %_FTP_USER_%@%_FTP_SITE_%:www/%WEB_SUB_DIR%
+scp -r WebLoaderData %_FTP_USER_%@%_FTP_SITE_%:www/%WEB_SUB_DIR%
+scp index.html %_FTP_USER_%@%_FTP_SITE_%:www/%WEB_SUB_DIR%
 
 :Let's go ahead an open a browser to test it
 :start http://www.%_FTP_SITE_%/%WEB_SUB_DIR%/%APP_NAME%.html
 start http://www.%_FTP_SITE_%/%WEB_SUB_DIR%
 
-:Old way, non ssh
-REM get our ftp logon info
-:call d:\projects\SetFTPLogonInfo.bat
-
-:ncftpput -u %_FTP_USER_% -p %_FTP_PASS_% -R %_FTP_SITE_% /www/%WEB_SUB_DIR% %APP_NAME%*
-:ncftpput -u %_FTP_USER_% -p %_FTP_PASS_% -R %_FTP_SITE_% /www/%WEB_SUB_DIR% WebLoaderData
-
-:echo Files uploaded:  http://www.%_FTP_SITE_%/%WEB_SUB_DIR%
-
-:Let's go ahead an open a browser to test it
-:start http://www.%_FTP_SITE_%/%WEB_SUB_DIR%/%APP_NAME%.html
-
-
+pause

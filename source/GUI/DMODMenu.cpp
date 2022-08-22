@@ -29,6 +29,9 @@ void DMODMenuOnRemoveDMOD(VariantList *pVList)
 		DMODMenuAddScrollContent(pMenu);
 	}
 	LogMsg("Removing DMOD");
+
+	SyncPersistentData();
+
 }
 
 void DMODMenuOnSessionNew(VariantList *pVList)
@@ -153,7 +156,7 @@ void DMODMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity sen
 /*
 	if (pEntClicked->GetName() == "rtsoft")
 	{
-		PopUpCreate(pEntClicked->GetParent()->GetParent()->GetParent(), "Leave the game and visit `wrtsoft.com``?", "http://www.rtsoft.com/iphone",
+		PopUpCreate(pEntClicked->GetParent()->GetParent()->GetParent(), "Leave the game and visit `wrtsoft.com``?", "https://www.rtsoft.com/iphone",
 			"cancel", "`wCancel", "url", "`wLaunch", true);
 		return;
 	}

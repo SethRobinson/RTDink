@@ -38,9 +38,9 @@ private:
 	void UpdateIcon();
 	CL_Vec2f *m_pPos2d;
 
+	CL_Vec2f* m_pScale2d;
 	/*
 	CL_Vec2f *m_pSize2d;
-	float *m_pScale;
 	uint32 *m_pColor;
 	uint32 *m_pColorMod;
 	uint32 *m_pAlignment;

@@ -8,9 +8,10 @@
 #pragma once
 #include "BaseApp.h"
 #include "Manager/AdManager.h"
+#include "Gamepad/Gamepad.h"
 
 //note: This is set in  the ReleaseBeta GL configuration, not here
- //#define RT_IS_BETA 1
+//#define RT_IS_BETA 1
 
 enum eExtendedVirtualKeys
 {
@@ -37,14 +38,11 @@ enum eVideoFPS
 	VIDEO_FPS_LIMIT_OFF
 };
 
-
-
 #ifndef __APPLE__
 //#define RT_EXPIRING
 #endif
 
 //#define RT_CHARTBOOST_ENABLED
-
 
 class App: public BaseApp
 {
@@ -97,7 +95,9 @@ public:
 	void SetGhostMode(bool bNew) { m_bGhostMode = bNew; }
 	bool UseClassicEscapeMenu();
 	vector<string> * GetReferenceToCommandLineParms() { return &m_commandLineParms; }
-
+	bool GetSystemNeedsTouchControls();
+	void OnGamepadConnected(Gamepad* pPad);
+	void OnGamepadDisconnected(eGamepadID id);
 
 private:
 
@@ -124,10 +124,7 @@ private:
 	bool m_bHasDMODSupport;
 	bool m_bCheatsEnabled;
 	FILE *   m_logFileHandle;
-
-
 };
-
 
 App * GetApp();
 const char * GetAppName();

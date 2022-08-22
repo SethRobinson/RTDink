@@ -24,7 +24,7 @@ enum DMODSortEnum
 	DMOD_SORT_COUNT
 };
 
-int g_dmodSorting = DMOD_SORT_RATING;
+int g_dmodSorting = DMOD_SORT_DATE;
 int g_dmods_per_screen = 5;
 int g_dmod_cur_page = 0;
 
@@ -150,8 +150,8 @@ void AddEntryBar(Entity *pParent, float &x, float &y, DMODEntry &s, int index)
 //title
 
 	string displayName = s.m_name;
-	int maxNameChars = 30;
-	int maxDescripChars = 57;
+	int maxNameChars = 38;
+	int maxDescripChars = 75;
 
 
 	switch (g_dmodSorting)
@@ -196,8 +196,11 @@ void AddEntryBar(Entity *pParent, float &x, float &y, DMODEntry &s, int index)
 	}
 	
 	
-	Entity *pTitle = CreateTextLabelEntity(pBG, "title", iPhoneMapX2X( 16) ,iPhoneMapY2X( 13), stTemp);
-	Entity *pDescription = CreateTextBoxEntity(pBG, "descrip", iPhoneMap2X(16, 34), iPhoneMap2X(425, 54), "`6"+ displayDescription);
+	Entity *pTitle = CreateTextLabelEntity(pBG, "title", iPhoneMapX2X( 16) ,iPhoneMapY2X( 12), stTemp);
+	SetupTextEntity(pTitle, FONT_SMALL, 0.87f);
+	
+	Entity *pDescription = CreateTextLabelEntity(pBG, "descrip", iPhoneMapX2X(16), iPhoneMapY2X(33), "`6"+ displayDescription);
+	SetupTextEntity(pDescription, FONT_SMALL, 0.87f);
 
 	//Entity *pIcon = CreateButtonHotspot(pBG, "icon_hotspot", GetDMODBarIconOffset(), GetDMODBarIconSize(), Button2DComponent::BUTTON_STYLE_CLICK_ON_TOUCH_IGNORE_DRAGGING);
 	//SetTouchPaddingEntity(pIcon, CL_Rectf(0,iPhoneMapY2X(5),0,iPhoneMapY2X(5)));
@@ -207,7 +210,7 @@ void AddEntryBar(Entity *pParent, float &x, float &y, DMODEntry &s, int index)
 	
 	//the delete icon part
 	{
-		CL_Vec2f iconPos = iPhoneMap2X(379,10);
+		CL_Vec2f iconPos = iPhoneMap2X(442,10);
 		//CL_Vec2f iconSize = iPhoneMap2X(27, 27);
 		Entity *pIcon = CreateOverlayButtonEntity(pBG, "install", ReplaceWithLargeInFileName("interface/iphone/browse_install.rttex"), iconPos.x, iconPos.y);
 		SetButtonStyleEntity(pIcon,  Button2DComponent::BUTTON_STYLE_CLICK_ON_TOUCH_IGNORE_DRAGGING);
@@ -328,16 +331,10 @@ void BrowseMenuAddScrollContent(Entity *pParent, TextScanner *t)
 				
 				continue; //don't care
 			}
-
 			
 			DMODEntry s;
 			s.m_name = p[0];
-#ifdef _DEBUG
-			if (s.m_name == "Cursed")
-			{
-				LogMsg("WoaH!");
-			}
-#endif
+
 			if (s.m_name == "Title") continue;
 			s.m_url = p[1];
 			s.m_author = p[2];

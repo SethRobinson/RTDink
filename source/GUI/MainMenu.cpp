@@ -128,6 +128,8 @@ void MainMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity sen
 	Entity *pEntClicked = pVList->m_variant[1].GetEntity();
 
 	LogMsg("Clicked %s entity at %s", pEntClicked->GetName().c_str(),pVList->m_variant[1].Print().c_str());
+	GetApp()->GetVar("showViewHint")->Set(uint32(1)); //show that one tip
+
 
 #ifdef PLATFORM_HTML5
 	if (GetTouchesReceived() > 0)
@@ -225,7 +227,7 @@ void MainMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity sen
 
 	if (pEntClicked->GetName() == "rtsoftlogo")
 	{
-		PopUpCreate(pEntClicked->GetParent(), "Would you like to visit `wrtsoft.com``?", "http://www.rtsoft.com/iphone",
+		PopUpCreate(pEntClicked->GetParent(), "Would you like to visit `wrtsoft.com``?", "https://www.rtsoft.com/iphone",
 			"cancel", "`wCancel", "url", "`wLaunch", true);
 		return;
 	}
@@ -574,8 +576,6 @@ Entity * MainMenuCreate( Entity *pParentEnt, bool bFadeIn )
 {
 	CheckForImportedSavedGames();
 
-	GetApp()->GetVar("showViewHint")->Set(uint32(1)); //show that one tip
-	
 	Entity *pBG = CreateOverlayEntity(pParentEnt, "MainMenu", ReplaceWithDeviceNameInFileName("interface/iphone/bkgd_stone.rttex"), 0,0);
 	
 	OverlayRenderComponent *pOverlay = (OverlayRenderComponent*) pBG->GetComponentByName("OverlayRender");

@@ -223,6 +223,7 @@ void PauseMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity se
 
 	if (pEntClicked->GetName() == "QuickSave")
 	{
+		
 		SaveStateWithExtra();
 		UpdatePauseButtons(pMenu);
 		PauseEnd(pMenu);
@@ -350,6 +351,8 @@ void OnPauseArcadeInput(VariantList *pVList)
 		return;
 	}
 
+
+	
 	if (!bIsDown)
 	{
 		switch (vKey)
@@ -364,6 +367,7 @@ void OnPauseArcadeInput(VariantList *pVList)
 
 		}
 	}
+	
 	
 	int bobAmount =iPadMapY(40);
 	int bobCycleMS = 300;
@@ -408,9 +412,9 @@ Entity * PauseMenuCreate(Entity *pParentEnt)
 	Entity * pBG = CreateOverlayRectEntity(pParentEnt, CL_Vec2f(0,0), GetScreenSize(), MAKE_RGBA(0,0,0,140));
 	pBG->SetName("PauseMenu");
 	
-	//so we can snag gamepad messages too:
-	GetBaseApp()->m_sig_arcade_input.connect(pBG->GetFunction("OnArcadeInput")->sig_function);
-	pBG->GetShared()->GetFunction("OnArcadeInput")->sig_function.connect(&OnPauseArcadeInput);
+	//so we can snag gamepad messages too: //update:  no need, we have EmulatedPointerComponent doing the work
+	//GetBaseApp()->m_sig_arcade_input.connect(pBG->GetFunction("OnArcadeInput")->sig_function);
+	//pBG->GetShared()->GetFunction("OnArcadeInput")->sig_function.connect(&OnPauseArcadeInput);
 
 
 	Entity * pBackdrop = CreateOverlayRectEntity(pBG, CL_Vec2f(0,0), CL_Vec2f(0,0), MAKE_RGBA(0,0,0,140));
@@ -516,7 +520,7 @@ Entity * PauseMenuCreate(Entity *pParentEnt)
 		pButtonEntity->GetVar("color")->Set(MAKE_RGBA(255,255,255,50));
 	}
 
-	if (GetApp()->GetUsingTouchScreen())
+	if (GetApp()->GetSystemNeedsTouchControls() || GetApp()->GetUsingTouchScreen())
 	{
 		pButtonEntity = CreateTextButtonEntity(pTextBG, "Keyboard", x, y, "FULL KEYBOARD", false); y += ySpacer;
 		pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&PauseMenuOnSelect);
@@ -548,13 +552,10 @@ Entity * PauseMenuCreate(Entity *pParentEnt)
 	pKeys->GetVar("disabled")->Set(uint32(1));
 	GetMessageManager()->SetComponentVariable(pKeys, 500, "disabled", uint32(0)); //enable it again
 
-	if (IsDesktop() || GetEmulatedPlatformID() == PLATFORM_ID_HTML5)
-	{
-		EntityComponent *pKeys = AddHotKeyToButton(pButtonEntity, VIRTUAL_KEY_F1);
-		//work around problem of it instantly closing
-		pKeys->GetVar("disabled")->Set(uint32(1));
-		GetMessageManager()->SetComponentVariable(pKeys, 500, "disabled", uint32(0)); //enable it again
-	}
+	pKeys = AddHotKeyToButton(pButtonEntity, VIRTUAL_KEY_F1);
+	//work around problem of it instantly closing
+	pKeys->GetVar("disabled")->Set(uint32(1));
+	GetMessageManager()->SetComponentVariable(pKeys, 500, "disabled", uint32(0)); //enable it again
 
 
 

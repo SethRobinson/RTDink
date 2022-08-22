@@ -103,7 +103,6 @@ void DMODInstallShowMsg(Entity *pMenu, string myMsg, bool bSuccess = false)
 			LogMsg("Failed to remove typer;");
 		}; // a thing that types stuff
 
-
 	}
 
 	Entity *pSkip = pMenu->GetEntityByName("Back");
@@ -153,7 +152,6 @@ void DMODSetTitleLabel(Entity *pMenu, string myMsg)
 		
 	}
 	
-
 }
 
 void DMODInstallOnError(VariantList *pVList)
@@ -182,7 +180,6 @@ void DMODInstallOnError(VariantList *pVList)
 		break;
 	}
 
-
 	DMODInstallShowMsg(pVList->m_variant[0].GetComponent()->GetParent(), msg);
 }
 
@@ -205,7 +202,6 @@ void DMODInstallSetProgressBar(float progress)
 		pBar->GetComponentByName("ProgressBar")->GetVar("progress")->Set(progress);
 	}
 }
-
 
 void OnDMODUnpackStatusUpdate(VariantList *pVList)
 {
@@ -233,8 +229,8 @@ void OnDMODUnpackFinish(VariantList *pVList)
 
 	DMODInstallSetProgressBar(1);
 	DMODInstallShowMsg(pMenu, pMenu->GetVar("originalFileName")->GetString()+" installed.", true);
-
-	RemoveFile(GetDMODRootPath()+"temp.dmod");
+	
+	RemoveFile(GetDMODRootPath()+"temp.dmod", false);
 	RemoveFile("temp.dmod");
 
 	if (pMenu->GetVar("autoplay")->GetUINT32() == 1)
@@ -250,10 +246,6 @@ void OnDMODUnpackFinish(VariantList *pVList)
 void OnDMODInstallHTTPFinish(VariantList *pVList)
 {
 	Entity *pMenu = pVList->m_variant[0].GetComponent()->GetParent();
-
-#ifdef _DEBUG
-	LogMsg("Download finished...");
-#endif
 
 	DMODSetTitleLabel(pMenu, string("Installing ")+pMenu->GetVar("originalFileName")->GetString()+"...");
 	EntityComponent *pUnpack = pMenu->AddComponent(new UnpackArchiveComponent);

@@ -22,6 +22,7 @@ void ActionButtonComponent::OnAdd(Entity *pEnt)
 	EntityComponent::OnAdd(pEnt);
 
 	m_pPos2d = &GetParent()->GetVar("pos2d")->GetVector2();
+	m_pScale2d = &GetParent()->GetVarWithDefault("scale2d", Variant(1.0f, 1.0f))->GetVector2();
 
 	if (GetParent()->GetName() != "magic")
 	{
@@ -75,14 +76,11 @@ void ActionButtonComponent::OnRender(VariantList *pVList)
 		
 		if (IsLargeScreen())
 		{
-
 			dstRect = rtRectf(0,0, 68,68);
 
 		} else
 		{
-
 			dstRect = rtRectf(0,0, 44,39);
-
 		}
 		
 		dstRect.AdjustPosition(vFinalPos.x, vFinalPos.y);
@@ -94,7 +92,7 @@ void ActionButtonComponent::OnRender(VariantList *pVList)
 			dstRect.AdjustPosition(9, 12);
 
 		}
-
+		
 		
 		pSurf->BlitEx(dstRect, srcRect, MAKE_RGBA(255* *m_pAlpha,255* *m_pAlpha,255* *m_pAlpha,255* *m_pAlpha));
 

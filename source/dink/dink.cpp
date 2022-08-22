@@ -267,6 +267,7 @@ void SoundLoadBanks( void) {}
 void OneTimeDinkInit()
 {
 
+
 	for (int i = 0; i < C_MAX_SPRITES_AT_ONCE; i++)
 	{
 		g_customSpriteMap[i] = NULL;
@@ -422,14 +423,16 @@ bool compare(char *orig, char *comp)
 {
 	int len;
 	len = strlen(comp);
-	if (strlen(orig) != len) return(false);
+	if (strlen(orig) != len)
+	{
+		return(false);
+	}
 	
 	if (strnicmp(orig,comp,len) == 0)
 	{
 		return(true);
 	}
 
-	//Msg("I'm sorry, but %s does not equal %s.",orig, comp);
 	return(false);
 }
 
@@ -457,9 +460,6 @@ int getpic(int h)
 	}
 	return(g_dglos.g_seq[g_sprite[h].pseq].frame[g_sprite[h].pframe]);
 }
-
-
-
 
 string GetFileLocationString(const string fName)
 {
@@ -844,6 +844,7 @@ LogMsg("Loading tilescreen %s", fName.c_str());
 
 			//switch it
 			delete lpDDSBackGround;
+			
 			lpDDSBackGround = InitOffscreenSurface(C_DINK_SCREENSIZE_X, C_DINK_SCREENSIZE_Y, IDirectDrawSurface::MODE_SHADOW_GL, true);
 			
 			
@@ -1393,7 +1394,9 @@ bool load_game(int num)
 		g_sprite[1].base_hit = g_dglos.g_playerInfo.base_hit;
 
 		int script = load_script("main", 0, true);
+		
 		locate(script, "main");
+		
 		run_script(script);
 		//lets attach our vars to the scripts
 
@@ -2830,9 +2833,14 @@ void draw_icons()
 			LogMsg("Bad magic item frame of %d", frame);
 			return;
 		}
+
+		//why did I draw a black thing here?
+
+		/*
 		DrawFilledRect(153, 413, 
 			g_pSpriteSurface[g_dglos.g_seq[seq].frame[frame]]->m_pSurf->GetWidth()
 			,g_pSpriteSurface[g_dglos.g_seq[seq].frame[frame]]->m_pSurf->GetHeight(), MAKE_RGBA(0,0,0,255));
+			*/
 
 		ddrval = lpDDSBack->BltFast( 153, 413, g_pSpriteSurface[g_dglos.g_seq[seq].frame[frame]],
 			&g_dglos.g_picInfo[g_dglos.g_seq[seq].frame[frame]].box, DDBLTFAST_SRCCOLORKEY);
@@ -2975,6 +2983,7 @@ void BlitGUIOverlay()
 	rcRect.right = C_DINK_SCREENSIZE_X;
 	rcRect.bottom = 80;
 
+	/*
 	if (*pupdate_status == 0)
 	{
 		//draw black bars around things
@@ -2987,6 +2996,7 @@ void BlitGUIOverlay()
 		
 		return;
 	}
+	*/
 
 
 	/*
@@ -3414,18 +3424,24 @@ void kill_script(int k)
 
 		//tell associated sprite that it no longer has a script
 		assert(C_MAX_SPRITES_AT_ONCE < 1000 && "I think 1000 has a special meaning so you better not do that?  Or was that -1000.  I dunno");
-/*
+
 	//NOTE:  This would fix a bug where a script doesn't properly remove itself from an owner sprite but.. could cause behavior differences so not enabling it for now
+		
+		/*
 		if (g_scriptInstance[k]->sprite > 0 && g_scriptInstance[k]->sprite < C_MAX_SPRITES_AT_ONCE)
 		{
 			if (g_sprite[g_scriptInstance[k]->sprite].active && g_sprite[g_scriptInstance[k]->sprite].script == k)
 			{
+				LogError("Removed ghost script %d that didn't exist from sprite %d", k, g_scriptInstance[k]->sprite);
+
 				//um.. guess we should tell the sprite it no longer has an associated script, right?!
 				g_sprite[g_scriptInstance[k]->sprite].script = 0;
 			}
 
 		}
 		*/
+		
+		
 		SAFE_FREE(g_scriptInstance[k]);
 		SAFE_FREE(g_scriptBuffer[k]);
 		
@@ -3438,7 +3454,25 @@ void kill_all_scripts(void)
 	for (int k = 1; k < C_MAX_SCRIPTS; k++)
 	{
 		if (g_scriptInstance[k] != NULL) if (g_scriptInstance[k]->sprite != 1000)
+		{
 			kill_script(k);
+		
+		}
+
+		//if any sprite thinks it owns this script, let's fix tell it that it doesn't
+		if (!g_scriptInstance[k])
+		{
+			for (int i = 1; i < C_MAX_SPRITES_AT_ONCE; i++)
+			{
+				if (g_sprite[i].active && g_sprite[i].script == k)
+				{
+					LogError("Removed ghost script %d that didn't exist from sprite %d", k, g_sprite[i].script);
+
+					g_sprite[i].script = 0;
+				}
+			}
+		}
+
 	}
 
 	for (int k = 1; k < C_MAX_SCRIPT_CALLBACKS; k++)
@@ -3500,7 +3534,9 @@ bool read_next_line(int script, char *line)
 
 	for (int k = g_scriptInstance[script]->current;  (k < g_scriptInstance[script]->end); k++)
 	{
-		//LogMsg("..%d",k);
+#ifdef _DEBUG
+		LogMsg("..%d",k);
+#endif
 		strchar(line, g_scriptBuffer[script][k]);
 		
 		g_scriptInstance[script]->current++;
@@ -3664,7 +3700,8 @@ if (g_script_debug_mode)
 		SAFE_DELETE_ARRAY(pMemBuffer);
 	
 
-	//LogMsg("Script loaded by sprite %d into space %d.", sprite,script);
+		if (g_script_debug_mode)
+		LogMsg("Script loaded by sprite %d into space %d.  Size is %d bytes.", sprite,script, g_scriptInstance[script]->end);
 	strcpy_safe(g_scriptInstance[script]->name, pScript);
 	g_scriptInstance[script]->sprite = sprite;
 
@@ -3721,24 +3758,20 @@ bool locate(int script, char proc[20])
 	char ev[3][100];
 	char temp[100];
 
-	//Msg("locate is looking for %s in %s", proc, rinfo[script]->name);
-
 	while(read_next_line(script, line))
 	{
 		strip_beginning_spaces(line);
 		memset(&ev, 0, sizeof(ev));
 
 		get_word(line, 1, ev[1]);
+
 		if (compare(ev[1], (char*)"VOID")) 
 		{
 			get_word(line, 2, ev[2]);
-
 			separate_string(ev[2], 1,'(',temp);
-
-			//      Msg("Found procedure %s.",temp);
+			
 			if (compare(temp,proc))
 			{ 
-				//              Msg("Located %s",proc);
 				//clean up vars so it is ready to run
 				if (g_scriptInstance[script]->sprite != 1000)
 				{
@@ -3749,7 +3782,7 @@ bool locate(int script, char proc[20])
 				g_scriptInstance[script]->skipnext = false;
 				g_scriptInstance[script]->onlevel = 0;
 				g_scriptInstance[script]->level = 0;
-
+	
 				return(true);
 				//this is desired proc
 
@@ -3758,10 +3791,9 @@ bool locate(int script, char proc[20])
 
 	}
 
-	//Msg("Locate ended on %d.", saveme);
+	
 	g_scriptInstance[script]->current = saveme;
 	return(false);
-
 }
 
 bool locate_goto(char proc[50], int script)
@@ -4959,8 +4991,7 @@ int var_figure(char h[512], int script)
 	n2 = atol(crap);
 
 	get_word(h, 2, crap);
-	if (g_script_debug_mode)
-		LogMsg("Compared %d to %d",n1, n2);
+	//if (g_script_debug_mode) LogMsg("Compared %d to %d",n1, n2);
 
 	if (compare(crap, (char*)"=="))
 	{
@@ -6253,7 +6284,17 @@ void CopyBitmapToBackBuffer (char *pName)
 	StringReplace("\\", "/", fName);
 
 	fName = GetFileLocationString(fName);
+	
+	if (!FileExists(fName))
+	{
+		//probably a linux based system, let's try all lower case, which is how DMODs are unpacked to help deal with situations
+		//where it works on linux but not windows
+		fName = ToLowerCaseString(pName);
+		StringReplace("\\", "/", fName);
 
+		fName = GetFileLocationString(fName);
+	}
+	
 	if (!FileExists(fName)) 
 	{
 		LogMsg("Error: Can't find bitmap at %s.",fName.c_str());
@@ -7096,13 +7137,48 @@ bool IsBadSpriteIndex(int sprite, char* pName)
 
 	return false;
 }
+
+#define ugly_return(r) {uglyReturn = r; goto ugly;}
+
+//Ok, so certain ports (Android) had trouble with the stack space because certain DMODs (Charlies Legacy for example) go 10+ layers deep with
+//recursive scripts.  I couldn't change the stack space so I modified process_line to use the heap with news which made things very ugly.  But
+//it works so don't judge me.  I'm sorry. - Signed by... actually, let's not say who
+
+//if C_STACK_HACK is defined, we'll avoid the stack space problem by using the heap instead. 
+//This is a hack, but it works.
+
+//#define C_STACK_HACK
+
 int process_line (int script, char *pLineIn, bool doelse)
 {
 	char * h, *p;
 	int i;
+
+	int uglyReturn = 0;
+
+#ifdef C_STACK_HACK
+
+	//we'll use a single new() to get the space we need instead of using the stack.
+	
+	char* pBuffer = new char[512 + 512 + (100 * 15)];
+	char* ev[15];
+
+	for (int i = 0; i < 15; i++)
+	{
+		ev[i] = pBuffer + (i * 100);
+	}
+	
+	int buffOffset = 1500;
+	
+	char* line = pBuffer + buffOffset;
+	char* temp = pBuffer + buffOffset + 512;
+		
+#else
 	char line[512];
 	char ev[15][100];
 	char temp[512];
+#endif
+
 	char first[2];
 	int sprite = 0;
 	ev[0][0] = 0;
@@ -7111,7 +7187,11 @@ int process_line (int script, char *pLineIn, bool doelse)
 	for (int kk =1; kk < 15; kk++) ev[kk][0] = 0;
 
 	h = pLineIn;
-	if (h[0] == 0) return(0);    
+	if (h[0] == 0) 
+	{
+		uglyReturn = 0; goto ugly;
+	}
+
 	if (  (h[0] == '/') && (h[1] == '/'))
 
 	{
@@ -7130,8 +7210,6 @@ pass:
 	//LogMsg("first line is %s (second is %s), third is %s", ev[1], ev[2], ev[3]);
 #endif
 
-
-
 	if (compare(ev[1], (char*)"VOID"))
 	{
 
@@ -7142,13 +7220,15 @@ pass:
 		}
 
 		//Msg("returning..");
-		return(2);      
+		
+		uglyReturn = 2;
+		goto ugly;
 	}
 	//replace("\n","",ev[1]);
 	if (ev[1][strlen(ev[1]) -1] == ':') if (strlen(ev[2]) < 2) if (strncmp(ev[1],"say",3) != 0)
 	{
 		//  Msg("Found label %s..",ev[1]);   
-		return(0); //its a label
+		ugly_return(0); //its a label
 	}
 
 	if (ev[1][0] == '(')
@@ -7179,7 +7259,7 @@ pass:
 			sprintf(line, "%d == %s", g_dglos.g_returnint, temp); 
 			g_dglos.g_returnint = var_figure(line, script);                   
 			strcpy_safe(h, "\n");
-			return(0);
+			ugly_return(0);
 		}
 
 		if (strchr(temp, '>') != NULL) 
@@ -7191,7 +7271,7 @@ pass:
 			sprintf(line, "%d > %s", g_dglos.g_returnint, temp); 
 			g_dglos.g_returnint = var_figure(line, script);                   
 			strcpy_safe(h, "\n");
-			return(0);
+			ugly_return(0);
 		}
 
 		if (strchr(temp, '<') != NULL) 
@@ -7203,7 +7283,7 @@ pass:
 			sprintf(line, "%d < %s", g_dglos.g_returnint, temp); 
 			g_dglos.g_returnint = var_figure(line, script);                   
 			strcpy_safe(h, "\n");
-			return(0);
+			ugly_return(0);
 		}
 		
 		if (strchr(temp, '<=') != NULL) 
@@ -7215,7 +7295,7 @@ pass:
 			sprintf(line, "%d <= %s", g_dglos.g_returnint, temp);
 			g_dglos.g_returnint = var_figure(line, script);
 			strcpy_safe(h, "\n");
-			return(0);
+			ugly_return(0);
 		}
 		if (strchr(temp, '>=') != NULL) 
 		{
@@ -7226,7 +7306,7 @@ pass:
 			sprintf(line, "%d >= %s", g_dglos.g_returnint, temp);
 			g_dglos.g_returnint = var_figure(line, script);
 			strcpy_safe(h, "\n");
-			return(0);
+			ugly_return(0);
 		}
 		
 
@@ -7239,7 +7319,7 @@ pass:
 			sprintf(line, "%d != %s", g_dglos.g_returnint, temp); 
 			g_dglos.g_returnint = var_figure(line, script);                   
 			strcpy_safe(h, "\n");
-			return(0);
+			ugly_return(0);
 		}
 		
 		if (p[0] == ')')
@@ -7256,7 +7336,7 @@ pass:
 			strcpy_safe(pLineIn, line); 
 
 			//  Msg("Returing %s..", s);
-			return(0);
+			ugly_return(0);
 		} else
 		{
 			h = &h[1];
@@ -7266,7 +7346,7 @@ pass:
 			g_dglos.g_returnint = var_figure(line, script);         
 			strcpy_safe(pLineIn, h); 
 
-			return(0);
+			ugly_return(0);
 		}
 
 		strip_beginning_spaces(h);
@@ -7312,7 +7392,7 @@ pass:
 		{
 			strip_beginning_spaces(h);
 			strcpy_safe(pLineIn, h);
-			return(4);
+			ugly_return(4);
 		}   
 		goto good;
 	} 
@@ -7331,7 +7411,7 @@ pass:
 			run_script(g_scriptInstance[script]->proc_return);
 			kill_script(script);
 		}
-		return(2);
+		ugly_return(2);
 	} 
 
 	{ //used to be an if..
@@ -7339,7 +7419,7 @@ pass:
 
 		if (g_scriptInstance[script]->onlevel > 0)
 		{
-			if (g_scriptInstance[script]->level > g_scriptInstance[script]->onlevel) return(0);
+			if (g_scriptInstance[script]->level > g_scriptInstance[script]->onlevel) ugly_return(0);
 
 		}
 		g_scriptInstance[script]->onlevel = 0;
@@ -7349,7 +7429,7 @@ pass:
 			//sorry, can't do it, you were told to skip the next thing
 			g_scriptInstance[script]->skipnext = false;
 			strcpy_safe(pLineIn, h);
-			return(3);
+			ugly_return(3);
 		}
 
 		//if (debug_mode) Msg("%s",s);
@@ -7359,7 +7439,7 @@ pass:
 		{
 			LogMsg("ERROR: Missing } in %s, offset %d.", g_scriptInstance[script]->name,g_scriptInstance[script]->current);
 			strcpy_safe(pLineIn, h);
-			return(2);
+			ugly_return(2);
 		}
 
 		if (compare(ev[1], (char*)"else"))
@@ -7375,7 +7455,7 @@ pass:
 
 			}
 			strcpy_safe(pLineIn, h);  
-			return(1);
+			ugly_return(1);
 
 		}
 
@@ -7402,7 +7482,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"freeze"))
@@ -7428,7 +7508,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -7449,7 +7529,7 @@ pass:
 				kill_script(script);
 			}
 
-			return(2);
+			ugly_return(2);
 		}
 
 
@@ -7471,20 +7551,20 @@ pass:
 
 			if (g_dglos.g_returnint != 0)
 			{
-				if (g_script_debug_mode) LogMsg("If returned true");
+			//	if (g_script_debug_mode) LogMsg("If returned true");
 
 
 			} else
 			{
 				//don't do it!
 				g_scriptInstance[script]->skipnext = true;
-				if (g_script_debug_mode) LogMsg("If returned false, skipping next thing");
+			//	if (g_script_debug_mode) LogMsg("If returned false, skipping next thing");
 			}
 
 			//DO STUFF HERE! 
 			strcpy_safe(pLineIn, h);  
 			//g("continuing to run line %s..", h);
-			return(5);
+			ugly_return(5);
 
 		}
 
@@ -7505,10 +7585,10 @@ pass:
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].dir);
 
 				if (g_nlist[1] != -1) changedir(g_sprite[g_nlist[0]].dir, g_nlist[0], g_sprite[g_nlist[0]].base_walk);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[2], "="))
@@ -7525,7 +7605,7 @@ pass:
 #endif
 			var_equals(ev[1], ev[3], '=', script, h);
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -7542,7 +7622,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		// redink1 added
@@ -7559,7 +7639,7 @@ pass:
 				}
 			}
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"set_dink_speed"))
@@ -7573,7 +7653,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1
@@ -7587,7 +7667,7 @@ pass:
 				g_dglos.mDinkBasePush = g_nlist[0];
 			}
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"reset_timer"))
@@ -7596,7 +7676,7 @@ pass:
 			g_dglos.time_start = GetBaseApp()->GetGameTick();
 			g_dglos.g_playerInfo.minutes = 0;
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -7612,7 +7692,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -7629,7 +7709,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"add_exp"))
@@ -7643,7 +7723,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -7658,7 +7738,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -7673,7 +7753,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"kill_this_magic"))
@@ -7687,7 +7767,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -7704,7 +7784,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(2);
+			ugly_return(2);
 		}
 
 		if (compare(ev[1], (char*)"wait_for_button"))
@@ -7715,13 +7795,13 @@ pass:
 			g_dglos.g_wait_for_button.script = script;
 			g_dglos.g_wait_for_button.active = true;
 			g_dglos.g_wait_for_button.button = 0;
-			return(2);
+			ugly_return(2);
 		}
 
 		if (compare(ev[1], (char*)"stop_wait_for_button"))
 		{
 			g_dglos.g_wait_for_button.active = false;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"copy_bmp_to_screen"))
@@ -7738,7 +7818,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"say"))
@@ -7752,7 +7832,7 @@ pass:
 				if (g_nlist[1] == 0)
 				{
 					LogMsg("Say_stop error:  Sprite 0 can talk? Yeah, didn't think so.");
-					return(0);
+					ugly_return(0);
 				}
 
 				if (g_nlist[1] != 1000)
@@ -7763,7 +7843,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"draw_screen"))
@@ -7780,10 +7860,10 @@ pass:
 			if (g_scriptInstance[script]->sprite == 1000)
 			{
 				BuildScreenBackground();
-				return(0);
+				ugly_return(0);
 			}
 			BuildScreenBackground();
-			return(2);
+			ugly_return(2);
 		}
 
 		if (compare(ev[1], (char*)"free_items"))
@@ -7796,7 +7876,7 @@ pass:
 					g_dglos.g_returnint += 1;
 				}
 			}
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -7804,14 +7884,14 @@ pass:
 		{
 			g_dglos.g_returnint = 0;
 			kill_cur_item();
-			return(2);
+			ugly_return(2);
 		}
 
 		if (compare(ev[1], (char*)"kill_cur_magic"))
 		{
 			g_dglos.g_returnint = 0;
 			kill_cur_magic();
-			return(2);
+			ugly_return(2);
 		}
 
 		if (compare(ev[1], (char*)"free_magic"))
@@ -7825,7 +7905,7 @@ pass:
 					g_dglos.g_returnint += 1;
 				}
 			}
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -7846,7 +7926,7 @@ pass:
 
 			
 			draw_status_all();
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -7858,7 +7938,7 @@ pass:
 			if (locate(g_dglos.weapon_script, "ARM")) run_script(g_dglos.weapon_script);
 
 
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"arm_magic"))
@@ -7869,7 +7949,7 @@ pass:
 			g_dglos.magic_script = load_script(g_dglos.g_playerInfo.g_MagicData[*pcur_magic].name, 1000, false);
 			if (locate(g_dglos.magic_script, "ARM")) run_script(g_dglos.magic_script);
 
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -7882,7 +7962,7 @@ pass:
 			//redink1 fix for correct indicator on mini-map
 			if (g_MapInfo.indoor[*pmap] == 0)
 				g_dglos.g_playerInfo.last_map = *pmap;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -7893,10 +7973,10 @@ pass:
 			if (talk_get(script))
 			{
 				//      Msg("Question gathered successfully.");
-				return(2);
+				ugly_return(2);
 			}
 
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -7910,7 +7990,7 @@ pass:
 				if (g_nlist[1] == 0)
 				{
 					LogMsg("Say_stop error:  Sprite 0 can talk? Yeah, didn't think so.");
-					return(0);
+					ugly_return(0);
 				}
 
 				kill_text_owned_by(g_nlist[1]);   
@@ -7925,11 +8005,11 @@ pass:
 				//Msg("Sprite %d marked callback true.", sprite);
 
 				strcpy_safe(pLineIn, h);  
-				return(2);
+				ugly_return(2);
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -7944,7 +8024,7 @@ pass:
 				if (text_owned_by(g_nlist[1])) 
 				{
 					g_dglos.g_returnint = 0;
-					return(0);  
+					ugly_return(0);  
 				}
 
 				kill_returning_stuff(script);
@@ -7954,12 +8034,12 @@ pass:
 				g_sprite[sprite].callback = script;
 				strcpy_safe(pLineIn, h);  
 
-				return(2);
+				ugly_return(2);
 
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -7980,12 +8060,12 @@ pass:
 				g_dglos.g_playerInfo.last_talk = script;     
 				strcpy_safe(pLineIn, h);  
 
-				return(2);
+				ugly_return(2);
 
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -8001,12 +8081,12 @@ pass:
 				sprite = say_text_xy(slist[0], g_nlist[1], g_nlist[2], script);                             
 				g_dglos.g_returnint = sprite;
 				strcpy_safe(pLineIn, h);               
-				return(0);
+				ugly_return(0);
 
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"restart_game"))
@@ -8030,7 +8110,7 @@ pass:
 			//lets attach our vars to the scripts
 			attach();
 			*/
-			return(2);
+			ugly_return(2);
 		}       
 
 		if (compare(ev[1], (char*)"wait"))
@@ -8051,11 +8131,11 @@ pass:
 #endif
 				int cb1 = add_callback("",g_nlist[0],0,script);        
 
-				return(2);
+				ugly_return(2);
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"preload_seq"))
@@ -8071,7 +8151,7 @@ pass:
 
 			strcpy_safe(pLineIn, h);  
 			*/
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"script_attach"))
@@ -8085,7 +8165,7 @@ pass:
 				g_scriptInstance[script]->sprite = g_nlist[0];
 			}
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"draw_hard_sprite"))
@@ -8108,7 +8188,7 @@ pass:
 
 			}
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -8138,7 +8218,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -8152,13 +8232,13 @@ pass:
 				if (g_nlist[0] == 0)
 				{
 					LogMsg("Error: sp_script cannot process sprite 0??");  
-					return(0);
+					ugly_return(0);
 				}
 				kill_scripts_owned_by(g_nlist[0]);
 				if (!slist[1][0] || load_script(slist[1], g_nlist[0], true) == 0)
 				{
 					g_dglos.g_returnint = 0;
-					return(0);
+					ugly_return(0);
 				}
 				//if (no_running_main == true) LogMsg("Not running %s until later..", g_scriptInstance[g_sprite[g_nlist[0]].script]->name);
 
@@ -8176,7 +8256,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -8191,7 +8271,7 @@ pass:
 				if (mysc == 0)
 				{
 					g_dglos.g_returnint = 0;
-					return(0);
+					ugly_return(0);
 				}
 				locate(mysc, "MAIN");
 				int tempreturn = mysc;
@@ -8200,7 +8280,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"run_script_by_number"))
@@ -8218,7 +8298,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -8232,7 +8312,7 @@ pass:
 			fill_hard_sprites();
 			fill_back_sprites();
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -8241,7 +8321,7 @@ pass:
 			g_forceBuildBackgroundFromScratch = true;
 			BuildScreenBackground(false, true);
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"fade_down"))
@@ -8255,7 +8335,7 @@ pass:
 
 			strcpy_safe(pLineIn, h);
 
-			return(2);
+			ugly_return(2);
 		}
 
 		if (compare(ev[1], (char*)"fade_up"))
@@ -8268,7 +8348,7 @@ pass:
 			g_dglos.cycle_script = script; 
 			g_dinkFadeAlpha = 1;
 			strcpy_safe(pLineIn, h);  
-			return(2);
+			ugly_return(2);
 		}
 
 		if (compare(ev[1], (char*)"kill_this_task"))
@@ -8278,7 +8358,7 @@ pass:
 				run_script(g_scriptInstance[script]->proc_return);
 			}
 			kill_script(script);
-			return(2);
+			ugly_return(2);
 		}
 
 	
@@ -8298,7 +8378,7 @@ pass:
 			//uncomment below if you want this to actually work
 			//PostMessage(g_hWndMain, WM_CLOSE, 0, 0);
 			
-			return(2);
+			ugly_return(2);
 		}
 
 		//redink1 added
@@ -8317,7 +8397,7 @@ pass:
 					g_dglos.mLoopMidi = false;
 				}
 			}
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"playmidi"))
@@ -8346,7 +8426,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 		if (compare(ev[1], (char*)"stopmidi"))
 		{
@@ -8354,7 +8434,7 @@ pass:
 			h = &h[strlen(ev[1])];
 			StopMidi();
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"LOGMSG"))
@@ -8367,7 +8447,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -8375,7 +8455,7 @@ pass:
 		{
 			kill_repeat_sounds_all();
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 
 		}
 
@@ -8383,14 +8463,14 @@ pass:
 		{
 			g_dglos.midi_active = false;
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 
 		}
 		if (compare(ev[1], (char*)"turn_midi_on"))
 		{
 			g_dglos.midi_active = true;
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"Playsound"))
@@ -8407,7 +8487,7 @@ pass:
 				g_dglos.g_returnint = 0;
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -8427,7 +8507,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -8451,7 +8531,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sound_set_kill"))
@@ -8473,7 +8553,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"save_game"))
@@ -8487,7 +8567,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -8505,7 +8585,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"fill_screen"))
@@ -8524,7 +8604,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -8562,11 +8642,11 @@ pass:
 					LoadGame(gameSlot);
 
 				}
-				return(2);
+				ugly_return(2);
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"game_exist"))
@@ -8588,7 +8668,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"move_stop"))
@@ -8614,13 +8694,13 @@ pass:
 					g_sprite[g_nlist[0]].move_script = script;
 					strcpy_safe(pLineIn, h);
 					if (g_script_debug_mode) LogMsg("Move_stop: Sprite %d, dir %d, num %d", g_nlist[0], g_nlist[1], g_nlist[2]);
-					return(2);
+					ugly_return(2);
 				}
 
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"load_sound"))
@@ -8640,7 +8720,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"debug"))
@@ -8655,14 +8735,14 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"goto"))
 		{
 			//LogMsg("Goto %s", ev[2]);
 			locate_goto(ev[2], script);
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added for global functions
@@ -8677,7 +8757,7 @@ pass:
 				//Msg(slist[0]);
 			}
 			strcpy_safe(pLineIn, h);
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"make_global_int"))
@@ -8693,7 +8773,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -8714,10 +8794,10 @@ pass:
 				strip_beginning_spaces(h);
 				//Msg("Found =...continuing equation");
 				strcpy_safe(pLineIn, h);
-				return(4);
+				ugly_return(4);
 			}
 
-			return(0);
+			ugly_return(0);
 
 		}
 
@@ -8742,7 +8822,7 @@ pass:
 			}  else LogMsg("Failed getting parms for Busy()");
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added
@@ -8784,7 +8864,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"inside_box"))
@@ -8807,7 +8887,7 @@ pass:
 			}  else LogMsg("Failed getting parms for inside_box");
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -8821,7 +8901,7 @@ pass:
 			}  else LogMsg("Failed getting parms for Random()");
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 		
 		if (compare(ev[1], (char*)"get_version"))
@@ -8829,7 +8909,15 @@ pass:
 			h = &h[strlen(ev[1])];
 			g_dglos.g_returnint = C_DINK_VERSION;
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
+		}
+
+		if (compare(ev[1], (char*)"get_client_fork"))
+		{
+			h = &h[strlen(ev[1])];
+			g_dglos.g_returnint = 1;
+			strcpy_safe(pLineIn, h);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"is_base_game"))
@@ -8838,7 +8926,7 @@ pass:
 			g_dglos.g_returnint = 1;
 			if (!g_dglo.m_dmodGameDir.empty()) g_dglos.g_returnint = 0;
 			strcpy_safe(pLineIn, h);
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"get_client_version"))
@@ -8846,7 +8934,7 @@ pass:
 			h = &h[strlen(ev[1])];
 			g_dglos.g_returnint = GetApp()->GetVersion()*100;
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"get_platform"))
@@ -8855,9 +8943,37 @@ pass:
 			g_dglos.g_returnint = GetEmulatedPlatformID();
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 	
+		if (compare(ev[1], (char*)"show_quick_message"))
+		{
+			h = &h[strlen(ev[1])];
+			int32 p[20] = { 2,0,0,0,0,0,0,0,0,0 };
+			if (get_parms(ev[1], script, h, p))
+			{
+				ShowQuickMessage(slist[0]);
+			}
+
+			strcpy_safe(pLineIn, h);
+			ugly_return(0);
+		}
+
+		if (compare(ev[1], (char*)"set_disable_savestates"))
+		{
+			h = &h[strlen(ev[1])];
+			int32 p[20] = { 1,0,0,0,0,0,0,0,0,0 };
+			if (get_parms(ev[1], script, h, p))
+			{
+				if (g_nlist[0] == 0 || g_nlist[0] == 1)
+				{
+					g_dglos.m_saveStatesDisabled = g_nlist[0];
+				}
+			}
+			g_dglos.g_returnint = g_dglos.m_saveStatesDisabled;
+			ugly_return(0);
+		}
+		
 		if (compare(ev[1], (char*)"SHOW_POPUP"))
 		{
 			h = &h[strlen(ev[1])];
@@ -8868,30 +8984,30 @@ pass:
 				
 				Entity *pBG = GetEntityRoot()->GetEntityByName("GameMenu");
 				assert(pBG);
-				if (!pBG) return 0;
+				if (!pBG) ugly_return(0);
                 VariantList vList(pBG, string(slist[0]));
 				GetMessageManager()->CallEntityFunction(pBG, g_nlist[1], "ShowQuickTip", &vList); 
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
 		if (compare(ev[1], (char*)"initfont"))
 		{
 			LogMsg("Ignoring Initfont command");
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"get_truecolor"))
 		{
 			//h = &h[strlen(ev[1])];
-			if (g_dglo.m_dmodGameDir == "lyna/") return 0;
+			if (g_dglo.m_dmodGameDir == "lyna/") ugly_return(0);
 			
 			g_dglos.g_returnint = 1;
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"get_burn"))
@@ -8899,7 +9015,7 @@ pass:
 			h = &h[strlen(ev[1])];
 			g_dglos.g_returnint = 0;
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"set_mode"))
@@ -8914,7 +9030,7 @@ pass:
 			}  else LogMsg("Failed to set mode");
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"kill_shadow"))
@@ -8931,13 +9047,11 @@ pass:
 
 						g_sprite[jj].active = 0;
 					}
-
-
 				}
 			}  
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"create_sprite"))
@@ -8951,10 +9065,10 @@ pass:
 					g_nlist[3],g_nlist[4],
 					100);
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  0;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -8973,7 +9087,7 @@ pass:
 
 						if (g_script_debug_mode) LogMsg("Sp returned %d.", ii);
 						g_dglos.g_returnint = ii;
-						return(0);
+						ugly_return(0);
 					}
 
 				}
@@ -8984,7 +9098,7 @@ pass:
 
 			}
 			g_dglos.g_returnint =  0;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9002,7 +9116,7 @@ pass:
 				g_dglos.g_returnint =  g_sprite[g_nlist[0]].script;
 
 			}
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9015,14 +9129,14 @@ pass:
 			{
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].speed);
 
-				if (IsBadSpriteIndex(g_nlist[0], ev[1])) { return 0; }
+				if (IsBadSpriteIndex(g_nlist[0], ev[1])) { ugly_return(0); }
 
 				if (g_nlist[1] != -1) changedir(g_sprite[g_nlist[0]].dir, g_nlist[0], g_sprite[g_nlist[0]].base_walk);
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9039,10 +9153,10 @@ pass:
 
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].range);
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9057,10 +9171,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].nocontrol);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_nodraw"))
@@ -9074,10 +9188,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].nodraw);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9092,10 +9206,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].picfreeze);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9113,7 +9227,7 @@ pass:
 					{
 						//LogMsg("Ok, sprite with brain %d is %d", g_nlist[0], i);
 						g_dglos.g_returnint = i;
-						return(0);
+						ugly_return(0);
 					}
 
 				}
@@ -9121,7 +9235,7 @@ pass:
 			//LogMsg("Ok, sprite with brain %d is 0", g_nlist[0], i);
 
 			g_dglos.g_returnint =  0;
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added this to make Paul Pliska's life more fulfilling
@@ -9138,7 +9252,7 @@ pass:
 					{
 						//LogMsg("Ok, sprite with brain %d is %d", g_nlist[0], i);
 						g_dglos.g_returnint = i;
-						return(0);
+						ugly_return(0);
 					}
 
 				}
@@ -9146,7 +9260,7 @@ pass:
 			//LogMsg("Ok, sprite with brain %d is 0", g_nlist[0], i);
 
 			g_dglos.g_returnint =  0;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9173,7 +9287,7 @@ pass:
 				{
 					LogMsg("Get rand brain can't find any brains with %d.",g_nlist[0]);
 					g_dglos.g_returnint =  0;
-					return(0);
+					ugly_return(0);
 				}
 
 				int mypick = (rand() % cter)+1;
@@ -9187,7 +9301,7 @@ pass:
 						if (cter == mypick)
 						{
 							g_dglos.g_returnint = ii;
-							return(0);
+							ugly_return(0);
 						}
 					}
 
@@ -9196,11 +9310,9 @@ pass:
 
 			}
 
-
 			g_dglos.g_returnint =  0;
-			return(0);
+			ugly_return(0);
 		}
-
 
 
 		if (compare(ev[1], (char*)"sp_sound"))
@@ -9220,10 +9332,10 @@ pass:
 					SoundPlayEffect( g_sprite[g_nlist[0]].sound,22050, 0,g_nlist[0], 1);
 
 				}
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_attack_wait"))
@@ -9237,10 +9349,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1]+g_dglos.g_dinkTick, &g_sprite[g_nlist[0]].attack_wait);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9257,10 +9369,10 @@ pass:
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].active);
 
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_disabled"))
@@ -9276,10 +9388,10 @@ pass:
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].disabled);
 
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_size"))
@@ -9293,10 +9405,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].size);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 		if (compare(ev[1], (char*)"activate_bow"))
 		{     
@@ -9308,13 +9420,13 @@ pass:
 			g_dglos.g_bowStatus.script = script;
 			g_dglos.g_bowStatus.hitme = false;
 			g_dglos.g_bowStatus.time = 0;
-			return(2);      
+			ugly_return(2);      
 		}
 
 		if (compare(ev[1], (char*)"get_last_bow_power"))
 		{     
 			g_dglos.g_returnint = g_dglos.g_bowStatus.last_power;
-			return(0);      
+			ugly_return(0);      
 		}
 
 		if (compare(ev[1], (char*)"sp_que"))
@@ -9328,10 +9440,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].que);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_gold"))
@@ -9345,10 +9457,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].gold);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_base_walk"))
@@ -9362,10 +9474,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite_noreturn(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].base_walk);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9381,10 +9493,10 @@ pass:
 				}
 
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].target);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"stopcd"))
@@ -9392,7 +9504,7 @@ pass:
 
 			LogMsg("Stopped cd");
 
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9407,10 +9519,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite_noreturn(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].base_hit);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_base_attack"))
@@ -9424,10 +9536,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite_noreturn(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].base_attack);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9442,10 +9554,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite_noreturn(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].base_idle);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9460,10 +9572,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite_noreturn(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].base_die);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9471,13 +9583,13 @@ pass:
 		{     
 			for (int jj = 1; jj < g_dglos.last_sprite_created; jj++)
 				if (g_sprite[jj].active) g_sprite[jj].disabled = true;
-			return(0);
+			ugly_return(0);
 		}
 		if (compare(ev[1], (char*)"enable_all_sprites"))
 		{     
 			for (int jj = 1; jj < g_dglos.last_sprite_created; jj++)
 				if (g_sprite[jj].active) g_sprite[jj].disabled = false;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9492,10 +9604,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].pseq);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9510,10 +9622,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].pframe);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9535,10 +9647,10 @@ pass:
 
 
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].seq);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"editor_type"))
@@ -9549,10 +9661,10 @@ pass:
 			{
 				//Msg("Setting editor_type..");
 				g_dglos.g_returnint = change_edit_char(g_nlist[0], g_nlist[1], &g_dglos.g_playerInfo.spmap[*pmap].type[g_nlist[0]]);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 		if (compare(ev[1], (char*)"editor_seq"))
 		{     
@@ -9561,10 +9673,10 @@ pass:
 			if (get_parms(ev[1], script, h, p))
 			{
 				g_dglos.g_returnint = change_edit(g_nlist[0], g_nlist[1], &g_dglos.g_playerInfo.spmap[*pmap].seq[g_nlist[0]]);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"editor_frame"))
@@ -9574,10 +9686,10 @@ pass:
 			if (get_parms(ev[1], script, h, p))
 			{
 				g_dglos.g_returnint = change_edit_char(g_nlist[0], g_nlist[1], &g_dglos.g_playerInfo.spmap[*pmap].frame[g_nlist[0]]);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9594,10 +9706,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = g_sprite[g_nlist[0]].sp_index;
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_brain"))
@@ -9623,10 +9735,10 @@ pass:
 
 					}
 				}
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_exp"))
@@ -9641,10 +9753,10 @@ pass:
 				}
 
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].exp);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 		if (compare(ev[1], (char*)"set_button"))
 		{     
@@ -9655,10 +9767,10 @@ pass:
 
 				g_dglos.g_playerInfo.button[g_nlist[0]] = g_nlist[1];
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9673,10 +9785,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].reverse);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9691,10 +9803,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].noclip);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_touch_damage"))
@@ -9708,10 +9820,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite_noreturn(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].touch_damage);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9726,10 +9838,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].brain_parm);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 		if (compare(ev[1], (char*)"sp_brain_parm2"))
 		{     
@@ -9742,10 +9854,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].brain_parm2);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_follow"))
@@ -9759,10 +9871,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].follow);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"set_smooth_follow"))
@@ -9779,10 +9891,10 @@ pass:
 				{
 					g_dglos.smooth_follow = true;
 				}
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_frame"))
@@ -9812,10 +9924,10 @@ pass:
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].frame);
 				
 				
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_frame_delay"))
@@ -9831,10 +9943,10 @@ pass:
 				}
 
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].frame_delay);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9846,7 +9958,7 @@ pass:
 			{
 				//redink1 fix for freeze if hurt value is less than 0
 				if (g_nlist[1] < 0)
-					return(0);
+					ugly_return(0);
 
 				if (g_nlist[0] <0 || g_nlist[0] >= C_MAX_SPRITES_AT_ONCE)
 				{
@@ -9873,10 +9985,10 @@ pass:
 							run_script(g_sprite[g_nlist[0]].script);
 						}
 
-						return(0);
+						ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9901,10 +10013,10 @@ pass:
 						g_dglos.g_smallMap.sprite[g_sprite[g_nlist[0]].sp_index].hard = g_dglos.g_returnint;
 					}
 				}
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_move_nohard"))
@@ -9919,10 +10031,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].move_nohard);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 		if (compare(ev[1], (char*)"sp_flying"))
 		{     
@@ -9937,10 +10049,10 @@ pass:
 				}
 				
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].flying);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -9960,10 +10072,10 @@ pass:
 				{
 					g_sprite[g_nlist[0]].wait = 0;
 				}
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 		if (compare(ev[1], (char*)"sp_kill"))
 		{     
@@ -9974,14 +10086,14 @@ pass:
 			if (g_nlist[0] < C_MAX_SPRITES_AT_ONCE && g_nlist[0] >= 0) //SETH this fixes crash when killing milder
 			{
 				g_sprite[g_nlist[0]].kill = g_nlist[1];
-				return(0);
+				ugly_return(0);
 			} else
 			{
 				LogMsg("Aborting crash in sp_kill");
 			}
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"screenlock"))
@@ -9997,7 +10109,7 @@ pass:
 			}
 			//redink1 - set screenlock() to return the screenlock value
 			g_dglos.g_returnint = g_dglos.screenlock; 
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"stop_entire_game"))
@@ -10016,10 +10128,10 @@ pass:
 						&rcRect, DDBLTFAST_NOCOLORKEY);
 						*/
 			
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -10030,10 +10142,10 @@ pass:
 			if (get_parms(ev[1], script, h, p))
 			{
 				g_dglos.walk_off_screen = g_nlist[0];
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"push_active"))
@@ -10043,10 +10155,10 @@ pass:
 			if (get_parms(ev[1], script, h, p))
 			{
 				g_dglos.g_pushingEnabled = g_nlist[0];
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -10062,10 +10174,10 @@ pass:
 					return 0;
 				}
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].x);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -10085,10 +10197,10 @@ pass:
 
 				}
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -10108,10 +10220,10 @@ pass:
 
 				}
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -10128,10 +10240,10 @@ pass:
 				}
 				
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].mx);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_move_x"))
@@ -10141,9 +10253,9 @@ pass:
 			if (get_parms(ev[1], script, h, p))
 			{
 				change_sprite_noreturn(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].mx);
-				return(0);
+				ugly_return(0);
 			}
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_my"))
@@ -10159,10 +10271,10 @@ pass:
 				}
 				
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].my);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_move_y"))
@@ -10177,9 +10289,9 @@ pass:
 				}
 				
 				change_sprite_noreturn(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].my);
-				return(0);
+				ugly_return(0);
 			}
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"scripts_used"))
@@ -10192,7 +10304,7 @@ pass:
 #ifdef _DEBUG
 LogMsg("%d scripts used", g_dglos.g_returnint);
 #endif
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_hitpoints"))
@@ -10210,10 +10322,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].hitpoints);
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_attack_hit_sound"))
@@ -10231,10 +10343,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].attack_hit_sound);
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_attack_hit_sound_speed"))
@@ -10252,10 +10364,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].attack_hit_sound_speed);
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -10274,10 +10386,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].strength);
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_defense"))
@@ -10295,10 +10407,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].defense);
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"init"))
@@ -10308,10 +10420,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			if (get_parms(ev[1], script, h, p))
 			{
 				figure_out(slist[0], 0);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_distance"))
@@ -10328,10 +10440,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				}
 
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].distance);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_nohit"))
@@ -10348,10 +10460,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				}
 
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].nohit);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_notouch"))
@@ -10368,10 +10480,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				}
 
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].notouch);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"compare_weapon"))
@@ -10383,7 +10495,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				g_dglos.g_returnint = 0;
 				if (*pcur_weapon == 0)
 				{
-					return(0);
+					ugly_return(0);
 				}
 
 				if (compare(g_dglos.g_playerInfo.g_itemData[*pcur_weapon].name, slist[0]))
@@ -10391,9 +10503,9 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 					g_dglos.g_returnint = 1;
 
 				}
-				return(0);
+				ugly_return(0);
 			}
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -10406,7 +10518,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				g_dglos.g_returnint = 0;
 				if (*pcur_magic == 0)
 				{
-					return(0);
+					ugly_return(0);
 				}
 
 				//redink1 fix so compare_magic works!
@@ -10415,9 +10527,9 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 					g_dglos.g_returnint = 1;
 
 				}
-				return(0);
+				ugly_return(0);
 			}
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -10432,7 +10544,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				if (g_nlist[0] < 1 || g_nlist[0] >= C_MAX_SPRITES_AT_ONCE)
 				{
 					LogMsg("Error: Can't compare sprite script for sprite %d!??!?!", g_nlist[0]);
-					return(0);
+					ugly_return(0);
 				}
 				if (g_sprite[g_nlist[0]].active)
 				{
@@ -10440,28 +10552,28 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 					if (g_sprite[g_nlist[0]].script == 0)
 					{
 						LogMsg("Compare sprite script says: Sprite %d has no script.",g_nlist[0]);
-						return(0);
+						ugly_return(0);
 					}
 
 					if (!g_scriptInstance[g_sprite[g_nlist[0]].script])
 					{
 						LogMsg("Compare sprite script says: Sprite %d says it has script %d, but actually it's null, so no?", g_nlist[0], g_sprite[g_nlist[0]].script);
-						return(0);
+						ugly_return(0);
 					}
 					if (compare(slist[1], g_scriptInstance[g_sprite[g_nlist[0]].script]->name))
 					{
 						g_dglos.g_returnint = 1;
-						return(0);
+						ugly_return(0);
 					}
 
 				} else
 				{
 					LogMsg("Can't compare sprite script, sprite not active.");
 				}
-				return(0);
+				ugly_return(0);
 			}
 
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"sp_y"))
@@ -10477,10 +10589,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				}
 
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].y);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -10498,10 +10610,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 				
 				g_dglos.g_returnint = change_sprite(g_nlist[0], g_nlist[1], &g_sprite[g_nlist[0]].timer);
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -10515,7 +10627,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				run_script(g_scriptInstance[script]->proc_return);
 				kill_script(script);
 			}
-			return(2);
+			ugly_return(2);
 		} 
 
 
@@ -10538,7 +10650,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 - clears the editor information, useful for save games and such
@@ -10556,7 +10668,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				}
 			}
 			g_dglos.g_returnint = 1;
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 - returns the number of variables used
@@ -10568,7 +10680,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				if (g_dglos.g_playerInfo.var[i].active == true)
 					m++;
 			g_dglos.g_returnint = m;
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added this function to load a new map/dink.dat
@@ -10584,7 +10696,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added this function to load a pallete from any bmp
@@ -10597,7 +10709,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				assert(!"We don't support this");
 			}
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -10622,7 +10734,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -10636,7 +10748,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				strcpy_safe(g_dglos.save_game_info,slist[0]);
 			}
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added this function to show the item screen
@@ -10650,7 +10762,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			}
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added this function,, and took it away.
@@ -10671,7 +10783,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 		}
 		}
 		strcpy_safe(s, h);  
-		return(0);
+		ugly_return(0);
 		}*/
 
 		//redink1 added this function
@@ -10682,7 +10794,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 			g_dglos.g_returnint = (GetBaseApp()->GetGameTick()-g_dglos.time_start) / (1000*60);
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added this function
@@ -10701,7 +10813,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			strftime(mytime,5,"%H",time_now);
 			g_dglos.g_returnint += 60*atoi(mytime);
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added this function
@@ -10716,7 +10828,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			strftime(mytime,5,"%Y",time_now);
 			g_dglos.g_returnint = atoi(mytime);
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added this function
@@ -10731,7 +10843,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			strftime(mytime,5,"%m",time_now);
 			g_dglos.g_returnint = atoi(mytime);
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added this function
@@ -10746,7 +10858,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			strftime(mytime,5,"%d",time_now);
 			g_dglos.g_returnint = atoi(mytime);
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added this function
@@ -10759,7 +10871,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				g_dglos.g_returnint = abs(g_nlist[0]);
 			}
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added this function
@@ -10772,7 +10884,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 		returnint = sin((double)nlist[0]);
 		}
 		strcpy_safe(s, h);  
-		return(0);
+		ugly_return(0);
 		}
 
 		//redink1 added this function
@@ -10785,7 +10897,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 		returnint = cos((double)nlist[0]);
 		}
 		strcpy_safe(s, h);  
-		return(0);
+		ugly_return(0);
 		}
 
 		//redink1 added this function
@@ -10798,7 +10910,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 		returnint = tan((double)nlist[0]);
 		}
 		strcpy_safe(s, h);  
-		return(0);
+		ugly_return(0);
 		}*/
 
 		//redink1 added this function
@@ -10811,7 +10923,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				g_dglos.g_returnint = sqrt((double)abs(g_nlist[0]));
 			}
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added this function
@@ -10824,7 +10936,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				g_dglos.g_returnint = (g_nlist[0] % g_nlist[1]);
 			}
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[1], (char*)"breakpoint"))
@@ -10832,7 +10944,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			h = &h[strlen(ev[1])];
 			int32 p[20] = {0,0,0,0,0,0,0,0,0,0};  
 			assert(!"Breakpoint!");
-			return(0);
+			ugly_return(0);
 		}
 		//redink1
 		if (compare(ev[1], (char*)"sp_custom"))
@@ -10871,10 +10983,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 					g_dglos.g_returnint = g_customSpriteMap[g_nlist[1]]->find( slist[0] )->second;
 				}
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint = -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1
@@ -10895,10 +11007,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 				g_dglos.g_returnint = g_sprite[g_nlist[0]].bloodseq;
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1
@@ -10920,10 +11032,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 				g_dglos.g_returnint = g_sprite[g_nlist[0]].bloodseq;
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added to get index of specified item
@@ -10945,10 +11057,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 						}
 					}
 				}
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added to get index of specified magic spell
@@ -10970,10 +11082,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 						}
 					}
 				}
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 clip stuff
@@ -10995,10 +11107,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 				g_dglos.g_returnint = g_sprite[g_nlist[0]].alt.left;
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 clip stuff
@@ -11020,10 +11132,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 				g_dglos.g_returnint = g_sprite[g_nlist[0]].alt.top;
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 clip stuff
@@ -11044,10 +11156,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 				g_dglos.g_returnint = g_sprite[g_nlist[0]].alt.right;
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 clip stuff
@@ -11069,10 +11181,10 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 				g_dglos.g_returnint = g_sprite[g_nlist[0]].alt.bottom;
 
-				return(0);
+				ugly_return(0);
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added so developers can change or see what tile is at any given position
@@ -11086,16 +11198,27 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				if (g_nlist[0] > 0 && g_nlist[0] <= 96)
 				{
 					//Only change the value if it is greater than 0...
-					if (g_nlist[1] > 0)
+					
+					//max should be 5216.  And shouldn't it start at zero?
+					
+					
+					if (g_nlist[1] > 0 )
 					{
-						g_dglos.g_smallMap.t[g_nlist[0]-1].num = g_nlist[1];
+						if (g_nlist[1] <= 5216)
+						{
+							g_dglos.g_smallMap.t[g_nlist[0] - 1].num = g_nlist[1];
+						}
+						else
+						{
+							LogError("map_tile sent tile index of %d?", g_nlist[1]);
+						}
 					}
-					g_dglos.g_returnint = g_dglos.g_smallMap.t[g_nlist[0]-1].num;
-					return(0);
+					g_dglos.g_returnint = g_dglos.g_smallMap.t[g_nlist[0] - 1].num;
+					ugly_return(0);
 				}
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 		//redink1 added so a developer can retrieve/modify a hard tile
@@ -11114,11 +11237,11 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 						g_dglos.g_smallMap.t[g_nlist[0]-1].althard = g_nlist[1];
 					}
 					g_dglos.g_returnint = g_dglos.g_smallMap.t[g_nlist[0]-1].althard;
-					return(0);
+					ugly_return(0);
 				}
 			}
 			g_dglos.g_returnint =  -1;
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -11130,7 +11253,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			strip_beginning_spaces(h);
 			var_equals(ev[1], ev[3], '+', script, h);
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[2], "*="))
@@ -11141,7 +11264,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			strip_beginning_spaces(h);
 			var_equals(ev[1], ev[3], '*', script, h);
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -11156,7 +11279,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			var_equals(ev[1], ev[3], '-', script, h);
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -11170,7 +11293,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			var_equals(ev[1], ev[3], '/', script, h);
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 		if (compare(ev[2], "*") || compare(ev[2], "*="))
@@ -11183,7 +11306,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			var_equals(ev[1], ev[3], '*', script, h);
 
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 		if (compare(ev[1], (char*)"external"))
 		{
@@ -11196,16 +11319,18 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			{
 				int myscript1 = load_script(slist[0],g_scriptInstance[script]->sprite, false);
 				
-#ifdef _DEBUG
+				if (g_script_debug_mode)
+				{
+					LogMsg("Running EXTERNAL %s inside of %s script %d, spawned script %d (owned by sprite %d)",
+						slist[1], slist[0], script, myscript1,
+						g_scriptInstance[script]->sprite);
+				}
 
-				LogMsg("Running EXTERNAL from script %d, spawned script %d (owned by sprite %d)", script, myscript1,
-					g_scriptInstance[script]->sprite);
-#endif
 
 				if (myscript1 == 0)
 				{
 					LogMsg("Error:  Couldn't find %s.c (for procedure %s)", slist[0], slist[1]);
-					return(0);
+					ugly_return(0);
 				}
 				g_scriptInstance[myscript1]->arg1 = g_nlist[2];
 				g_scriptInstance[myscript1]->arg2 = g_nlist[3];
@@ -11220,7 +11345,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 					g_scriptInstance[myscript1]->proc_return = script;
 					run_script(myscript1);    
 
-					return(2);
+					ugly_return(2);
 				} else 
 				{
 					LogMsg("Error:  Couldn't find procedure %s in %s.", slist[1], slist[0]);
@@ -11228,7 +11353,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				}
 			}    
 			strcpy_safe(pLineIn, h);  
-			return(0);
+			ugly_return(0);
 		}
 
 
@@ -11258,7 +11383,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 				g_scriptInstance[myscript]->proc_return = script;
 				run_script(myscript);    
-				return(2);
+				ugly_return(2);
 			} else
 			{
 				for (int i = 0; strlen(g_dglos.g_playerInfo.func[i].func) > 0 && i < 100; i++)
@@ -11279,7 +11404,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 						{
 							g_scriptInstance[myscript]->proc_return = script;
 							run_script(myscript);    
-							return(2);
+							ugly_return(2);
 						}
 						break;
 					}
@@ -11289,7 +11414,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 				kill_script(myscript);          
 			}
 
-			return(0);
+			ugly_return(0);
 
 		}
 
@@ -11299,21 +11424,35 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 bad:
 	strcpy_safe(pLineIn, h);
-	return(0);
+	uglyReturn = 0;
+	goto ugly;
 
 good:
 	strcpy_safe(pLineIn, h);
-	//s = h
-	//Msg("ok, continuing with running %s..",s);
-	return(1);
+	uglyReturn = 1;
+	goto ugly;
+
+ugly:
+
+#ifdef C_STACK_HACK
+	SAFE_DELETE_ARRAY(pBuffer);
+#endif
+	
+	return uglyReturn;
 }
 
 
 void run_script (int script)
 {
 	int result;
+	
+#ifdef C_STACK_HACK
+	
+	char* line = new char[512];
+#else
 	char line[512];
-
+	
+#endif
 	line[0] = 0;
 
 	if (g_dglos.bKeepReturnInt)
@@ -11328,7 +11467,16 @@ void run_script (int script)
 	if (g_scriptInstance[script] != NULL)
 	{
 		if (g_script_debug_mode)
+		{
 			LogMsg("Script %s is entered at offset %d.", g_scriptInstance[script]->name, g_scriptInstance[script]->current);
+
+#ifdef _DEBUG
+			if (script == 8)
+			{
+				LogMsg("Something happening");
+			}
+#endif
+		}
 	} else
 	{
 		LogMsg("Error:  Tried to run a script that doesn't exist in memory.  Nice work.");
@@ -11351,6 +11499,9 @@ redo:
 				if (!read_next_line(script, line))
 				{
 					//we've reached the end of the script
+#ifdef C_STACK_HACK
+					SAFE_DELETE_ARRAY(line);
+#endif
 					return;
 				}
 crappa:
@@ -11371,8 +11522,12 @@ crappa:
 
 			if (result == 2) 
 			{
-				if (g_script_debug_mode) LogMsg("giving script the boot");
+				if (g_script_debug_mode) LogMsg("Leaving script %d", script);
 				//quit script
+#ifdef C_STACK_HACK
+				SAFE_DELETE_ARRAY(line);
+#endif
+
 				return;
 			}
 			if (result == 0) break;
@@ -11400,8 +11555,13 @@ redo2:
 
 			if (result == 2) 
 			{
-				if (g_script_debug_mode) LogMsg("giving script the boot");
+				if (g_script_debug_mode) LogMsg("Leaving script %d", script);
+
 				//quit script
+#ifdef C_STACK_HACK
+				SAFE_DELETE_ARRAY(line);
+#endif
+
 				return;
 			}
 			if (result == 0) break;
@@ -11416,6 +11576,11 @@ redo2:
 			kill_script(script);
 		}
 	}
+
+#ifdef C_STACK_HACK
+	SAFE_DELETE_ARRAY(line);
+#endif
+
 }
 
 
@@ -15798,6 +15963,7 @@ bool DinkIsMouseActive()
 	}
 	return false;
 }
+
 void DinkSetCursorPosition(CL_Vec2f vPos)
 {
 
@@ -15860,23 +16026,7 @@ void UpdateCursorPosition(int dx, int dy)
 
 void  Scrawl_OnMouseInput(void)
 {
-	/*
-	if (g_lastMouseClick)
-	{
-		mouse1 = true;
-		g_lastMouseClick = false;
-	}
-
-	if (g_lastMouseX != 0 || g_lastMouseY != 0)
-	{
-		g_lastMouseX = 0;
-		g_lastMouseY = 0;
-	}
-
-	*/
-
 	UpdateCursorPosition(0, 0);
-
 }
 
 void button_brain(int h )
@@ -15948,8 +16098,6 @@ CL_Rect GetItemRectFromIndex(int num, bool magic)
 
 	return CL_Rect(mx, my, mx+65, my+55);
 }
-
-
 
 void SetCurInventoryPositionIndex(int itemIndex, bool bIsMagic)
 {
@@ -17312,7 +17460,11 @@ void SetDefaultVars(bool bFullClear)
 	g_dglo.m_bFullKeyboardActive = false;
 	g_dglo.m_bForceControlsRebuild = false;
 	g_dglo.m_bWaitingForSkippableConversation = false;
+
+	g_dglos.m_saveStatesDisabled = 0;
+	
 	g_dglos.g_DinkUpdateTimerMS =0;
+	
 
 	memset(g_dglo.m_dirInput, 0, sizeof(DINK_INPUT_COUNT*sizeof(bool)));
 	memset(g_dglo.m_dirInputFinished, 0, sizeof(DINK_INPUT_COUNT*sizeof(bool)));
@@ -17375,6 +17527,7 @@ void SetDefaultVars(bool bFullClear)
 	g_dglos.g_returnint = 0;
 	g_dglos.bKeepReturnInt = false;
 	g_dglos.process_count = 0;
+	
 
 	if (bFullClear)
 	{
@@ -17392,7 +17545,7 @@ void SetDefaultVars(bool bFullClear)
 		memset(&short_play, 0, sizeof(player_short_info));
 
 		//redink1 code for version change
-		strcpy_safe(g_dglos.dversion_string, "v1.10");
+		strcpy_safe(g_dglos.dversion_string, "v1.12"); //dinkc version?
 		strcpy_safe(g_dglos.save_game_info, "Level &level");
 		g_dglos.g_curPicIndex = 1;
 		//GetBaseApp()->SetGameTick(0); //can cause problems .. don't do it here
@@ -17631,6 +17784,8 @@ bool LoadGameChunk(int gameIDToLoad, float &progressOut)
 		assert(!lpDDSBackGround);
 		
 		//init back buffer at 8 bit, if highcolor is needed later it will auto convert
+		LogMsg("initting dink buffers...");
+
 		lpDDSBackGround = InitOffscreenSurface(C_DINK_SCREENSIZE_X, C_DINK_SCREENSIZE_Y, IDirectDrawSurface::MODE_SHADOW_GL, false);
 		DDBLTFX     ddbltfx;
 		ddbltfx.dwFillColor = g_dglos.last_fill_screen_palette_color;
@@ -17638,7 +17793,7 @@ bool LoadGameChunk(int gameIDToLoad, float &progressOut)
 
 		lpDDSBuffer = InitOffscreenSurface(C_DINK_SCREENSIZE_X, C_DINK_SCREENSIZE_Y, IDirectDrawSurface::MODE_SHADOW_GL);
 
-		
+		LogMsg("Finishing initting buffers");
 
 		if (!lpDDSBuffer ) return false;
 		
@@ -17724,7 +17879,11 @@ progressOut = 0.8f;
 
 	progressOut = 0.9f;	
 	script = load_script("main", 0, true);
+	
+	//LogMsg(g_scriptBuffer[script]);
+
 	locate(script, "main");
+
 	run_script(script);
 	attach();
 
@@ -18618,6 +18777,13 @@ void SaveStateWithExtra()
 {
 	if (!lpDDSBack || g_dglo.m_curLoadState != FINISHED_LOADING) return;
 
+	if (g_dglos.m_saveStatesDisabled != 0)
+	{
+		ShowQuickMessage("DMOD has `4disabled save states`` for this section");
+		GetAudioManager()->Play("audio/heavy_bump.wav");
+		return;
+		
+	}
 	LogMsg("Saving state");
 	GetAudioManager()->Play("audio/quick_save.wav");
 	SaveState(DinkGetSavePath()+"quicksave.dat");
@@ -18627,11 +18793,9 @@ void SaveStateWithExtra()
 void SaveAutoSave()
 {
 
-	
 	LogMsg("Saving autosave");
 	//GetAudioManager()->Play("audio/quick_save.wav");
 	SaveState(DinkGetSavePath()+"autosave.dat");
-	
 	
 	//add extra info because I don't want to change the save format
 	uint32 minutes = ( GetBaseApp()->GetGameTick()-g_dglos.time_start) / (1000*60);
@@ -18658,6 +18822,15 @@ void LoadStateWithExtra(string forcedFileName)
 	if (!forcedFileName.empty())
 	{
 		fName = forcedFileName;
+	}
+	else
+	{
+		if (g_dglos.m_saveStatesDisabled != 0)
+		{
+			ShowQuickMessage("DMOD has `4disabled save states`` for this section");
+			GetAudioManager()->Play("audio/heavy_bump.wav");
+			return;
+		}
 	}
 
 	GetAudioManager()->Play("audio/quick_load.wav");

@@ -11,18 +11,15 @@ DragControlComponent::DragControlComponent()
 {
 	SetName("DragControl");
 
+	SAMPLE_COUNT = 8; //unused
 
-SAMPLE_COUNT = 8; //unused
+	LENGTH_REQUIRED_FOR_MOVE = 16;
 
-LENGTH_REQUIRED_FOR_MOVE = 16;
-
-if (IsIphoneSize || IsIphone4Size) LENGTH_REQUIRED_FOR_MOVE = 32; //the screen is tiny, need a few more pixels
-
-	if (IsIphone4Size)
+	float sizeMult = (float)GetOriginalScreenSizeX() / 1024.0f;
+	if (sizeMult > 1.0f)
 	{
-		LENGTH_REQUIRED_FOR_MOVE *= 2;
+		LENGTH_REQUIRED_FOR_MOVE *= sizeMult;
 	}
-
 
 }
 

@@ -29,7 +29,8 @@ include_directories("${SHARED}/android/optional_src/libs/libcurl_ssl/include")
 
 
 
-add_definitions(-Wno-error=format-security -DANDROID_NDK -DBOOST_ALL_NO_LIB -DBUILD_ANDROID -DPLATFORM_ANDROID -DRT_JPG_SUPPORT -DRT_ENABLE_FMOD -DRT_USE_LIBCURL -DRT_PNG_SUPPORT)
+#the C_STACK_HACK define makes it so it won't crash on certain dmods, check dink.cpp to see how it's used there
+add_definitions(-Wno-error=format-security -Wl,-stack_size -Wl,0x800000 -DANDROID_NDK -DBOOST_ALL_NO_LIB -DBUILD_ANDROID -DPLATFORM_ANDROID -DRT_JPG_SUPPORT -DRT_ENABLE_FMOD -DRT_USE_LIBCURL -DRT_PNG_SUPPORT -DC_STACK_HACK)
 
 message("Building ${CMAKE_BUILD_TYPE}")
 
@@ -95,7 +96,7 @@ ${COMPPATH}/UnpackArchiveComponent.cpp ${COMPPATH}/ArcadeInputComponent.cpp ${CO
 ${PPATH}/L_Defination.cpp ${PPATH}/L_DroppingEffect.cpp ${PPATH}/L_EffectEmitter.cpp ${PPATH}/L_ExplosionEffect.cpp ${PPATH}/L_MotionController.cpp ${PPATH}/L_Particle.cpp 
 ${PPATH}/L_ParticleEffect.cpp ${PPATH}/L_ParticleMem.cpp ${PPATH}/L_ParticleSystem.cpp ${PPATH}/L_ShootingEffect.cpp ${PPATH}/L_EffectManager.cpp 
 
-${APP}/App.cpp ${APP}/Component/ActionButtonComponent.cpp ${APP}/Component/CursorComponent.cpp ${APP}/Component/DragControlComponent.cpp 
+${APP}/App.cpp ${APP}/Component/ActionButtonComponent.cpp ${APP}/Component/CursorComponent.cpp ${APP}/Component/DragControlComponent.cpp ${APP}/Component/emulatedPointerComponent.cpp
 ${APP}/Component/FPSControlComponent.cpp ${APP}/Component/InventoryComponent.cpp ${APP}/dink/dink.cpp ${APP}/dink/FFReader.cpp ${APP}/dink/misc_util.cpp ${APP}/dink/ScriptAccelerator.cpp 
 ${APP}/video_gl.cpp 
 ${APP}/GUI/AboutMenu.cpp ${APP}/GUI/BrowseMenu.cpp ${APP}/GUI/DebugMenu.cpp ${APP}/GUI/DMODInstallMenu.cpp 

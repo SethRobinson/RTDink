@@ -8,7 +8,7 @@ Thanks for installing Dink Smallwood HD, here are some features of this version:
 - In mobile builds, supports many screen sizes and full touch controls
 - Checks on startup for new versions
 
-Controls (or use a gamepad):
+Controls (or use a gamepad, will auto map decent button configurations for for xbox, ps4, ps5, 8bitdo controllers):
 
 F5 - Quick save
 F9 - Quick load

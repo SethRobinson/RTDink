@@ -15,13 +15,18 @@ REM -pvrtc4 for compressed, -pvrt4444 or -pvrt8888 (32 bit)  for uncompressed
 
 
 
-cd game
-for /r %%f in (*.bmp *.png) do ..\%PACK_EXE%  -pvrt8888 %%f
-cd ..
+:cd game
+:for /r %%f in (*.bmp *.png) do ..\%PACK_EXE%  -8888 %%f
+:cd ..
 
 cd interface
-for /r %%f in (*.bmp *.png) do ..\%PACK_EXE%  -ultra_compress 90 -pvrt8888 %%f
+for /r %%f in (*.bmp *.png) do ..\%PACK_EXE% -ultra_compress 90 -pvrt8888 %%f
 cd ..
+
+REM Replace one rttex because I can't figure out how to generate it correctly without a weird flickering in the anim.  Did RTPACK.EXE change
+REM Somehow?!!
+copy interface\ipad\bkgd_anim_fire.temp interface\ipad\bkgd_anim_fire.rttex
+copy interface\ipad\bg_stone_overlay.temp interface\ipad\bg_stone_overlay.rttex
 
 REM Custom things that don't need preprocessing
 
@@ -34,7 +39,7 @@ del interface\font_*.rttex
 
 rmdir ..\bin\interface /S /Q
 rmdir ..\bin\audio /S /Q
-rmdir ..\bin\game /S /Q
+:rmdir ..\bin\game /S /Q
 
 REM copy the stuff we care about
 
@@ -44,8 +49,8 @@ xcopy interface ..\bin\interface /E /F /Y /EXCLUDE:exclude.txt
 mkdir ..\bin\audio
 xcopy audio ..\bin\audio /E /F /Y /EXCLUDE:exclude.txt
 
-mkdir ..\bin\game
-xcopy game ..\bin\game /E /F /Y /EXCLUDE:game_exclude.txt
+:mkdir ..\bin\game
+:xcopy game ..\bin\game /E /F /Y /EXCLUDE:game_exclude.txt
 
 
 REM Convert everything to lowercase, otherwise the iphone will choke on the files
@@ -55,9 +60,10 @@ del icon.rttex
 del default.rttex
 
 REM Do a little cleanup in  the dink bin dir as well
-del ..\bin\continue_state.dat /s
-del ..\bin\save*.dat /s
-del ..\bin\quicksave.dat /s
-del ..\bin\autosave*.dat /s
-
+:del ..\bin\continue_state.dat /s
+:del ..\bin\save*.dat /s
+:del ..\bin\quicksave.dat /s
+:del ..\bin\autosave*.dat /s
+del ..\bin\interface\ipad\bkgd_anim_fire.temp
+del ..\bin\interface\ipad\bg_stone_overlay.temp
 pause

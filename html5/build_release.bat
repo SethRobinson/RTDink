@@ -19,7 +19,7 @@ set CURPATH=%cd%
 cd ..
 call app_info_setup.bat
 :um, why does the emsdk_env.bat not fully work unless I'm in the emscripten dir?  Whatever, we'll move there and then back
-cd %EMSCRIPTEN_ROOT%
+cd /D %EMSCRIPTEN_ROOT%
 call emsdk_env.bat
 :Move back to original directory
 cd %CURPATH%
@@ -29,19 +29,11 @@ where /q emsdk_env.bat
 
 if ERRORLEVEL 1 (
     ECHO You need the environmental EMSCRIPTEN_ROOT set.  This should be set in setup_base.bat in proton's main dir, then called from app_info_setup.bat.
-     beeper
+     %RT_UTIL%\beeper
      pause
      exit
 ) 
 
-where /q sed
-
-if ERRORLEVEL 1 (
-    ECHO You need the utility sed in your path if you want insert.bat to work. Install tortoisegit, I think it comes with that.
-     beeper
-     pause
-     exit
-) 
 
 :Oh, we better build our media just in case
 cd ../media
@@ -61,6 +53,8 @@ set COMPPATH=%SHARED%\Entity
 set PNGSRC=%SHARED%\Irrlicht\source\Irrlicht\libpng
 set JPGSRC=%SHARED%\Irrlicht\source\Irrlicht\jpeglib
 set LZMASRC=%SHARED%\Irrlicht\source\Irrlicht\lzma
+
+:goto skip
 
 :unused, for networking
 :%SHARED%\Network\NetHTTP.cpp %SHARED%\Network\NetSocket.cpp %SHARED%\Network\NetUtils.cpp
@@ -116,17 +110,20 @@ set APP_SRC=%APP%\App.cpp %APP%\Component\ActionButtonComponent.cpp %APP%\Compon
 %APP%\video_gl.cpp ^
 %APP%\GUI\AboutMenu.cpp %APP%\GUI\BrowseMenu.cpp %APP%\GUI\DebugMenu.cpp %APP%\GUI\DMODInstallMenu.cpp ^
 %APP%\GUI\EnterURLMenu.cpp %APP%\GUI\DMODMenu.cpp %APP%\GUI\GameMenu.cpp %APP%\GUI\LoadMenu.cpp %APP%\GUI\LogMenu.cpp %APP%\GUI\MainMenu.cpp %APP%\GUI\OptionsMenu.cpp ^
-%APP%\GUI\PauseMenu.cpp %APP%\GUI\PopUpMenu.cpp %APP%\GUI\QuickTipMenu.cpp %APP%\GUI\ReadTextMenu.cpp %APP%\GUI\ExpiredMenu.cpp 
+%APP%\GUI\PauseMenu.cpp %APP%\GUI\PopUpMenu.cpp %APP%\GUI\QuickTipMenu.cpp %APP%\GUI\ReadTextMenu.cpp %APP%\GUI\ExpiredMenu.cpp %APP%\Component\EmulatedPointerComponent.cpp
 REM **************************************** END SOURCE
 
-:unused so far: -s USE_GLFW=3 -s NO_EXIT_RUNTIME=1 -s FORCE_ALIGNED_MEMORY=1 -s EMTERPRETIFY=1  -s EMTERPRETIFY_ASYNC=1 -DRT_EMTERPRETER_ENABLED -s TOTAL_MEMORY=16MB  -s PRECISE_F32=2 
+
+:unused so far: -s USE_GLFW=3 -s NO_EXIT_RUNTIME=1 -s FORCE_ALIGNED_MEMORY=1 -s EMTERPRETIFY=1  -s EMTERPRETIFY_ASYNC=1 -DRT_EMTERPRETER_ENABLED -s TOTAL_MEMORY=16MB
 :To skip font loading so it needs no resource files or zlib, add  -DC_NO_ZLIB
 SET CUSTOM_FLAGS= -DHAS_SOCKLEN_T -DBOOST_ALL_NO_LIB -DPLATFORM_HTML5 -DRT_USE_SDL_AUDIO -DRT_JPG_SUPPORT ^
--DRT_PNG_SUPPORT -DC_GL_MODE -s LEGACY_GL_EMULATION=1 -DPLATFORM_HTML5  -s ALLOW_MEMORY_GROWTH=1 ^
--Wno-c++11-compat-deprecated-writable-strings --ignore-dynamic-linking --memory-init-file 0 ^
--Wno-switch -Wno-writable-strings -Wno-shift-negative-value -s EXTRA_EXPORTED_RUNTIME_METHODS=['ccall','cwrap']
+-DRT_PNG_SUPPORT -s WASM=1 -DC_GL_MODE -s LEGACY_GL_EMULATION=1 -DPLATFORM_HTML5  --ignore-dynamic-linking -s ALLOW_MEMORY_GROWTH=1 -s PRECISE_F32=2 ^
+-Wno-deprecated-builtins -Wno-c++11-compat-deprecated-writable-strings -Wno-shift-negative-value -Wno-deprecated-non-prototype --memory-init-file 0 ^
+-Wno-switch -Wno-writable-strings -Wno-shift-negative-value -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap'] -sASYNCIFY -DRT_EMTERPRETER_ENABLED -s TOTAL_MEMORY=16MB --use-preload-cache
 
 :unused:   -s FULL_ES2=1 --emrun
+
+@echo off
 
 IF %USE_HTML5_CUSTOM_MAIN% EQU 1 (
 :add this define so we'll manually call mainf from the html later instead of it being auto
@@ -136,21 +133,22 @@ SET FINAL_EXTENSION=js
 SET FINAL_EXTENSION=html
 )
 
-:-s EMTERPRETIFY=1  -s EMTERPRETIFY_ASYNC=1 -DRT_EMTERPRETER_ENABLED -s WASM=1
 IF %DEBUG% EQU 0 (
 echo Compiling in release mode
-SET CUSTOM_FLAGS=%CUSTOM_FLAGS% -O2 -DNDEBUG
+SET CUSTOM_FLAGS=%CUSTOM_FLAGS% -O3 -DNDEBUG
 ) else (
 echo Compiling in debug mode
 :removed -s SAFE_HEAP=1 , causes alignment error with FMOD  -g4 
-set EMCC_DEBUG=1
-SET CUSTOM_FLAGS=%CUSTOM_FLAGS% -D_DEBUG -s GL_UNSAFE_OPTS=0 -s SAFE_HEAP=1 -s WARN_ON_UNDEFINED_SYMBOLS=1 -s EXCEPTION_DEBUG=1 -s STACK_OVERFLOW_CHECK=2 -s ASSERTIONS=1 -s DEMANGLE_SUPPORT=1 -s ALIASING_FUNCTION_POINTERS=0 --emrun 
+:set EMCC_DEBUG=1  -s SAFE_HEAP=1
+
+SET CUSTOM_FLAGS=%CUSTOM_FLAGS% -D_DEBUG -s GL_UNSAFE_OPTS=0 -s WARN_ON_UNDEFINED_SYMBOLS=1 -s EXCEPTION_DEBUG=1 -s STACK_OVERFLOW_CHECK=2 -s ASSERTIONS=1 -s DEMANGLE_SUPPORT=1 -s ALIASING_FUNCTION_POINTERS=0
 )
 
 SET INCLUDE_DIRS=-I%SHARED% -I%APP% -I../../shared/util/boost -I../../shared/ClanLib-2.0/Sources -I../../shared/Network/enet/include ^
 -I%ZLIBPATH% -I../../shared/html5
 
 :compile some libs into a separate thing, otherwise our list of files is too long and breaks stuff
+
 
 del %APP_NAME%.js*
 del %APP_NAME%.html
@@ -166,18 +164,26 @@ mkdir WebLoaderData
 copy /Y ..\..\shared\html5\templates\WebLoaderData .\WebLoaderData
 
 call emcc %CUSTOM_FLAGS% %INCLUDE_DIRS% ^
-%ZLIB_SRC% %JPG_SRC% %PNG_SRC% %PARTICLE_SRC% -o temp.bc
+%ZLIB_SRC% %JPG_SRC% %PNG_SRC% %PARTICLE_SRC% -r -o temp.o
 
-:../../shared/html5/fmodstudio/api/studio/lib/fmodstudio.bc
+:../../shared/html5/fmodstudio/api/studio/lib/upstream/wasm/fmodstudioL.wasm
+:../../shared/html5/fmodstudio/api/studio/lib/upstream/js/fmodstudioL.js
+:../../shared/html5/fmodstudio/api/studio/lib/upstream/w32/fmodstudioL.a
+:fmodstudioL.js.mem
+
+
 call emcc %CUSTOM_FLAGS% %INCLUDE_DIRS% ^
-%APP_SRC% %SRC% %COMPONENT_SRC% temp.bc ../../shared/html5/fmodstudio/api/lowlevel/lib/fmod.bc --exclude-file .svn ^
---preload-file ../bin/interface@interface/ --preload-file ../bin/audio@audio/ --preload-file ../bin/dink_html5@dink/ --js-library %SHARED%\html5\SharedJSLIB.js -o %APP_NAME%.%FINAL_EXTENSION%
+%APP_SRC% %SRC% %COMPONENT_SRC% temp.o ../../shared/html5/fmodstudio/api/studio/lib/upstream/w32/fmodstudioL_wasm.a --exclude-file .svn ^
+--preload-file ../bin/interface@interface/ --preload-file ../bin/audio@audio/ --preload-file ../bin/dink_html5@dink/ --js-library %SHARED%\html5\SharedJSLIB.js -lidbfs.js -o %APP_NAME%.%FINAL_EXTENSION%
 
+:skip
+echo on
+@echo on
 REM Make sure the file compiled ok
-if not exist %APP_NAME%.js beeper.exe /p
+if not exist %APP_NAME%.js %RT_UTIL%\beeper.exe /p
 
 IF %USE_HTML5_CUSTOM_MAIN% EQU 1 (
-sed 's/RTTemplateName/%APP_NAME%/g' %CUSTOM_TEMPLATE% > %APP_NAME%.html
+%RT_UTIL%\sed "s/RTTemplateName/%APP_NAME%/g" %CUSTOM_TEMPLATE% > %APP_NAME%.html
 ) 
 
 

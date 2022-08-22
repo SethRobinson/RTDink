@@ -78,8 +78,9 @@ void GameOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity sent fr
 			//if we ONLY want the game to handle this, we'd enable this return...
 			//return;
 		}
+		//if (GetApp()->UseClassicEscapeMenu())
 
-		if (GetApp()->UseClassicEscapeMenu())
+		if (0)
 		{
 
 #ifdef WINAPI
@@ -96,11 +97,8 @@ void GameOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity sent fr
 			*/
 #endif
 
-			g_dglo.m_dirInput[DINK_INPUT_BUTTON5] = true;
-			g_dglo.m_dirInputFinished[DINK_INPUT_BUTTON5] = true;
-
-			ShowQuickMessageBottom("(Use `wF1`` to bring up the Dink HD menu!)");
-			return;
+			
+			//return;
 		}
 		else
 		{
@@ -360,7 +358,7 @@ CL_Vec2f FlipXIfNeeded(CL_Vec2f vPos)
 void AddSpeedUpButton(Entity *pBG)
 {
 
-	if (!GetApp()->GetUsingTouchScreen()) return;
+	if (!GetApp()->GetSystemNeedsTouchControls() && !GetApp()->GetUsingTouchScreen()) return;
 
 	GetBaseApp()->GetEntityRoot()->RemoveEntityByName("speedup", true);
 
@@ -372,11 +370,6 @@ void AddSpeedUpButton(Entity *pBG)
 		vPos = CL_Vec2f(FlipXIfNeeded(GetScreenSizeXf()-4), 4);
 	}
 
-	/*if (IsIphone4())
-	{
-		vPos = CL_Vec2f(GetScreenSizeXf()-170, 4);
-	}
-	*/
 
 	Entity * pButtonEntity =  CreateOverlayButtonEntity(pBG, "speedup", ReplaceWithLargeInFileName("interface/iphone/speed_up_button.rttex"),  vPos.x, vPos.y);
 	pButtonEntity->GetVar("ignoreTouchesOutsideRect")->Set(uint32(1)); //ignore touch-up messages not in our rect
@@ -415,10 +408,24 @@ void OnGameKillKeyboard(VariantList *pVList)
 
 void OnGameProcessHWKey(VariantList *pVList)
 {
+
 	if (pVList->Get(0).GetFloat() != MESSAGE_TYPE_GUI_CHAR) return;
 
+	if (pVList->Get(2).GetUINT32() == VIRTUAL_KEY_BACK)
+	{
+
+		g_dglo.m_dirInput[DINK_INPUT_BUTTON5] = true;
+		g_dglo.m_dirInputFinished[DINK_INPUT_BUTTON5] = true;
+
+		ShowQuickMessageBottom("(Use `wF1`` to bring up the Dink HD menu!)");
+		//LogMsg("Escape hit?");
+		return;
+	}
 		byte c = toupper(char(pVList->Get(2).GetUINT32()));
-	
+#ifdef _DEBUG
+		//LogMsg("Detected key %d", (int)c);
+#endif
+
 		
 		if (c > 26 && c < 255 )
 		{
@@ -600,6 +607,7 @@ void BuildShowingBMPControls(float fadeTimeMS)
 
 void BuildControls(float fadeTimeMS)
 {
+
 	Entity *pBG = GetEntityRoot()->GetEntityByName("GameMenu");
 
 	if (!pBG)
@@ -625,6 +633,7 @@ void BuildControls(float fadeTimeMS)
 
 #endif
 
+	
 	if (GetApp()->GetUsingTouchScreen())
 	{
 		if (g_dglo.GetActiveView() != DinkGlobals::VIEW_ZOOMED && IsDrawingDinkStatusBar())
@@ -671,9 +680,30 @@ void BuildControls(float fadeTimeMS)
 
 	AddViewModeHotspot(pBG);
 
+	/*/
+	float aspect = (float)GetOriginalScreenSizeX() / (float)GetOriginalScreenSizeY();
+	float fakeAspect = (float)GetScreenSizeX() / (float)GetScreenSizeY();
+	float aspectDiff = aspect - fakeAspect;
+
+#ifdef _DEBUG
+	LogMsg("X:%d  Y:%d aspect: %.2f fake aspect: %.2f Diff: %.2f", GetOriginalScreenSizeX(), GetOriginalScreenSizeY(), aspect,
+		fakeAspect, aspectDiff);
+#endif
+
+	float amountToAddToY = aspectDiff - 0.4f;
+	float baseSize = 1.0f;
+	
+	//if we were going to scale icons correctly.. but then we'd also have to edit ActionButtonComponent to match, more work than I'm willing to do right now
+	if (amountToAddToY > 0.1f)
+	{
+		SetScale2DEntity(pButtonEntity, CL_Vec2f(baseSize - (amountToAddToY / 3), baseSize));
+	}
+	*/
+
 	//game icons
 	pButtonEntity =  CreateOverlayButtonEntity(pBG, "inventory", ReplaceWithLargeInFileName("interface/iphone/button_inventory.rttex"),  iconX, iconY);
 	
+
 
 	if (GetApp()->GetIconsOnLeft()) SetAlignmentEntity(pButtonEntity, ALIGNMENT_UPPER_RIGHT);
 	pButtonEntity->GetVar("alpha")->Set(trans);
@@ -682,7 +712,6 @@ void BuildControls(float fadeTimeMS)
 	pButtonEntity->GetShared()->GetFunction("OnOverEnd")->sig_function.connect(&GameOnStopSelect);
 	SetButtonClickSound(pButtonEntity, ""); //no sound
 
-	
 	pButtonEntity =  CreateActionButtonEntity(pBG, "magic", ReplaceWithLargeInFileName("interface/iphone/button_magic_base.rttex"),  iconX, iconY);
 	iconY += iconSpacerY;
 	if (GetApp()->GetIconsOnLeft()) SetAlignmentEntity(pButtonEntity, ALIGNMENT_UPPER_RIGHT);
@@ -691,6 +720,7 @@ void BuildControls(float fadeTimeMS)
 	pButtonEntity->GetShared()->GetFunction("OnOverStart")->sig_function.connect(&GameOnSelect);
 	pButtonEntity->GetShared()->GetFunction("OnOverEnd")->sig_function.connect(&GameOnStopSelect);
 	SetButtonClickSound(pButtonEntity, ""); //no sound
+	
 	
 	pButtonEntity =  CreateOverlayButtonEntity(pBG, "examine", ReplaceWithLargeInFileName("interface/iphone/button_examine.rttex"),  iconX, iconY);
 	iconY += iconSpacerY;
@@ -703,7 +733,8 @@ void BuildControls(float fadeTimeMS)
 
 	//pButtonEntity->GetComponentByName("Button2D")->GetVar("buttonStyle")->Set((uint32) Button2DComponent::BUTTON_STYLE_CLICK_ON_TOUCH);
 	SetButtonClickSound(pButtonEntity, ""); //no sound
-		
+	
+	
 	pButtonEntity->GetParent()->MoveEntityToBottomByAddress(pButtonEntity);
 	
 	if (g_dglo.GetActiveView() != DinkGlobals::VIEW_ZOOMED && IsDrawingDinkStatusBar())
@@ -745,6 +776,8 @@ void BuildControls(float fadeTimeMS)
 
 		SetButtonClickSound(pButtonEntity, ""); //no sound
 		pButtonEntity->GetParent()->MoveEntityToBottomByAddress(pButtonEntity);
+		
+
 	}
 
  		FadeEntity(pBG, true, GetApp()->GetVar("gui_transparency")->GetFloat(), fadeTimeMS, 0);
@@ -955,8 +988,6 @@ void BuildDialogModeControls(float fadeTimeMS)
 
 			pButtonEntity = CreateButtonHotspot(pBG, "select", DinkToNativeCoords(CL_Vec2f(556, 412)), vButtonSize);
 
-
-
 			pButtonEntity->GetVar("alpha")->Set(trans);
 			pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&GameOnSelect);
 		//	pButtonEntity->GetShared()->GetFunction("OnOverEnd")->sig_function.connect(&GameOnStopSelect);
@@ -976,7 +1007,25 @@ void RecomputeAspectRatio();
 void UpdateControlsGUIIfNeeded()
 {
 
-	if (g_dglo.m_lastGameMode != GetDinkGameMode()
+	if (GetTimeOfLastTouchMS() + 1000 > GetSystemTimeTick() )
+	{
+		//enable touch mode
+		GetApp()->SetUsingTouchScreen(true);
+	}
+	else
+	{
+		if (GetTimeOfLastGamepadInputMS() + 300 > GetSystemTimeTick())
+		{
+			GetApp()->SetUsingTouchScreen(false);
+
+		}
+	}
+
+	
+
+	static bool bIsUsingTouchScreenLast = GetApp()->GetUsingTouchScreen();
+	
+	if (GetApp()->GetUsingTouchScreen() != bIsUsingTouchScreenLast || g_dglo.m_lastGameMode != GetDinkGameMode()
 		|| g_dglo.m_lastSubGameMode != GetDinkSubGameMode()
 		//|| g_dglo.m_bWaitingForSkippableConversation != DinkIsWaitingForSkippableDialog()
 		|| g_dglo.m_lastActiveView != g_dglo.GetActiveView()
@@ -985,7 +1034,9 @@ void UpdateControlsGUIIfNeeded()
 		|| g_dglo.m_bForceControlsRebuild
 	)
 	{
-		
+		LogMsg("Rebuilding controls");
+		bIsUsingTouchScreenLast = GetApp()->GetUsingTouchScreen();
+
 		if (g_dglo.m_bLastFullKeyboardActive && g_dglo.m_bFullKeyboardActive)
 		{
 			//don't care, leave the keyboard up
@@ -1350,30 +1401,29 @@ void GameFinishLoading(Entity *pBG)
 
 	SetTouchPaddingEntity(pButtonEntity, CL_Rectf(0,0,0,0));
 	//SetButtonStyleEntity(pButtonEntity, Button2DComponent::BUTTON_STYLE_CLICK_ON_TOUCH);
+	AddHotKeyToButton(pButtonEntity, VIRTUAL_KEY_F1);
 
-	AddHotKeyToButton(pButtonEntity, VIRTUAL_KEY_BACK);	
 	//AddHotKeyToButton(pButtonEntity, VIRTUAL_KEY_PROPERTIES);	
 
 	pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&GameOnSelect);
 	SetButtonClickSound(pButtonEntity, ""); //no sound
-
-	if (!GetApp()->GetUsingTouchScreen())
-	{
-		pButtonEntity->GetVar("alpha")->Set(0.0f);
-	} else
+	
+	if (GetApp()->GetSystemNeedsTouchControls())
 	{
 		pButtonEntity->GetVar("alpha")->Set(trans);
+	} else
+	{
+		pButtonEntity->GetVar("alpha")->Set(0.0f);
 	}
 
+	
 	FadeOutAndKillEntity(pBG->GetEntityByName("game_loading"), true, 300, 50, TIMER_SYSTEM);
 
 	pBG->GetShared()->GetFunction("OnRender")->sig_function.connect(&OnGameMenuRender);
 	pBG->GetShared()->GetFunction("OnDelete")->sig_function.connect(&OnGameMenuDelete);
 	
-	
 	GetBaseApp()->m_sig_arcade_input.connect(pBG->GetFunction("OnArcadeInput")->sig_function);
 	pBG->GetShared()->GetFunction("OnArcadeInput")->sig_function.connect(&OnArcadeInput);
-
 
 //if (IsDesktop())
 {

@@ -157,6 +157,7 @@ public:
 	CL_Vec3f m_centeringOffset;
 	CL_Mat4f m_dink_matrix;
 	CL_Mat4f m_dink_matrix_inverted;
+	
 };
 //#define KYLES_CRAZY_VERSION
 
@@ -212,7 +213,7 @@ struct sequence
 	
 };
 
-const int32 C_DINK_VERSION = 110;
+const int32 C_DINK_VERSION = 112;
 const int32 num_soundbanks = 20;
 const int32 max_idata = 1000; 
 const int32 max_sounds = 100;
@@ -720,8 +721,10 @@ struct DinkGlobalsStatic
 
 	char copy_bmp_to_screen[C_SHOWN_BITMAP_SIZE];
 	int32 status_might_not_require_update;
+	int32 m_saveStatesDisabled;
 
-	char m_bufferForExpansion[4835];
+	//add new vars above this, and remove the byte count from below.  You can safely assume they start as 0
+	char m_bufferForExpansion[4831];
 };
 
 

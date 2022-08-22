@@ -28,7 +28,6 @@ void FPSControlComponent::OnAdd(Entity *pEnt)
 	
 	m_bTouchingArrows = false;
 	
-
 	//register ourselves to render if the parent does
 	GetParent()->GetFunction("OnRender")->sig_function.connect(1, boost::bind(&FPSControlComponent::OnRender, this, _1));
 	GetParent()->GetFunction("OnUpdate")->sig_function.connect(1, boost::bind(&FPSControlComponent::OnUpdate, this, _1));
@@ -90,8 +89,30 @@ void FPSControlComponent::OnAdd(Entity *pEnt)
 		}
 		
 		m_pArrowEnt->GetVar("pos2d")->Set(vArrowPos);
+		
+		
 		m_vArrowImageSizeOver2 = m_pArrowEnt->GetVar("size2d")->GetVector2()/2;
-	
+
+		//do some hacking to make the control-pad arrow look round on very landscaped displays.  The whole way
+		//dink does a fake video mode confuses everything, but it's done this way for.. reasons.
+		
+		float aspect = (float)GetOriginalScreenSizeX() / (float)GetOriginalScreenSizeY();
+		float fakeAspect = (float)GetScreenSizeX() / (float)GetScreenSizeY();
+		float aspectDiff = aspect - fakeAspect;
+
+#ifdef _DEBUG
+		LogMsg("X:%d  Y:%d aspect: %.2f fake aspect: %.2f Diff: %.2f", GetOriginalScreenSizeX(), GetOriginalScreenSizeY(), aspect,
+			fakeAspect, aspectDiff);
+#endif
+		
+		float amountToAddToY = aspectDiff - 0.4f;
+		float baseSize = 1.0f;
+
+		if (amountToAddToY > 0.1f)
+		{
+			SetScale2DEntity(m_pArrowEnt, CL_Vec2f(baseSize, baseSize+amountToAddToY));
+		}
+		
         VariantList vList;
 		OnOverEnd(&vList);
 	}

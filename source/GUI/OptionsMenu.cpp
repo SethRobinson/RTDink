@@ -201,7 +201,7 @@ void OptionsMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity 
 
 	if (pEntClicked->GetName() == "sbeat_ad")
 	{
-		string url = "http://www.60beat.com/?Click=326";
+		string url = "https://www.60beat.com/?Click=326";
 		PopUpCreate(pEntClicked->GetParent()->GetParent()->GetParent(), "Would you like to visit 60beat's webpage and learn more about their gamepad?", url,
 			"cancel", "`wCancel", "url", "`wLaunch", true);
 		return;
@@ -354,16 +354,27 @@ void OptionsMenuAddScrollContent(Entity *pParent)
 	pEnt = CreateTextLabelEntity(pBG, "title", GetScreenSizeXf()/2, iPhoneMapY(40), "Options");
 	SetupTextEntity(pEnt, FONT_LARGE);
 	SetAlignmentEntity(pEnt, ALIGNMENT_CENTER);
+	string msg;
+	
+	if (GetEmulatedPlatformID() != PLATFORM_ID_HTML5)
+	{
+		msg += "`wTo use a gamepad or external keyboard, just pair it or plug it in and it will be auto-detected.\n";
+	}
+
 	if (IsDesktop())
 	{
-		string msg =
+		msg +=
 			"`wNOTE:```8 Click and drag anywhere to scroll, this was originally written for mobile so it's weird.``\n\nGame Dir: " + g_dglo.m_gamePathWithDir + "\n"\
 			"DMOD Dir: " + g_dglo.m_dmodGamePathWithDir
 			;
 
+	}
+
+	if (!msg.empty())
+	{
+
 		CL_Vec2f vTextBoxPos(startX, y);
 		CL_Vec2f vTextBounds(iPhoneMapX(434), iPhoneMapY(200));
-
 
 		Entity* pEntTB = CreateTextBoxEntity(pBG, "", vTextBoxPos, vTextBounds, msg);
 		y += pEntTB->GetVar("size2d")->GetVector2().y;
@@ -392,7 +403,7 @@ void OptionsMenuAddScrollContent(Entity *pParent)
 
 	//control method
 	
-	if (GetApp()->GetUsingTouchScreen())
+	if (GetApp()->GetSystemNeedsTouchControls() || GetApp()->GetUsingTouchScreen())
 	{
 
 	pEnt = CreateTextLabelEntity(pBG, "", startX, y, "Controls:");
@@ -537,8 +548,6 @@ void OptionsMenuAddScrollContent(Entity *pParent)
 	SetupLightBarSelect(pBG, "fps_limit_", videoFPS, MAKE_RGBA(190, 0, 35, 255));
 	*/
 
-	if (GetPlatformID() != PLATFORM_ID_IOS)
-	{
 		//y += spacerY;
 		//audio on/off button
 
@@ -557,7 +566,6 @@ void OptionsMenuAddScrollContent(Entity *pParent)
 
 		bool bSound = GetApp()->GetShared()->GetVar("sound")->GetUINT32() != 0;
 		SetupLightBarSelect(pBG, "sound_", bSound, MAKE_RGBA(190, 0, 35, 255));
-	}
 	
 	//music vol slider
 	y += spacerY+iPhoneMapY2X(26);
@@ -566,7 +574,7 @@ void OptionsMenuAddScrollContent(Entity *pParent)
 	pSliderComp->GetVar("progress")->GetSigOnChanged()->connect(&OnProgressChangedMusic);
 
 	//transparency slider
-	if (GetApp()->GetUsingTouchScreen())
+	if (GetApp()->GetSystemNeedsTouchControls() || GetApp()->GetUsingTouchScreen())
 	{
 		y += spacerY+iPhoneMapY2X(36);
 		pSliderComp = CreateSlider(pBG, startX, y, iPhoneMapX(360), "interface/slider_button.rttex", "Min", "Game Interface Visibility", "Max");
@@ -585,8 +593,7 @@ void OptionsMenuAddScrollContent(Entity *pParent)
 
 	}
 	
-//if (GetPlatformID() != PLATFORM_ID_IOS)
-{
+
 		//smoothing
 		pEnt = CreateTextLabelEntity(pBG, "", startX, y, "Pic smoothing:");
 		SetupTextEntity(pEnt,fontID);
@@ -608,7 +615,7 @@ void OptionsMenuAddScrollContent(Entity *pParent)
 		y += spacerY;
 		pEnt = CreateTextButtonEntity(pBG, "FPS",startX, y, "Toggle FPS Display");
 		pEnt->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&OptionsMenuOnSelect);
-}
+
 	
     VariantList vList(pParent->GetParent());
 	ResizeScrollBounds(&vList);
