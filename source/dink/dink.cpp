@@ -8897,7 +8897,14 @@ pass:
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
-				g_dglos.g_returnint = (rand() % g_nlist[0])+g_nlist[1];
+			    if (g_nlist[0] == 0)
+			    {
+			        LogMsg("ERROR: script called random function with range set to 0! returning base value...");
+				g_dglos.g_returnint = g_nlist[1];
+			    } else
+			    {
+			        g_dglos.g_returnint = (rand() % g_nlist[0])+g_nlist[1];
+			    }
 			}  else LogMsg("Failed getting parms for Random()");
 
 			strcpy_safe(pLineIn, h);  
