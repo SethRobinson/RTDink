@@ -1,27 +1,101 @@
 # Dink Smallwood HD
 
--- To just download working versions to play Dink Smallwood:
+## To just download working versions to play Dink Smallwood:
 
 Visit https://www.rtsoft.com/pages/dink.php for installers for Windows, Mac, iOS, Android
 
--- How to compile and run the source to create dink.exe on Windows using Visual Studio 2017:
+The latest version should also be mirrored on The Dink Network: https://www.dinknetwork.com/file/dink_smallwood_hd/
 
-* First, be able to compile and run the proton example RTSimpleApp.  More info at www.protonsdk.com on installing and setting up proton
-* Move the RTDink directory checkout to a sub directory of your proton dir. (it works exactly like a proton example)
-* Sign up at fmod.com and download FMod Studio for Windows.  Unzip to <proton dir>\shared\win\fmodstudio, so you should have a proton\shared\win\fmodstudio\api dir, etc.
-* Install Visual Studio 2017 (Community version works fine and is free) and open RTDink\windows_vs2017\iPhoneRTDink.sln
+
+## How to compile and run the source to create dink.exe on Windows using Visual Studio 2022:
+### Step 1 - Getting the Proton Engine and building RTSimpleApp
+
+1. Clone the proton engine from https://github.com/SethRobinson/proton
+
+`git clone https://github.com/SethRobinson/proton`
+2. Run `proton\RTSimpleApp\media\update_media.bat` to prepare the proton texture and sound assets
+
+
+3. Open `proton\RTSimpleApp\windows_vc\RTSimpleApp.sln`
+
+
+4. Select `DebugGL | x64` or `ReleaseGL | x64` configuration, build and run it, it should work!
+
+NOTE: If you want to build for Win32, you will have to manually copy the 32 bit versions of the following dll files:
+* `proton\shared\win\lib\zlib1.dll`
+* `proton\shared\win\lib\audiere\bin\audiere.dll`
+
+To restore 64 bit libraries, copy these instead:
+* `proton\shared\win\lib\zlib1.dll`
+* `proton\shared\win\lib\64\zlibwapi.dll`
+* `proton\shared\win\lib\audiere\lib64\audiere.dll`
+
+If you have any issues, check out these two pages for more info on the Proton engine:
+* https://www.rtsoft.com/wiki/doku.php?id=proton:win_setup
+* https://www.rtsoft.com/wiki/doku.php?id=proton:win_setup2
+
+### Step 2 - Getting FMOD and Building RTSimpleApp in FMOD mode
+1. You need to get the **FMOD Studio API**, head on over to https://www.fmod.com/download#fmodengine and download the latest version of **FMOD Engine**, which comes with the **FMOD Studio API** 
+
+**IMPORTANT NOTE: You will need to register an account!!**
+
+![](doc/images/fmod_download_example.png)
+
+2. Extract the API files into this location `proton\shared\win\fmodstudio\`
+
+
+3. NOTE: You don't need to *INSTALL* the FMOD Engine, you just need to extract the `api\core` subfolder, which you can do with 7zip for example
+
+![](doc/images/fmod_libraries.png)
+
+3. Open `proton\RTSimpleApp\windows_vc\RTSimpleApp.sln` once again
+
+
+4. Select the `DebugFMOD_GL | x64` configuration, it should build and run just fine!
+
+### Step 3 - Finally, building and running RTDink
+
+1. Go into the `proton` root folder and clone the RTDink repo
+
+`git clone https://github.com/SethRobinson/RTDink`
+
+2. Run `proton\RTDink\media\update_media.bat` to prepare the proton texture and sound assets
+
+
+3. Open `proton\RTDink\windows_vs2017\iPhoneRTDink.sln`
+
+
+4. Select the `Debug GL | x64` or `Release GL | x64` configuration, if you installed everything correctly so far, it should build just fine, however, it won't run just yet!
+
+
+5. You need to also copy the required x64 dll files and the certificate for curl:
+* `proton\shared\win\lib\zlib1.dll`
+* `proton\shared\win\lib\64\zlibwapi.dll`
+* `proton\shared\win\fmodstudio\api\core\lib\x64\fmod.dll`
+* `proton\shared\win\lib\x64\libcurl-x64.dll`
+* `proton\shared\win\lib\x64\libcrypto-1_1-x64.dll`
+* `proton\shared\win\lib\x64\libssl-1_1-x64.dll`
+* `proton\shared\win\lib\x64\curl-ca-bundle.crt`
+
+6. Your DinkHD build should run now, but you are not quite done! You also need the Dink game assets, or your application will crash when you try to start a new game. To get those, simply download an official distribution of DinkHD or DinkV1.08 and copy the `dink` subfolder from there to your `proton\RTDink\bin` folder!
+
+
+7. Your DinkHD should finally work now!
+
+### Other notes:
+
 * By default, Proton SDK's main.cpp is setup to compile for iPhone most likely.  Assuming you'd rather not have an iPhone build, search the project for "//WORK: Change device emulation here" and right under that,
 	change it from string desiredVideoMode = "iPhone Landscape"; or whatever it was to "string desiredVideoMode = "Windows"; instead.  (this is where you can emulate many devices and sizes)
-* Set the profile to "Release GL" and "Win32".  (or "Debug GL" is ok too)  Compile.  If it worked, you should have a dink.exe created in DinkHD/bin.
-* Install DinkHD from rtsoft.com. (most media is not included on here, so this is a way to get it..)  Overwrite its dink.exe and fmod.dll (as that is probably different now) with your new one.  It should run!
+
+**NOTE: this is no longer the case, currently the https://github.com/SethRobinson/proton repo is configured for windows by default!** 
+
 * To build the HTML5 version, check out https://www.rtsoft.com/wiki/doku.php?id=proton:html5_setup
 
-Use the "Debug GL" or "Release GL" solution configuations in 32 bit.  Debug GL 64 bit is also setup (just to test - as I actually don't package a 64 bit version for Windows, just iOS)
 
---- Have a bugfix or patch?! Please send it over to Seth!  Please note that any submission (code, media, translations, ect) must be 100% compatible with the license as listed in the source license
+* See script/installer/readme.txt for what's new info.
 
-See script/installer/readme.txt for what's new info.
-
--- Note about various ports
 
 * While this is the source code used for the mobile versions too, not everything is included to build those versions
+
+
+#### Have a bugfix or patch?! Please send it over to Seth!  Please note that any submission (code, media, translations, ect) must be 100% compatible with the license as listed in the source license
