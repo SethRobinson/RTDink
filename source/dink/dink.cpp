@@ -4890,7 +4890,16 @@ next2:
 		g_dglos.g_playerInfo.var[i].var -= newval;
 
 	if (math == '/')
-		g_dglos.g_playerInfo.var[i].var = g_dglos.g_playerInfo.var[i].var / newval;
+	{
+	    if (newval != 0)
+	    {
+	        g_dglos.g_playerInfo.var[i].var = g_dglos.g_playerInfo.var[i].var / newval;
+	    } else
+	    {
+	        
+	        LogMsg("ERROR (var equals): Variable division by 0, ignoring operation! Script name: %s, script position: %d", g_scriptInstance[script]->name, g_scriptInstance[script]->current);
+	    }
+	}
 
 	if (math == '*')
 		g_dglos.g_playerInfo.var[i].var = g_dglos.g_playerInfo.var[i].var * newval;
@@ -10940,7 +10949,14 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,1,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
-				g_dglos.g_returnint = (g_nlist[0] % g_nlist[1]);
+			    if (g_nlist[1] != 0)
+			    {
+			        g_dglos.g_returnint = (g_nlist[0] % g_nlist[1]);
+			    } else
+			    {
+			        LogMsg("ERROR (var equals): Variable division by 0, ignoring operation! Script name: %s, script position: %d", g_scriptInstance[script]->name, g_scriptInstance[script]->current);
+			        g_dglos.g_returnint = g_nlist[0];
+			    }
 			}
 			strcpy_safe(pLineIn, h);  
 			ugly_return(0);
