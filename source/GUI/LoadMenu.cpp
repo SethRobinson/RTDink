@@ -63,7 +63,7 @@ void SetupLoadButton(Entity *pParent, int x, float *pY, int gameID)
 
 		if (!FileExists(autoSave))
 		{
-			sprintf(stFormatted, "Auto Save - None yet", gameID);
+			sprintf(stFormatted, "Auto Save - None yet");
 		} else
 		{
 			gameTime = 0;

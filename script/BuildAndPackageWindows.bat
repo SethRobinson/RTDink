@@ -50,6 +50,8 @@ REM Do a little cleanup in  the dink bin dir as well
 del ..\bin\dink\continue_state.dat
 del ..\bin\dink\save*.dat
 del ..\bin\dink\quicksave.dat
+del ..\bin\dink\autosave.dat
+del ..\bin\dink\autosavedb.dat
 
 //make the windows installer part
 SET C_FILENAME=DinkSmallwoodHDInstaller.exe

@@ -13,8 +13,7 @@
 #include "BrowseMenu.h"
 #include "ReadTextMenu.h"
 
-
-
+ 
 void DMODMenuAddScrollContent(Entity *pParent);
 
 void DMODMenuOnRemoveDMOD(VariantList *pVList)

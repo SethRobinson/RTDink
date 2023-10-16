@@ -205,8 +205,8 @@ App::App()
 	m_bDidPostInit = false;
 	m_bHasDMODSupport = true;
 	//for mobiles
-	m_version = 1.99f;
-	m_versionString = "V1.99";
+	m_version = 2.00f;
+	m_versionString = "V2.00";
 	m_build = 1;
 	m_bCheatsEnabled = false;
 
@@ -301,7 +301,6 @@ bool App::Init()
 	InitUnhandledExceptionFilter();
 #endif
 
-
 	//GetBaseApp()->SetDisableSubPixelBlits(true);
 	SetDefaultButtonStyle(Button2DComponent::BUTTON_STYLE_CLICK_ON_TOUCH_RELEASE);
 	SetManualRotationMode(false);
@@ -309,7 +308,6 @@ bool App::Init()
 	bool bScaleScreenActive = true; //if true, we'll stretch every screen to the coords below
 	int scaleToX = 1024;
 	int scaleToY = 768;
-
 
 	switch (GetEmulatedPlatformID())
 	{

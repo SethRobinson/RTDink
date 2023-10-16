@@ -17116,18 +17116,6 @@ LastWindowsTimer = GetTickCount();
 		bSpeedUp = true;
 	}
 
-	if (bSpeedUp)
-	{
-
-		/*
-		if (!GetApp()->GetGameTickPause())
-		{
-			GetApp()->SetGameTick(GetApp()->GetGameTick() + GetApp()->GetDeltaTick() * 5);
-		}
-		*/
-	}
-
-
 	if (g_dglos.g_bShowingBitmap.active)
 	{
 		//grab main loop and divert it to show a bmp instead
@@ -17139,7 +17127,6 @@ LastWindowsTimer = GetTickCount();
 	}
 
 	g_dglos.mbase_count++;
-
 
 	
 	if (g_dglos.g_dinkTick > g_dglos.g_DinkUpdateTimerMS+100)
@@ -17154,13 +17141,7 @@ LastWindowsTimer = GetTickCount();
 		if (*pupdate_status == 1) update_status_all();
 
 		update_sound();
-	
-		//TODO Animated tiles
-		//if (IsDesktop())
-		{
-			//TODO:  Maybe mobile can handle this now?
-				process_animated_tiles();
-		}
+	    process_animated_tiles();
 	}
 
 
@@ -17335,6 +17316,9 @@ LastWindowsTimer = GetTickCount();
 		drawscreenlock();
 	}
 	
+	if (bRenderDinkText)
+		DrawDinkText(max_s, g_spriteRank);
+
 	if (!GetBaseApp()->GetGameTickPause())
 	{
 		if (g_dglos.g_talkInfo.active) process_talk();
@@ -17353,7 +17337,6 @@ flip:
 		} else
 		{
 			DrawFilledRect(g_dglo.m_orthoRenderRect, MAKE_RGBA(0,0,0,g_dinkFadeAlpha* 255));
-
 		}
 
 		//g_dglo.m_gameArea.bottom--;
@@ -17365,8 +17348,9 @@ flip:
 		flip_it(); 
 	}
 
-	if (bRenderDinkText)
-		DrawDinkText(max_s, g_spriteRank);
+
+
+
 
 	RemoveOrthoRenderSize();
 	if (turn_on_plane) g_dglos.plane_process = true;
