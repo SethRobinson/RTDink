@@ -347,7 +347,8 @@ struct player_info
 	player_info_tile tile[42];
 	global_function func[100];
 	uint32 m_gameTime;
-	char  cbuff[746];
+	int32 attack_wait;
+	char  cbuff[742];
 };
 
 struct attackinfo_struct

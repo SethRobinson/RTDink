@@ -1045,6 +1045,7 @@ void save_game(int num)
 	g_dglos.g_playerInfo.base_idle = g_sprite[1].base_idle;
 	g_dglos.g_playerInfo.base_walk = g_sprite[1].base_walk;
 	g_dglos.g_playerInfo.base_hit = g_sprite[1].base_hit;
+	g_dglos.g_playerInfo.attack_wait = g_sprite[1].attack_wait;
 
 	//redink1 - save game things for storing new map, palette, and tile information
 	strncpy(g_dglos.g_playerInfo.mapdat, g_dglos.current_map, 50);
@@ -1377,7 +1378,7 @@ bool load_game(int num)
 		g_sprite[1].strength = g_dglos.g_playerInfo.strength;
 		g_sprite[1].defense = g_dglos.g_playerInfo.defense;
 		g_sprite[1].que = g_dglos.g_playerInfo.que;
-
+		
 		if (g_dglos.g_playerInfo.m_gameTime != 0)
 		{
 			GetApp()->SetGameTick(g_dglos.g_playerInfo.m_gameTime);
@@ -1392,6 +1393,7 @@ bool load_game(int num)
 		g_sprite[1].base_idle = g_dglos.g_playerInfo.base_idle;
 		g_sprite[1].base_walk = g_dglos.g_playerInfo.base_walk;
 		g_sprite[1].base_hit = g_dglos.g_playerInfo.base_hit;
+		g_sprite[1].attack_wait = g_dglos.g_playerInfo.attack_wait;
 
 		int script = load_script("main", 0, true);
 		
@@ -11859,7 +11861,7 @@ void text_draw(int h)
 
 	uint32 rgbColor = MAKE_RGBA(g_dglos.font_colors[color].red, g_dglos.font_colors[color].green, g_dglos.font_colors[color].blue, 255);
 
-	uint32 bgColor = MAKE_RGBA(0,0,0,100);
+	uint32 bgColor = MAKE_RGBA(0,0,0,150);
 	
     rtRect rTemp(rcRect);
     
@@ -11867,7 +11869,8 @@ void text_draw(int h)
     if (g_sprite[h].owner == 1200)
     {
 		GetApp()->GetFont(FONT_SMALL)->DrawWrapped(rTemp, cr, false, false, rgbColor, g_dglo.m_fontSize, false, bgColor);
-    } else
+		g_globalBatcher.Flush();
+	} else
     {
 		
 		if (StripWhiteSpace(cr) == "")
@@ -11875,7 +11878,9 @@ void text_draw(int h)
 			//skip it, it's just blank, otherwise it will draw the bg which looks dumb
 		} else
 		{
-			GetApp()->GetFont(FONT_SMALL)->DrawWrapped(rTemp, cr, true, false, rgbColor,  g_dglo.m_fontSize, false , bgColor);
+ 			GetApp()->GetFont(FONT_SMALL)->DrawWrapped(rTemp, cr, true, false, rgbColor,  g_dglo.m_fontSize, false , bgColor);
+		
+			g_globalBatcher.Flush();
 		}
 	}
 
