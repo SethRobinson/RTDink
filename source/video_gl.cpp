@@ -28,7 +28,7 @@ void KillVideoEngine()
 
 void dderror(int hErr){};
 
-IDirectDrawSurface * LoadBitmapIntoSurface(const char *pName, eTransparencyType trans, IDirectDrawSurface::eMode mode, byte *pMem, int pMemSize, bool bUseCheckerboardFix)
+IDirectDrawSurface * LoadBitmapIntoSurface(const char *pName, eTransparencyType trans, IDirectDrawSurface::eMode mode, uint8 *pMem, int pMemSize, bool bUseCheckerboardFix)
 {
 
 	IDirectDrawSurface * pSurf;

@@ -46,7 +46,7 @@
     <ProjectGuid>{AD1D1337-0F3F-4AC5-B9EE-EE151B0193FE}</ProjectGuid>
     <RootNamespace>winRTDink</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GL|Win32'" Label="Configuration">
@@ -61,12 +61,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GL|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug GL|Win32'" Label="Configuration">
@@ -77,7 +77,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug GL|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Common Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -333,6 +333,7 @@
       <PrecompiledHeaderFile>PlatformPrecomp.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;fmod_vc.lib;zlibwapi.lib;ws2_32.lib;dinput8.lib;dxguid.lib;libcurl.dll.a;%(AdditionalDependencies)</AdditionalDependencies>
@@ -403,6 +404,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4267;4244;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_IPV6;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;C_GL_MODE;RT_USE_LIBCURL;_WIN32_WINNT=0x0601;RT_DISABLE_WINDOWS_MENU;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;fmod_vc.lib;zlibwapi.lib;ws2_32.lib;dinput8.lib;dxguid.lib;libcurl.dll.a;%(AdditionalDependencies)</AdditionalDependencies>
@@ -429,6 +431,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4267;4244;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_IPV6;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;C_GL_MODE;RT_USE_LIBCURL;RT_IS_BETA=1;_WIN32_WINNT=0x0601;RT_DISABLE_WINDOWS_MENU;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;fmod_vc.lib;zlibwapi.lib;ws2_32.lib;dinput8.lib;dxguid.lib;libcurl.dll.a;%(AdditionalDependencies)</AdditionalDependencies>
@@ -2061,116 +2064,6 @@
     <ClCompile Include="..\..\shared\Renderer\Surface.cpp" />
     <ClCompile Include="..\..\shared\Renderer\SurfaceAnim.cpp" />
     <ClCompile Include="..\..\shared\util\archive\TarHandler.cpp" />
-    <ClCompile Include="..\..\shared\util\boost\libs\signals\src\connection.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Release|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Release|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug GL|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug GL|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|x64'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\..\shared\util\boost\libs\signals\src\named_slot_map.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Release|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Release|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug GL|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug GL|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|x64'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\..\shared\util\boost\libs\signals\src\signal_base.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Release|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Release|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug GL|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug GL|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|x64'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\..\shared\util\boost\libs\signals\src\slot.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Release|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Release|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug GL|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug GL|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|x64'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\..\shared\util\boost\libs\signals\src\trackable.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Release|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Release|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug GL|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug GL|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|x64'">
-      </PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="..\..\shared\util\bzip2\blocksort.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|Win32'">
       </PrecompiledHeader>
@@ -2505,6 +2398,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Release|x64'">NotUsing</PrecompiledHeader>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Common Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release GL|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug GL|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Common Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\source\StackWalker\StackWalker.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -2517,6 +2415,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Release|x64'">NotUsing</PrecompiledHeader>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Common Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release GL|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug GL|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Common Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\source\video_gl.cpp" />
   </ItemGroup>

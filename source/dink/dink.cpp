@@ -13,10 +13,11 @@
 const int C_DINK_MAX_ITEMS = 16;
 const int C_DINK_MAX_MAGICS = 8;
 
-void ThinkSprite(int h, bool get_frame);
+void ThinkSprite(int h, bool get_frame, bool bDebug = false);
 void ApplyAspectRatioGLMatrix();
 void ScanSeqFilesIfNeeded(int seq);
 bool pre_figure_out(const char *line, int load_seq, bool bLoadSpriteOnly);
+int DepthSortSprites();
 
 #define C_DINK_SCREEN_TRANSITION_TIME_MS 400
 
@@ -108,6 +109,7 @@ LPDIRECTDRAWSURFACE     lpDDSBackGround;       // Offscreen surface
 LPDIRECTDRAWSURFACE     lpDDSBuffer;       // Offscreen surface 
 LPDIRECTDRAWSURFACE     g_tileScreens[C_TILE_SCREEN_COUNT];       // Game pieces
 LPDIRECTDRAWSURFACE     g_pSpriteSurface[C_MAX_SPRITES];
+
 
 bool IsCorruptedSeq(int seq);
 //redink1 added for recursive scope checking
@@ -375,7 +377,7 @@ void finiObjects()
 	{
 		SAFE_DELETE(g_tileScreens[i]);
 	}
-
+	
 	SAFE_DELETE(lpDDSBuffer);
 	SAFE_DELETE(lpDDSBackGround);
 
@@ -533,7 +535,7 @@ void setup_anim (int seq, int sequence,int delay)
 	//g_dglos.g_seq[seq].frame[g_dglos.g_seq[sequence].last+1] = 0;
 }
 
-byte get_hard(int h,int x1, int y1)
+uint8 get_hard(int h,int x1, int y1)
 {
 	int value;
 
@@ -554,7 +556,7 @@ byte get_hard(int h,int x1, int y1)
 	return(value);  
 }
 
-byte get_hard_play(int h,int x1, int y1)
+uint8 get_hard_play(int h,int x1, int y1)
 {
 
 	int value;
@@ -588,7 +590,7 @@ byte get_hard_play(int h,int x1, int y1)
 }
 
 
-byte get_hard_map(int h,int x1, int y1)
+uint8 get_hard_map(int h,int x1, int y1)
 {
 	if ((x1 < 0) || (y1 < 0)) return(0);
 	if ((x1 > 599) ) return(0);
@@ -830,10 +832,31 @@ bool LoadTileScreenIfNeeded(int h, bool &bRequireRebuildOut)
 	}
 
 	assert(!g_tileScreens[h]);
+	string finalFilename;
+
+	finalFilename = GetFileLocationString(ModifyFileExtension(fName, "png"));
+	
+	
+	if (FileExists(finalFilename))
+	{
+	}
+	else
+	{
+		finalFilename = GetFileLocationString(fName);
+	}
+
+
+
+
 #ifdef _DEBUG
-LogMsg("Loading tilescreen %s", fName.c_str());
+LogMsg("Loading tilescreen %s", finalFilename.c_str());
 #endif
-	g_tileScreens[h] = LoadBitmapIntoSurface(GetFileLocationString(fName).c_str(), TRANSPARENT_NONE, IDirectDrawSurface::MODE_NORMAL);
+
+
+
+
+
+	g_tileScreens[h] = LoadBitmapIntoSurface(finalFilename.c_str(), TRANSPARENT_NONE, IDirectDrawSurface::MODE_NORMAL);
 	
 	if (g_tileScreens[h] && g_tileScreens[h]->m_pSurf->GetSurfaceType() != SoftSurface::SURFACE_PALETTE_8BIT)
 	{
@@ -986,12 +1009,12 @@ void load_map(const int num)
 
 	while (holdme > 0)
 	{
-		int bytesRead = pFile->Read((byte*)buffer, rt_min(holdme, bufferSize));
+		int bytesRead = pFile->Read((uint8*)buffer, rt_min(holdme, bufferSize));
 		holdme -= bytesRead;
 	}
 	
 	//Msg("Trying to read %d bytes with offset of %d",lsize,holdme);
-	pFile->Read((byte*)&g_dglos.g_smallMap, lsize);
+	pFile->Read((uint8*)&g_dglos.g_smallMap, lsize);
 	//int shit = fread( &g_dglos.g_smallMap, lsize, 1, fp);       /* current player */
 	//       Msg("Read %d bytes.",shit);
 	//if (shit == 0) LogMsg("ERROR:  Couldn't read map %d?!?", num);
@@ -1640,7 +1663,7 @@ void load_info()
 	{
 		LogMsg("World data loaded."); 
 		
-		pFile->Read((byte*)&g_MapInfo, sizeof(struct map_info));
+		pFile->Read((uint8*)&g_MapInfo, sizeof(struct map_info));
 		//fread(&g_MapInfo,sizeof(struct map_info),1,fp);
 		delete pFile;
 		//fclose(fp);
@@ -1663,7 +1686,7 @@ bool load_hard(void)
 	else
 	{
 		//fread(&g_hmap,sizeof(struct hardness),1,fp);
-		pFile->Read((byte*)&g_hmap, sizeof(struct hardness));
+		pFile->Read((uint8*)&g_hmap, sizeof(struct hardness));
 		delete(pFile);
 	}
 	return true;
@@ -1704,7 +1727,7 @@ bool LoadSpriteSingleFrame(string fNameBase, int seq, int oo, int picIndex, eTra
 	fName += toString(oo) + ".bmp";
 
 	int pMemSize = 0;
-	byte *pMem = pReader->LoadFileIntoMemory(fName, &pMemSize, fNameBase + "01.bmp");
+	uint8 *pMem = pReader->LoadFileIntoMemory(fName, &pMemSize, fNameBase + "01.bmp");
 	
 	if (g_dglos.g_seq[seq].m_spaceAllowed != 0)
 	{
@@ -1954,7 +1977,7 @@ bool load_sprites(char org[512], int seq, int speed, int xoffset, int yoffset, r
 			if (seq == 442)
 			{
 				int pMemSize = 0;
-				byte* pMem = reader.LoadFileIntoMemory(fNameBase + "01.bmp", &pMemSize, fNameBase + "01.bmp");
+				uint8* pMem = reader.LoadFileIntoMemory(fNameBase + "01.bmp", &pMemSize, fNameBase + "01.bmp");
 
 				if (!pMem)
 				{
@@ -2972,11 +2995,8 @@ bool SwitchToRGBAIfNeeded(LPDIRECTDRAWSURFACE *pDXSurf, SoftSurface *pSoftSurf)
 void BlitGUIOverlay()
 {
 	
-	//if (GetDinkGameMode() == DINK_GAME_MODE_MOUSE) return;
-
 	if (GetDinkSubGameMode() == DINK_SUB_GAME_MODE_SHOWING_BMP) return;
 
-	
 	if (g_dglos.status_might_not_require_update == 1) return;
 
 	rtRect32 rcRect;
@@ -3045,8 +3065,6 @@ void BlitGUIOverlay()
 		
 	lpDDSBack->BltFast( 0, 400, g_pSpriteSurface[g_dglos.g_seq[180].frame[3]], &rcRect  , DDBLTFAST_NOCOLORKEY );
 	
-	
-	
 	rcRect.left = 0;
 	rcRect.top = 0;
 	rcRect.right = 20;
@@ -3070,10 +3088,6 @@ void BlitGUIOverlay()
 		draw_mlevel( (float(*pmagic_level) / float(*pmagic_cost))*100, true );
 	}
 
-	
-
-
-	
 }
 
 bool inside_box(int x1, int y1, rtRect32 box)
@@ -3102,7 +3116,9 @@ int add_sprite_dumb(int x1, int y, int brain,int pseq, int pframe,int size )
 			SAFE_DELETE(g_customSpriteMap[x]);
 			memset(&g_sprite[x], 0, sizeof(g_sprite[x]));
 
-			//Msg("Making sprite %d.",x);
+#ifdef _DEBUG
+		//	LogMsg("Making sprite %d with brain %d at x: %d y: %d.",x, brain, x1, y);
+#endif
 			g_sprite[x].active = true;
 			g_sprite[x].x = x1;
 			g_sprite[x].y = y;
@@ -3537,7 +3553,7 @@ bool read_next_line(int script, char *line)
 	for (int k = g_scriptInstance[script]->current;  (k < g_scriptInstance[script]->end); k++)
 	{
 #ifdef _DEBUG
-		LogMsg("..%d",k);
+//		LogMsg("..%d",k);
 #endif
 		strchar(line, g_scriptBuffer[script][k]);
 		
@@ -8445,6 +8461,7 @@ pass:
 			int32 p[20] = {2,0,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
+				decipher_string(slist[0], script);
 				LogMsg(slist[0]);
 			}
 
@@ -11687,7 +11704,7 @@ void init_scripts(void)
 			if (locate(k,"main"))
 			{
 #ifdef _DEBUG
-				//LogMsg("Screendraw: running main of script %s..", g_scriptInstance[k]->name);
+				LogMsg("Screendraw: running main of script %s for script instance %d (owner sprite: %d) ..", g_scriptInstance[k]->name, k, g_scriptInstance[k]->sprite);
 #endif
 				run_script(k);
 			}
@@ -13615,7 +13632,136 @@ void CheckTransitionSurface()
 	}
 }
 
-void UpdateFrameWithoutTransitionAndThinking()
+void BlitInterfaceFullDraw(bool bDebug = false)
+{
+	
+	BlitGUIOverlay();
+
+	//Transition UpdateFrameWithoutTransitionAndThinking()
+
+	int h = 0;
+
+	for (int j = 1; j < C_MAX_SPRITES_AT_ONCE; j++)
+	{
+		if (g_dglos.plane_process)
+			h = g_spriteRank[j]; else h = j;
+		if (bDebug)
+			LogMsg( "Ok, rank %d is %d", j,h);
+
+		if (h > 0)
+		{
+			ThinkSprite(h, g_bTransitionActive || g_dglos.g_stopEntireGame == 1, bDebug);
+		}
+	}
+
+}
+
+//this wastefully blits all sprites and the GUI three times, but it's the only way I could get pixel perfect transitions to work.  If I did it a more effecient way
+//(blitting from g_transitionSurf) it would not perfectly match except at exact resolutions like 1024X768 etc.  NO GOOD! 
+//However, if we're ever on a platform where glScissor is not supported, we're screwed
+
+
+rtRectf ConvertDinkRectToNative(rtRectf r)
+{
+	CL_Vec2f upperLeft = DinkToNativeCoords(CL_Vec2f(r.left, r.top));
+	CL_Vec2f lowerRight = DinkToNativeCoords(CL_Vec2f(r.right, r.bottom));
+	rtRectf rOut(upperLeft.x, upperLeft.y, lowerRight.x, lowerRight.y);
+	return rOut;
+}
+
+CL_Vec2f DinkToPrimaryNativeCoords(CL_Vec2f vPos)
+{
+	CL_Vec2f r = vPos;
+	double xmod = (double(g_dglo.m_orthoRenderRect.GetWidth()) / GetPrimaryGLX());
+	double ymod = (double(g_dglo.m_orthoRenderRect.GetHeight()) / GetPrimaryGLY());
+	r += g_dglo.m_centeringOffset;
+	r.x *= g_dglo.m_aspectRatioModX;
+	r.y *= g_dglo.m_aspectRatioModY;
+
+	r.x /= xmod;
+	r.y /= ymod;
+	return r;
+}
+
+void UpdateInterfaceWithoutTransitionAndThinking() //transition
+{
+
+	if (g_dglo.m_curView == DinkGlobals::VIEW_ZOOMED)
+	{
+		return;
+	}
+
+	glPushMatrix();
+	SetOrthoRenderSize(g_dglo.m_orthoRenderRect.right, g_dglo.m_orthoRenderRect.GetHeight(), -g_dglo.m_orthoRenderRect.left, -g_dglo.m_orthoRenderRect.top);
+	GetBaseApp()->SetGameTickPause(true); //don't let logic actually happen in here
+
+
+	glEnable(GL_SCISSOR_TEST);
+	
+	//calculate the x offset for the native GL surface, normally we don't need this but for our glScissor stuff we do, it ignores the view matrix
+
+	//Also, some weirdness with ConvertFakeScreenRectToReal that I worked around, uhh... this whole function sucks ballz and will be horrible to debug, sorry
+
+	rtRect clipRectFullScreen(0, 0, 1024, 768);
+	rtRectf nativeClipRectFullScreen = ConvertFakeScreenRectToReal(clipRectFullScreen, g_dglo.m_aspectRatioModX, g_dglo.m_aspectRatioModY);
+	float rawGLOffsetX = (GetPrimaryGLX() - nativeClipRectFullScreen.GetWidth()) / 2;
+	float rawGLOffsetY = (GetPrimaryGLY() - nativeClipRectFullScreen.GetHeight()) / 2;
+	float percentOfGameAreaThatIsSideBar = 0.032f;
+	float fullscreenWidthX = nativeClipRectFullScreen.GetWidth();
+	float fullscreenWidthY = nativeClipRectFullScreen.GetHeight();
+	float widthOfBar = (percentOfGameAreaThatIsSideBar * fullscreenWidthX);
+
+	//left bar
+	rtRect clipRect(0, 0, g_dglo.m_nativeGameArea.left, 768);
+	rtRectf nativeClipRectLeft = ConvertFakeScreenRectToReal(clipRect);
+	nativeClipRectLeft.left += rawGLOffsetX;
+	nativeClipRectLeft.right = rawGLOffsetX + widthOfBar;
+	nativeClipRectLeft.top += rawGLOffsetY;
+	nativeClipRectLeft.bottom += rawGLOffsetY;
+
+	glScissor(nativeClipRectLeft.left, nativeClipRectLeft.top, nativeClipRectLeft.GetWidth(), nativeClipRectLeft.GetHeight());
+	
+	BlitInterfaceFullDraw(false);
+
+	{
+		//right bar
+		rtRect clipRect(g_dglo.m_nativeGameArea.right, 0, 1024, 768);
+		rtRectf nativeClipRect = ConvertFakeScreenRectToReal(clipRect, g_dglo.m_aspectRatioModX, g_dglo.m_aspectRatioModY);
+			
+		nativeClipRect.right = rawGLOffsetX + fullscreenWidthX;
+		nativeClipRect.left = ((rawGLOffsetX + fullscreenWidthX) - widthOfBar) + 2;
+		nativeClipRect.top += rawGLOffsetY;
+		nativeClipRect.bottom += rawGLOffsetY;
+
+		nativeClipRect.right += 5; //it's ok to go a little extra
+
+		glScissor(nativeClipRect.left, nativeClipRect.top, nativeClipRect.GetWidth(), nativeClipRect.GetHeight());
+		BlitInterfaceFullDraw();
+	}
+
+	//bottom bar
+	{
+		rtRect clipRect(0, g_dglo.m_nativeGameArea.bottom, 1024, 768);
+		rtRectf nativeClipRect = ConvertFakeScreenRectToReal(clipRect);
+
+		nativeClipRect.left += rawGLOffsetX;
+		nativeClipRect.right += rawGLOffsetX;
+	
+		glScissor(rawGLOffsetX, rawGLOffsetY, nativeClipRect.GetWidth(), fullscreenWidthY * 0.166f);
+		BlitInterfaceFullDraw();
+	}
+
+	GetBaseApp()->SetGameTickPause(false);
+
+	
+	glDisable(GL_SCISSOR_TEST);
+
+	glPopMatrix();
+	RemoveOrthoRenderSize();
+
+}
+
+void UpdateFrameWithoutTransitionAndThinking(bool bForceTimeToPass = false)
 {
 	SetOrthoRenderSize(g_dglo.m_orthoRenderRect.right, g_dglo.m_orthoRenderRect.GetHeight(), -g_dglo.m_orthoRenderRect.left, -g_dglo.m_orthoRenderRect.top);
 
@@ -13633,9 +13779,12 @@ void UpdateFrameWithoutTransitionAndThinking()
 	lpDDSBack->BltFast( 0, 0, lpDDSBackGround, &rcRect, DDBLTFAST_NOCOLORKEY);
 	g_dglo.m_bgSpriteMan.Render(lpDDSBack); //blit sprites that have been shoved into the bg, too slow to actually add them, so we fake it until the screen is rebuilt
 	
-	
 	//render sprites
+	
+	BlitGUIOverlay();
 
+	//Transition UpdateFrameWithoutTransitionAndThinking()
+	
 	int h= 0;
 
 	for (int j = 1; j < C_MAX_SPRITES_AT_ONCE; j++)
@@ -13646,7 +13795,7 @@ void UpdateFrameWithoutTransitionAndThinking()
 
 		if (h > 0)
 		{
-			ThinkSprite(h, g_bTransitionActive || g_dglos.g_stopEntireGame == 1);
+			ThinkSprite(h, (g_bTransitionActive || g_dglos.g_stopEntireGame == 1));
 		}
 	}    
 	
@@ -13655,7 +13804,6 @@ void UpdateFrameWithoutTransitionAndThinking()
 	RemoveOrthoRenderSize();
 
 }
-
 
 void StartScreenScrollTransition(int direction)
 {
@@ -13691,6 +13839,14 @@ void StartScreenScrollTransition(int direction)
 	else
 	{
 		g_transitionSurf.CopyFromScreen();
+		
+		/*
+		//create a screenshot of what we just copied for debugging
+		SoftSurface s;
+		g_transitionSurf.CreateSoftSurfaceFromSurface(s);
+		s.WriteBMPOut("crap.bmp");
+		*/
+
 	}
 
 	ApplyAspectRatioGLMatrix();
@@ -13749,6 +13905,15 @@ void ProcessTransition(void)
 
 	float inverseProg = 1.0f - g_dglo.m_transitionProgress;
 	
+#ifdef _DEBUG
+	if (g_dglo.m_transitionProgress >= 0.5 && g_dglo.m_transitionProgress < 0.6)
+	{
+	//	LogMsg("More than halfway through transition.  Sprite 6 active: %d", g_sprite[6].active);
+	}
+
+#endif
+
+
 	if (g_dglo.m_transitionProgress >= 1)
 	{
 		g_bTransitionActive = false;
@@ -13757,27 +13922,19 @@ void ProcessTransition(void)
 		g_dglo.m_transitionTimer = 0;
 	}
 
-	//float offsetX = 0.5f;
-
 	float fTemp = inverseProg;
-	//fTemp = 1.0f;
-	glTranslatef((g_dglo.m_transitionOffset.x*fTemp),(g_dglo.m_transitionOffset.y*fTemp), 0);
-	//glScalef(G_TRANSITION_SCALE_TRICK,G_TRANSITION_SCALE_TRICK,1);
-
 	
+	glTranslatef((g_dglo.m_transitionOffset.x*fTemp),(g_dglo.m_transitionOffset.y*fTemp), 0);
 }
 
 void EndProcessTransition()
 {
 	if (!g_bTransitionActive) return;
 	float inverseProg = 1.0f - g_dglo.m_transitionProgress;
-	//glScalef(1/G_TRANSITION_SCALE_TRICK,1/G_TRANSITION_SCALE_TRICK,1);
-
 	glTranslatef((-g_dglo.m_transitionOffset.x*inverseProg), (- ( (g_dglo.m_transitionOffset.y*inverseProg))), 0);
-
 };
 
-void BlitSecondTransitionScreen()
+void BlitSecondTransitionScreen() //TRANSITION
 {
 
 	if (g_bTransitionActive)
@@ -13828,6 +13985,7 @@ void BlitSecondTransitionScreen()
 			g_onePixelSurf.FillColor(glColorBytes(255, 255, 255, 255));
 		}
 
+	
 		if (g_dglo.GetActiveView() != DinkGlobals::VIEW_ZOOMED)
 		{
 			static uint32 blackBarsColor = MAKE_RGBA(0, 0, 0, 255);
@@ -13841,9 +13999,65 @@ void BlitSecondTransitionScreen()
 			g_onePixelSurf.BlitScaled(0, g_dglo.m_nativeGameArea.bottom, CL_Vec2f(5000, 5000), ALIGNMENT_UPPER_CENTER, blackBarsColor);
 
 		}
-	
+		
 		glPopMatrix( );
 
+		/*
+
+		if (g_dglo.GetActiveView() != DinkGlobals::VIEW_ZOOMED)
+		{
+			//Oy, let's also blit the GUI pieces from our frozen surface
+
+			glMatrixMode(GL_MODELVIEW);
+			glPushMatrix();
+			
+
+			dstOffset = rtRectf(0, 0, 0, 0);
+			srcOffset = rtRectf(0, 0, 0, 0);
+
+			
+			double offsetX = g_dglo.m_centeringOffset.x * (1.0f - ((double)GetFakePrimaryScreenSizeX() / (double)C_DINK_SCREENSIZE_X));
+			double offsetY = g_dglo.m_centeringOffset.y * (1.0f - ((double)GetFakePrimaryScreenSizeY() / (double)C_DINK_SCREENSIZE_Y));
+			
+			//force offsetX and offsetY to be a whole number
+
+			
+			glTranslatef(-offsetX, -offsetY, 0);
+
+
+
+			
+
+			//left bar
+			rtRectf dstRect = rtRect(0, 0, g_dglo.m_nativeGameArea.left, GetScreenSizeYf());
+			rtRectf srcRect = ConvertFakeScreenRectToReal(dstRect);
+			g_transitionSurf.BlitEx(dstRect + dstOffset, srcRect + srcOffset);
+
+			//right bar
+			dstRect = rtRect(g_dglo.m_nativeGameArea.right, 0, GetScreenSizeXf(), GetScreenSizeYf());
+			srcRect = ConvertFakeScreenRectToReal(dstRect);
+			g_transitionSurf.BlitEx(dstRect + dstOffset, srcRect + srcOffset);
+
+			
+			//bottom bar
+			dstRect = rtRect(0, g_dglo.m_nativeGameArea.bottom,  GetScreenSizeXf(), GetScreenSizeYf());
+			srcRect = ConvertFakeScreenRectToReal(dstRect);
+			g_transitionSurf.BlitEx(dstRect + dstOffset, srcRect + srcOffset);
+		
+		
+
+#ifdef _DEBUG
+			LogMsg("Final Trans Src rect: %s", PrintRect(srcRect).c_str());
+			LogMsg("Trans Dest rect: %s", PrintRect(dstRect).c_str());
+			LogMsg("Trans surf size: %s", PrintRect(g_transitionSurf.GetRectf()).c_str());
+#endif
+		
+
+
+			glPopMatrix();
+		
+		}
+			*/
 	}
 
 	
@@ -13967,6 +14181,8 @@ void did_player_cross_screen(bool bCheckWithoutMoving, int playerID)
     }
 
 b1end:;
+
+	
 }
 
 bool run_through_tag_list_talk(int h)
@@ -15956,8 +16172,8 @@ CL_Vec2f NativeToDinkCoords(CL_Vec2f vPos)
 CL_Vec2f DinkToNativeCoords(CL_Vec2f vPos)
 {
 	CL_Vec2f r = vPos;
-	float xmod = (float(g_dglo.m_orthoRenderRect.GetWidth()) / GetScreenSizeXf());
-	float ymod = (float(g_dglo.m_orthoRenderRect.GetHeight()) / GetScreenSizeYf());
+	double xmod = (double(g_dglo.m_orthoRenderRect.GetWidth()) / GetScreenSizeXf());
+	double ymod = (double(g_dglo.m_orthoRenderRect.GetHeight()) / GetScreenSizeYf());
 	r += g_dglo.m_centeringOffset;
 	r.x *= g_dglo.m_aspectRatioModX;
 	r.y *= g_dglo.m_aspectRatioModY;
@@ -16561,7 +16777,7 @@ void drawscreenlock( void )
 }    
 
 
-void ThinkSprite(int h, bool get_frame)
+void ThinkSprite(int h, bool get_frame, bool bDebug)
 {
 
 	if (g_sprite[h].active)
@@ -16876,9 +17092,15 @@ animate:
 past: 
 
 		check_sprite_status(h);
+		
+		if (bDebug)
+		{
+
+			LogMsg("Drawping sprite %d, brain %d", h, g_sprite[h].brain);
+			
+		}
 		draw_sprite_game(lpDDSBack,h);
-
-
+		
 	}
 }
 
@@ -16957,8 +17179,63 @@ void DrawDinkText(int max_s, int32 *rank)
 
 }
 
+
+int DepthSortSprites()
+{
+	int highest_sprite;
+
+	bool bs[C_MAX_SPRITES_AT_ONCE];
+	int max_s = 0;
+	
+	if (g_dglos.plane_process)
+	{
+		memset(&bs, 0, sizeof(bs));
+		max_s = g_dglos.last_sprite_created;
+		memset(&g_spriteRank, 0, sizeof(g_spriteRank));
+
+		int height;
+
+		for (int r1 = 1; r1 < max_s + 1; r1++)
+		{
+			highest_sprite = 22024; //more than it could ever be
+
+			g_spriteRank[r1] = 0;
+
+			for (int h1 = 1; h1 < max_s + 1; h1++)
+			{
+				if (g_sprite[h1].active) if (g_sprite[h1].disabled == false)
+				{
+					if (bs[h1] == false)
+					{
+						//LogMsg( "Ok,  %d is %d", h1, g_sprite[h1].y );
+						if (g_sprite[h1].que != 0) height = g_sprite[h1].que; else height = g_sprite[h1].y;
+						if (height < highest_sprite)
+						{
+							highest_sprite = height;
+							g_spriteRank[r1] = h1;
+						}
+					}
+				}
+			}
+
+			if (g_spriteRank[r1] != 0)
+				bs[g_spriteRank[r1]] = true;
+		}
+
+	}
+	else
+	{
+		//not processing planes
+		max_s = C_MAX_SPRITES_AT_ONCE;
+	}
+
+	return max_s;
+}
+
 void updateFrame()
 {
+
+	int max_s = 0; //can't move it lower, the gotos fail on html5 compiles
 
 	if (!lpDDSBack || g_dglo.m_curLoadState != FINISHED_LOADING) return;
 	bool bRenderDinkText = true;
@@ -16978,14 +17255,12 @@ void updateFrame()
 #endif
 
 
-	byte state[256];
+	uint8 state[256];
 	rtRect32 rcRect;
 	bool bCaptureScreen = false;
 	int h, j;
 
-	bool bs[C_MAX_SPRITES_AT_ONCE];
-	int highest_sprite;
-
+	
 	g_abort_this_flip = false;
 	
 	ProcessGraphicGarbageCollection();
@@ -17013,96 +17288,16 @@ void updateFrame()
 		}
 	}
 
-
-#ifdef _WIN32
-	static int LastWindowsTimer = 0;
-
-//if (!bSpeedUp)
-if (0)
-{
-
-//Sleep(50);
-
-	while (GetTickCount() <= LastWindowsTimer)
-	{
-		Sleep(0);
-	}
-
-}
-LastWindowsTimer = GetTickCount();
-#else
-
-	/*
-	static uint32 lastTick = 0;
-
-
-	if (!GetBaseApp()->GetGameTickPause())
-	{
-		while (GetSystemTimeTick()-lastTick < 33)
-		{
-
-		}
-	}
-
-	lastTick = GetSystemTimeTick();
-	 */
-#endif
-
-
-	//non-windows timer
-
+	//game timer
 
 	g_dglos.lastTickCount = g_dglos.g_dinkTick;
-	//g_dglos.g_dinkTick = GetBaseApp()->GetGameTick();
 	g_dglos.g_dinkTick += (1000.0f / 60.0f); //FPS lock at 60 fps
-	
-	/*
-	int fps_final = g_dglos.g_dinkTick - g_dglos.lastTickCount;
-
-	//redink1 changed to 12-12 from 10-15... maybe work better on faster computers?
-	if (fps_final < 12) fps_final = 12;
-	if (fps_final > 68) fps_final = 68;  
-
-	fps_final = 24; //force it
-
-	g_dglos.base_timing = fps_final / 3;
-	if (g_dglos.base_timing < 4) g_dglos.base_timing = 4;
-	
-	int junk3;
-
-	//redink1 added these changes to set Dink's speed correctly, even on fast machines.
-	
-
-	if (g_dglos.dinkspeed <= 0)
-		junk3 = 0;
-	else if (g_dglos.dinkspeed == 1)
-		junk3 = 12;
-	else if (g_dglos.dinkspeed == 2)
-		junk3 = 6;
-	else if (g_dglos.dinkspeed == 3)
-		junk3 = 3;
-	else
-		junk3 = 1;
-
-	junk3 *= (g_dglos.base_timing / 4);
-
-	g_sprite[1].speed = junk3;
-	*/
 
 	//assume we're locked at 60 fps
 	
 	g_dglos.base_timing = 7;
 	float junk3 = 1;
-	/*
-	if (g_dglos.dinkspeed <= 0)
-		junk3 = 0;
-	else if (g_dglos.dinkspeed == 1)
-		junk3 = 12;
-	else if (g_dglos.dinkspeed == 2)
-		junk3 = 6;
-	else if (g_dglos.dinkspeed == 3)
-		junk3 = 3;
-		*/
+	
 	if (g_dglos.dinkspeed <= 0)
 		junk3 = 0;
 	else if (g_dglos.dinkspeed == 1)
@@ -17112,8 +17307,6 @@ LastWindowsTimer = GetTickCount();
 	else if (g_dglos.dinkspeed == 3)
 		junk3 = 3;
 
-	//g_sprite[1].speed = (g_dglos.base_timing / 4);
-	//g_sprite[1].speed = 5;
 	bool bSpeedUp = false;
 	g_sprite[1].speed = (int)junk3*1.0f;
 	if (DinkGetSpeedUpMode())
@@ -17140,7 +17333,6 @@ LastWindowsTimer = GetTickCount();
 		g_dglos.mbase_timing = 135; //hardcoded now to avoid fluctuations
 		g_dglos.g_DinkUpdateTimerMS = g_dglos.g_dinkTick;
 		if (g_dglos.g_bowStatus.active) g_dglos.g_bowStatus.hitme = true;
-		
 		
 		
 		if (*pupdate_status == 1) update_status_all();
@@ -17182,48 +17374,9 @@ LastWindowsTimer = GetTickCount();
 	{
 		down_cycle();
 	}
+	
+	max_s = DepthSortSprites();
 
-	int max_s;
-
-	if (g_dglos.plane_process)
-	{
-		memset(&bs,0,sizeof(bs));
-		max_s = g_dglos.last_sprite_created;
-
-		int height;
-
-		for (int r1 = 1; r1 < max_s+1; r1++)
-		{
-			highest_sprite = 22024; //more than it could ever be
-
-			g_spriteRank[r1] = 0;
-
-			for (int h1 = 1; h1 < max_s+1; h1++)
-			{
-				if (g_sprite[h1].active) if (g_sprite[h1].disabled == false)
-				{ 
-					if (bs[h1] == false)
-					{
-						//Msg( "Ok,  %d is %d", h1,(spr[h1].y + k[spr[h1].pic].yoffset) );
-						if (g_sprite[h1].que != 0) height = g_sprite[h1].que; else height = g_sprite[h1].y;
-						if ( height < highest_sprite )
-						{
-							highest_sprite = height;
-							g_spriteRank[r1] = h1;
-						}
-					}
-				}
-			}
-
-			if (g_spriteRank[r1] != 0)  
-				bs[g_spriteRank[r1]] = true;
-		}
-
-	} else
-	{
-		//not processing planes
-		max_s = C_MAX_SPRITES_AT_ONCE;
-	}
 
 	rcRect.left = 0;
 	rcRect.top = 0;
@@ -17249,6 +17402,8 @@ LastWindowsTimer = GetTickCount();
 		BlitGUIOverlay();
 	}
 
+	
+
 	for ( j = 1; j < max_s+1; j++)
 	{
 		if (g_dglos.plane_process)
@@ -17259,8 +17414,9 @@ LastWindowsTimer = GetTickCount();
 		{
 			ThinkSprite(h, g_bTransitionActive || g_dglos.g_stopEntireGame == 1);
 		}
-	}                               
+	}          
 	
+
 	EndProcessTransition(); 
 
 	
@@ -17353,10 +17509,6 @@ flip:
 		flip_it(); 
 	}
 
-
-
-
-
 	RemoveOrthoRenderSize();
 	if (turn_on_plane) g_dglos.plane_process = true;
 
@@ -17364,9 +17516,19 @@ flip:
 		
 	if (g_bTransitionActive)	
 	{
-		SetOrthoRenderSize(C_DINK_SCREENSIZE_X, g_dglo.m_orthoRenderRect.GetHeight(), 0, -g_dglo.m_orthoRenderRect.top);
-		BlitGUIOverlay();
-		RemoveOrthoRenderSize();
+		//SetOrthoRenderSize(C_DINK_SCREENSIZE_X, g_dglo.m_orthoRenderRect.GetHeight(), 0, -g_dglo.m_orthoRenderRect.top);
+		
+		//instead of blitting the real GUI which rebuilds it, let's blit our saved version, this way it won't change during transitions (added for Robj to match other dink versions)
+		//TRANSITION
+		//BlitSavedGUIOverlay();
+		//BlitGUIOverlay();
+	
+		//RemoveOrthoRenderSize();
+
+	
+		UpdateInterfaceWithoutTransitionAndThinking();
+
+
 	}
 	
 	if (bCaptureScreen)
@@ -17379,6 +17541,8 @@ flip:
 	{
 		 UpdateControlsGUIIfNeeded();
 	}
+
+	
 
 } 
 
@@ -17959,7 +18123,7 @@ void DinkGlobals::SetView( eView view )
 		float aspect = (float(C_DINK_SCREENSIZE_X)/GetScreenSizeXf());
 		float aspectY = (float(C_DINK_SCREENSIZE_Y)/GetScreenSizeYf());
 
-		g_dglo.m_nativeGameArea = rtRectf(float(g_dglo.m_gameArea.left)/ aspect,0,float(g_dglo.m_gameArea.right)/aspect,float(g_dglo.m_gameArea.bottom)/aspectY);
+		g_dglo.m_nativeGameArea = rtRectf(double(g_dglo.m_gameArea.left)/ aspect,0,double(g_dglo.m_gameArea.right)/aspect,double(g_dglo.m_gameArea.bottom)/aspectY);
 		g_dglo.m_orthoRenderRect = rtRect32 (0, 0, 640, 480);
 		RecomputeAspectRatio();
 
@@ -18887,18 +19051,18 @@ void RecomputeAspectRatio()
 	}
 	else
 	{
-		float aspect_r = (float)GetPrimaryGLX() / (float)GetPrimaryGLY(); // aspect ratio
-		const float correctAspectRatio = (float)C_DINK_SCREENSIZE_X / (float)C_DINK_SCREENSIZE_Y;
+		double aspect_r = (double)GetPrimaryGLX() / (double)GetPrimaryGLY(); // aspect ratio
+		const double correctAspectRatio = (double)C_DINK_SCREENSIZE_X / (double)C_DINK_SCREENSIZE_Y;
 
 		/*
 		if (GetFakePrimaryScreenSizeX() != 0)
 		{
 		//more reliable way to get the aspect ratio
-		aspect_r=(float)GetFakePrimaryScreenSizeX()/(float)GetFakePrimaryScreenSizeY(); // aspect ratio
+		aspect_r=(double)GetFakePrimaryScreenSizeX()/(double)GetFakePrimaryScreenSizeY(); // aspect ratio
 		}
 		*/
 
-		float aspectChange = correctAspectRatio / aspect_r;
+		double aspectChange = correctAspectRatio / aspect_r;
 
 
 		if (aspectChange < 1.0f)

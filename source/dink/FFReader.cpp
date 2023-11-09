@@ -160,7 +160,7 @@ void FFReader::SetError(eErrorType error)
 	}
 }
 
-byte * FFReader::LoadFFIntoMemory(int index, int *pSizeOut)
+uint8 * FFReader::LoadFFIntoMemory(int index, int *pSizeOut)
 {
 	int byteSize = m_fileHeader[GetNextFFIndex(index)].offset-m_fileHeader[index].offset;
 	if (pSizeOut) *pSizeOut = byteSize;
@@ -168,7 +168,7 @@ byte * FFReader::LoadFFIntoMemory(int index, int *pSizeOut)
 	fseek(m_fp, m_fileHeader[index].offset, SEEK_SET);
 
 
-	byte *pMem = new byte[byteSize+1]; //extra one for a null we're going to attach
+	uint8 *pMem = new uint8[byteSize+1]; //extra one for a null we're going to attach
 	
 #ifdef _DEBUG
 /*
@@ -208,13 +208,13 @@ inline std::string getPngPath(const std::string& path)
 	return path.substr(0, path.size() - 4) + ".png";
 }
 
-byte * FFReader::LoadFileIntoMemory( string const &fName, int *pSizeOut, const string &fFirstFrame)
+uint8 * FFReader::LoadFileIntoMemory( string const &fName, int *pSizeOut, const string &fFirstFrame)
 {
 	
 #ifdef _DEBUG
 	//LogMsg("loading for  %s", (m_basePath+fName).c_str());
 #endif
-	byte *pBuff = NULL;
+	uint8 *pBuff = NULL;
 
 	bool bUsingDMODDirOnly = false;
 

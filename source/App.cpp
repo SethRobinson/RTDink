@@ -205,8 +205,8 @@ App::App()
 	m_bDidPostInit = false;
 	m_bHasDMODSupport = true;
 	//for mobiles
-	m_version = 2.00f;
-	m_versionString = "V2.00";
+	m_version = 2.02f;
+	m_versionString = "V2.02";
 	m_build = 1;
 	m_bCheatsEnabled = false;
 
@@ -587,8 +587,8 @@ bool App::Init()
 
 #ifdef _DEBUG
 
-	GetApp()->SetCheatsEnabled(true);
-	g_script_debug_mode = true;
+//	GetApp()->SetCheatsEnabled(true);
+	//g_script_debug_mode = true;
 #endif
 	
 	if (GetEmulatedPlatformID() == PLATFORM_ID_WINDOWS || GetEmulatedPlatformID() == PLATFORM_ID_OSX || GetEmulatedPlatformID() == PLATFORM_ID_HTML5)
@@ -645,6 +645,7 @@ bool App::Init()
 				std::string("-debug (turns on extra debug mode options for dmod authors, available from Dink HD menu as well)\n\n") +
 				std::string("-window (Forces windowed mode)\n\n") +
 				std::string("If a.dmod file is put in the Dink HD directory(where the.exe is) it will be automatically installed and then deleted\n");
+			    std::string("dink.exe <dmod url> will install a dmod directly from the net.\n");
 
 			MessageBox(GetForegroundWindow(), s.c_str(), "Command line options", MB_ICONSTOP);
 
@@ -1043,6 +1044,12 @@ bool App::OnPreInitVideo()
 	//don't do anything, we get the size from the browser
 #endif
 
+
+#ifdef _DEBUG
+
+	//SetEmulatedPlatformID(PLATFORM_ID_IOS);
+#endif
+
 //#if !defined(_DEBUG) && defined(WINAPI)
 #ifdef WINAPI
 
@@ -1098,14 +1105,14 @@ bool App::OnPreInitVideo()
 const char * GetBundlePrefix()
 {
 
-	char * bundlePrefix = "com.rtsoft.";
+	const char * bundlePrefix = "com.rtsoft.";
 	return bundlePrefix;
 }
 
 //applicable to Palm WebOS builds only
 const char * GetBundleName()
 {
-	char * bundleName = "rtdink";
+	const char * bundleName = "rtdink";
 	return bundleName;
 }
 

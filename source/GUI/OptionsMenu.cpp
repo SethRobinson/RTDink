@@ -66,7 +66,11 @@ void OptionsMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity 
 	{
 		GetBaseApp()->SetVideoMode(1920, 1080, false);
 	}
-	
+	if (pEntClicked->GetName() == "vid_uxga")
+	{
+		GetBaseApp()->SetVideoMode(1600, 1200, false);
+	}
+
 
 	if (pEntClicked->GetName() == "controls_0")
 	{
@@ -398,6 +402,12 @@ void OptionsMenuAddScrollContent(Entity *pParent)
 		y += spacerY;
 		pEnt = CreateTextButtonEntity(pBG, "vid_hd", startX, y, "1920X1080");
 		pEnt->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&OptionsMenuOnSelect);
+		
+
+		pEnt = CreateTextButtonEntity(pBG, "vid_uxga", startX + 350, y, "1600x1200");
+		pEnt->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&OptionsMenuOnSelect);
+
+
 		y += spacerY;
 	}
 

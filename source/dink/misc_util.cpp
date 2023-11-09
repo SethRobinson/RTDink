@@ -84,7 +84,7 @@ void dink_decompress( unsigned char *in, char * destBuf )
 #endif
 }
 
-void decompress_nocomp (byte *in, char destBuf[])
+void decompress_nocomp (uint8 *in, char destBuf[])
 {
 	int c, top = 0;
 

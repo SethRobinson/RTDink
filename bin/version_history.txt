@@ -360,3 +360,18 @@ use timing (Myster island camera sequence for example) easier though, not sure.
 * Disabled the window bar menu, alt would appear to freeze the game (Robj)
 * Properly shows correct dinkc version when starting a dmod, before showed incorrect version (Robj)
 * if update_status is disabled, it doesn't blank out that area, it just leaves whatever was there (Robj)
+
+ ------ Change log for 2.02 ---------- (November 2023)
+ 
+* say() text is now drawn under choice menus rather than above, previously dmods that used sp_kill to make text permanent could cause visual problems in choice menus (Robj)
+* A saved game is no longer included, oops
+* The screen scroll effect now respects sprites that were drawn over the GUI parts (Robj)
+* Overlapping text is easier to read now, for two reasons, the main problem was Proton SDK does batching under the hood (this didn't exist when the original Dink HD was made)  and it was trying to batch all the the text backgrounds together on the same later which isn't what we wanted, and two, I made the bg slightly darker
+* attack_wait for sprite 1 is now preserved across saves to match functionality of other dink versions (RobJ)
+* DinkC change: LogMsg (a script command that let's a script print text to the log.txt file directly) now properly handles &variables
+* DMOD installer fixed to work with older v7 tar format (big thanks to drone1400 for help with this)
+* DMOD installer fixed so it wouldn't fail with a stack overflow with certain dmods (cast_awakening_part_5_revolution-v1_00.dmod)
+* (Windows) I added "dink.exe <dmod url> will install a dmod directly from the net." to the dink.exe /? command line help screen.  Not a new feature but I don't think I ever told anyone about it
+* Dink source updated to compile with (up to) C++ '17.
+* Scrollbars can now be manipulated with a mouse as expected, in addition to the normal "click the content to move it" carry over from touch screens on mobile.  I added this because it turns out having nearly 400 dmods installed was too slow to navigate without it
+* Will now use .png tile screen images if available

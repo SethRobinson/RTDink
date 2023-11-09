@@ -152,8 +152,8 @@ public:
 
 	BackgroundSpriteManager m_bgSpriteMan;
 	bool m_bUsingDinkPak;
-	float m_aspectRatioModX;
-	float m_aspectRatioModY;
+	double m_aspectRatioModX;
+	double m_aspectRatioModY;
 	CL_Vec3f m_centeringOffset;
 	CL_Mat4f m_dink_matrix;
 	CL_Mat4f m_dink_matrix_inverted;
@@ -196,20 +196,20 @@ struct sequence
 	int32 delay[C_MAX_SPRITE_FRAMES];
 	unsigned char special[C_MAX_SPRITE_FRAMES];
 
-	byte active;
+	uint8 active;
 	short m_xoffset, m_yoffset;
 	rtRect32 m_hardbox;
 	eTransparencyType m_transType;
-	byte m_bLeftAlign;
+	uint8 m_bLeftAlign;
 	int32 m_speed;
 	char m_fileName[C_SPRITE_MAX_FILENAME_SIZE];
 	short x,y;
 	short s;
-	byte last;
-	byte m_spaceAllowed;
-	byte m_bFrameSetUsed;
-	byte m_bIsAnim;
-	byte m_bDidFileScan;
+	uint8 last;
+	uint8 m_spaceAllowed;
+	uint8 m_bFrameSetUsed;
+	uint8 m_bIsAnim;
+	uint8 m_bDidFileScan;
 	
 };
 
@@ -510,7 +510,7 @@ struct seth_joy
 
 struct mega_y
 {
-	byte y[401];
+	uint8 y[401];
 };
 
 //struct for hardness map
@@ -525,7 +525,7 @@ struct hit_map
 #define C_DINK_TILE_SIZE_IN_PIXELS 50
 struct block_y
 {
-	byte y[C_DINK_TILE_SIZE_IN_PIXELS+1]; //the +1 is because I did everything 1 index based.  Yeah, I was an idiot.
+	uint8 y[C_DINK_TILE_SIZE_IN_PIXELS+1]; //the +1 is because I did everything 1 index based.  Yeah, I was an idiot.
 };
 
 struct ts_block
@@ -558,7 +558,7 @@ struct map_info
 struct tile
 {
 	int32 num, property, althard, more2;
-	byte  more3,more4;
+	uint8  more3,more4;
 	int32 buff[15];
 };
 
@@ -605,7 +605,7 @@ struct pic_info
 	int16 yoffset;
 	int16 xoffset;
 	int16 m_parentSeq;
-	byte m_bCustomSettingsApplied;
+	uint8 m_bCustomSettingsApplied;
 	int16 m_parentFrame;
 };
 

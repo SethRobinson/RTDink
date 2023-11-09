@@ -112,7 +112,7 @@ bool InitializeVideoSystem();
 void KillVideoEngine();
 void GetSizeOfSurface(IDirectDrawSurface *pdds, int *pX, int *pY);
 
-IDirectDrawSurface * LoadBitmapIntoSurface(const char *pName, eTransparencyType trans= TRANSPARENT_NONE, IDirectDrawSurface::eMode mode = IDirectDrawSurface::MODE_SHADOW_GL, byte *pMem = NULL, int pMemSize = 0,
+IDirectDrawSurface * LoadBitmapIntoSurface(const char *pName, eTransparencyType trans= TRANSPARENT_NONE, IDirectDrawSurface::eMode mode = IDirectDrawSurface::MODE_SHADOW_GL, uint8 *pMem = NULL, int pMemSize = 0,
 	bool bUseCheckerboardFix = false);
 
 #endif // video_dx_h__

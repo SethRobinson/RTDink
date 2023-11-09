@@ -35,14 +35,14 @@ public:
 
 	bool DoesFileExist(const string &fName, const string &fFirstFrame);
 	void Init( const string &gamePath, const string &dmodGamePath, const string &baseDir, bool bUsingDinkPak);
-	byte * LoadFileIntoMemory(string const &fName, int *pSizeout, const string &fFirstFrame); //you need to delete [] what this gives you on your own
+	uint8 * LoadFileIntoMemory(string const &fName, int *pSizeout, const string &fFirstFrame); //you need to delete [] what this gives you on your own
 	eErrorType GetLastError() {return m_error;}
 
 private:
 
 	void Kill();
 	int GetFFRecordIndexFromFileName(const string &fName);
-	byte * LoadFFIntoMemory(int index, int *pSizeOut);
+	uint8 * LoadFFIntoMemory(int index, int *pSizeOut);
 	int GetNextFFIndex(int index);
 	void SetError(eErrorType error);
 	string m_gamePath;

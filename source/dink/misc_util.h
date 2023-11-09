@@ -10,7 +10,7 @@ const int32 C_DINK_SCREENSIZE_Y = 480;
 void getdir(char final[]);
 
 void dink_decompress (unsigned char *in, char * destBuf);
-void decompress_nocomp (byte *in, char destBuf[]);
+void decompress_nocomp (uint8 *in, char destBuf[]);
 #ifndef SAFE_RELEASE
 	#define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
 #endif

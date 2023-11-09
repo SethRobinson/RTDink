@@ -421,7 +421,7 @@ void OnGameProcessHWKey(VariantList *pVList)
 		//LogMsg("Escape hit?");
 		return;
 	}
-		byte c = toupper(char(pVList->Get(2).GetUINT32()));
+		uint8 c = toupper(char(pVList->Get(2).GetUINT32()));
 #ifdef _DEBUG
 		//LogMsg("Detected key %d", (int)c);
 #endif
