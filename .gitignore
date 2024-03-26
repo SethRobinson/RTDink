@@ -1,0 +1,25 @@
+# metadata in root folder
+.vs/
+.idea/
+
+# metadata in solution folder
+windows_vs2017/.vs/
+windows_vs2017/.idea/
+
+# object files
+windows_vs2017/Win32/
+windows_vs2017/x64/
+
+# binaries
+bin/
+
+# baked proton textures
+*.rttex
+*.rtfont
+
+# other VS metadata?
+*.aps
+*.sdf
+*.VC.db
+*.VC.opendb
+*.user
