@@ -10,9 +10,6 @@ windows_vs2017/.idea/
 windows_vs2017/Win32/
 windows_vs2017/x64/
 
-# binaries
-bin/
-
 # baked proton textures
 *.rttex
 *.rtfont
@@ -23,3 +20,55 @@ bin/
 *.VC.db
 *.VC.opendb
 *.user
+
+#copied from Seth's gitignore, sorry it's so messy
+
+bin/Unused
+LegacyFiles
+MediaPack
+Press And Docs
+WebOS
+windows
+www
+bin/dink_html5
+bin/dink_for_android
+bin/dink_html5_uncompressed
+bin/dink_html5_nope
+bin/dink_html5_pak
+bin/dink_original
+bin/dink
+bin/audio
+bin/dink_with_zip
+bin/dmods
+bin/interface
+bin/interface_original
+bin/miditoxm
+bin/processed_audio
+bin/dinkpak
+
+*.zip
+*.ncb
+*.bsc
+*.pch
+*.sbr
+*.ilk
+*.idb
+*.obj
+*.DS_Store
+*.pdb
+.vs
+*.vcxproj.user
+windows_vs2017/Backup
+builds
+dxsdk/Lib/x64/Unused
+dxsdk/Lib/x86/Unused
+RTDink
+OSX
+Resources-iPad
+RTDink.xcodeproj
+iOSIcons
+script/builds
+script/Old
+
+AndroidGradle/app/libs/fmod.jar
+

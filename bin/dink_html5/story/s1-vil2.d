@@ -1,2 +1,0 @@
-Å
-void talk( void)Ä{Äsay("`%To Terris and Goodheart Castle", &current_sprite);Ä}Ä

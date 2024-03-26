@@ -1,2 +1,0 @@
-ß
-€  );_sreitƒ‚, toaysŠ‹„"ˆŒ‰t ("p‘urt„“…r†c•n”&—p–˜š™›œee oi.‡ f…vŸd £¤e(z¦e§†(¢¨’`a©w¬­250®¯«1uc l‡f nª¡±u¶teHimi »th)€ƒ"}€)‚{‚³†1‡all s  ¥(&¡°m²Ì·iµ ´s¹Ê¾€ÁtÇÏË¼ÑÄÔ×gØiÍhÖrÙrouÒ{¥main(ŞÓ€¥talk(Şª1ƒª¿Õs‰ry > 10)Ã’ºÜÈ. Å°‡±ºÛˆ½ankÉfor³etting uÉalÈeatĞ°‡’Yİ'… welcome Å¸Å¸´…t“n;}chŸce„tart()"SŠ hiÀ"Ask abİfoodÀ"Never¼ndÀchŸce_end(ÂÕ…sul== 1ÂÃ ’ºÜÈ. 1ÎºÛĞ}‚Õ…sul== 2ÂÃ ’Do yİ ge‰ eÆÚÜl?1ÎNoÚ³a¹lyˆmommy ‹Éwcan'eÆ½ÆÚ,·becausoµ½d²ks ÎI don'lik½d²ksĞ}¸1ƒ¸¿Ó€¥h©Ş«2NoÛ!¿Ó

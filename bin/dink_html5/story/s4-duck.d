@@ -1,2 +1,0 @@
-¯
-s sp, reitn nti;€_‚r…Š‹)‰d o heŒeoick)€„‡’u“•‘d—v–r˜u›cœ&y //leƒ{€}€€ ‚t (¢n(aihikial¬lšmª© š”£‚_h…p’‡s¨5¥¤ thˆˆa¦eci­ ®l scrip§jus§™sƒsyou ca†ru†somet«ng€ w†tir ad¡sbodŸˆ®¡­s(die ˆru†asoo†atŸa„€ ®¡dƒw«ch ˆtoearlŸfor wha§we wa‡ tdo”€š™die( š”£€&save_x =¦_x¨-1&save_Ÿ=¦_y¨-1extern­("make","food™"¥if (get‘_w…h_t«s_brª©3ƒ) == 0” £   nmo„ brª†3 ™„ƒ¡tro“€‚aw©"s4-end"¥ ¤¤

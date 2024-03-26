@@ -1,2 +1,0 @@
-Ÿ
-€  ;‚)ƒ, pe&†‡pspˆ…(Š‰_se„Œ57reinq(’“p_”d–a—o˜l™•š„›…0‹1void ma‘( void )€{if (&snowc == 0){‚›1œ3œ7œ9„//Spawn guy‚‘t ˆƒˆ = cate_‰rite(144…169bra‘6ba_walk‹0s†edtim‘g‹0„//t start‘g pic‚Œp’‹3pframescript‹"sc-wiz");}€}€

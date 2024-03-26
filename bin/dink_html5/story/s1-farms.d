@@ -1,2 +1,0 @@
-Ç
-itvoid talk( void )Ä{Ä say("`%SmileStein Farm - We grow Å, you eat Å.", &current_sprÅe);Ä}Ä

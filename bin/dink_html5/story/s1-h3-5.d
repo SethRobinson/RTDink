@@ -1,2 +1,0 @@
-º
-  €, 1)sp;‚1ƒ(‡ma{‚…_reveto„†-„‚Šom’= d i•o–v—f i™‘ š(;€}€}‚)†œ‹&‰pˆrˆƒs›“¤=”¥Ÿ¦£t ¨ )§e(_«­©i±®°ƒ1d²¡µ¢nurit˜‰in( ˜)€{€ in¬· · ”…(23 œ&farmer_ques¬> „›‹acti(&c¸Œnt_…r¹eƒ0  Œt¸n; ‚ ‹uch_da‰g¯&c¸Œnt_…r¹eƒ€€˜uch( ˜)€€ŠfŒez¯//“ him a b¹?‚¶8³2´77ª¶7³2´77ª¶4³6´66ªsay("`7No¬so fastƒS‰llwood!"ƒ· unfŒez¯„

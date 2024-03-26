@@ -1,2 +1,0 @@
-»
-€ ;)‚, _stoit…†p(ˆ‰reay"„ŒŠs"ƒurt…a‡r‡’‹0‘n“p•w”c–5—ƒš›˜™2œ&Ÿ( ¢d ¡`6¥e1„i¤o©vª..havenk.§£y ƒ 1£´¦t­°µyo ¸¹u«main( «)€{€}€€«†uch( «)€{if (&s†r²> 10){ mo®Š¨4„397,1 ³sp_dir(¨6³¦Ahh Di¯„¶¯º„¶¯º!§³‹t’n‚}f‹eze(1ƒmo®Š¨4„397,1 ƒsp_dir(¨6‘¦Who's the‹?±M²name's Di¯·Ne®r min¤¶t.§‘¦Doº ­® food?±Nope ¬·I nee¤food!±Sorr²¬·Then go awŒ!!§ƒunf‹eze(1); €}€

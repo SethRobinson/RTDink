@@ -1,2 +1,0 @@
-²
-  €, rein_sur); sit w…kay€€"ƒ‡„t†eˆrŠ‰“’n‘c—–p•&˜š›™d s t ("`9 ¡dŒiiy o¤v§hetoœ‚”†p¢¬ª‚®//¯­¨talk( ¨)€{if (&sªr¦> 14)‚{€”¢Look TomƒDŒ ¥back!«„t‡n;‚}€ °guar1€”¢Th¥¥t©‹ DŒ.I‹ish you luck.œ€}¨hŠ( ¨)€{€…Ÿ&£¦=‰p_y(1ƒ-1ˆ€°geŸ£¦cordif (&£¦< 280)‚{‚ °£ ¥above t©m±Ouch,that‰marted.«‹aŠ(300ˆ±I‹onder‹©„ thaŸcame from?« „t‡n;‚}±Test…g ouŸyo‡‹eapons?T©y‹ork a-okƒtrusŸme.œ€}€

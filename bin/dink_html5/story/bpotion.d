@@ -1,2 +1,0 @@
-¼
-  spiten;€, (&)…„trƒ_‚‹Šr‰rŒuc‡‘‚_’e€”†d e in•s t toˆ“math0,//uc£¤hor)€dƒi—a™i›aŸ  = š ¨¦o©rªd¬v±e°_³b²¥¶¸golhº¢ «scripœfill›lif˜up†¹˜musœb˜seœ -1. (run scripœmode§€´Ÿ™( §{€“¹e–-1seq–55·–6ˆ€}€€´¥( ´§{€&def„s˜+®1…Playsound(1¡2205¡¡¡0ˆ¢shr™k ­«perc‰­„ die€“·_parm–10·–12¹e–0tim™g–0ˆ•™œ&»—®“µ_num”ˆif ‡»—!®0)š{¯¢ «wa›place—by­˜µ†let›Ÿk˜ƒ noœcom˜back¯µ_type‡»d†1); ¯¢kill foo—f¦everš}€€}š

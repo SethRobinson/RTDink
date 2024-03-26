@@ -1,2 +1,0 @@
-Ý
-  ;€it_s)‚rerƒ(&„purnt€Š†‰‡‹Žcwa‘e’ƒ… €€tos…ˆ“, loy„—až˜Ÿ= e f ” ("p¥ ¦",p_rano}–i£0022•sd„p†­ˆ)Œ&“š›²œt =¡`#³¤q(°©¼¯a±¨µ§º»¹·¿e¾ÃÄin´{ÇŒ¶1¬Â•ÅusouÀ…ÎŒI d Ì dªš,(5«¸ÏÊ«ÓeaomanØwvoiÑmaÆ( voiÑ)€{€ Å1Ë3Ë5Ë7Ë9½base_’lkÔ¯0½bªÆÉ6°p‰eedÔ1½timÆgÔ33½«hƒÉ½ÜÉ•i‹ &”‚€œop:–&¤¡ªndÚ(3®0,1®0…”ˆ”…€&¤¡ªndÚÕ›1…€Â1ÈÁWo¢a† Ì!×2Ç€ŒÁYÍ cÛÖhŠ¸ÒDÆk.×3È˜©ÜÉ™ÁYÍ cÛÖse¢ÒDÆk.×4È˜©Ü¶0™ÁLOOK UPON MY DEFORMED FACE!À™”Õ®™§Spi‡›lÙv¢m¢aœne!¨1™Ê5ÈÁSÚ¢o£Òlik¢— Ù¸humÛs.ÐwÍlÑlÙv¢­Ðwe† yÍ.À™”Õ®™§Ðam Öafªid›ghost.¨1™¬–go— œop‚€¬€

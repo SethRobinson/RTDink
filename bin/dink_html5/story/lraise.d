@@ -1,2 +1,0 @@
-¿  
-€€;€)ƒse= re‚‚ &0,(…† tale+‡‰f 00elen}1ƒ)„0…„Šcˆa i’v”n›Ÿ œt (&¤(1icouay˜{—€=‡¥ˆs"‘_•ªšl£I¢²¬„­_®"³u´s¸µ¹ratichth//»i¾eir ¡void »i†( void ){pl©s¨nd(33, 22“‹ ‹ ‹™script_at½¦“™„ Pl©s¨nd¦‹2205‹‹‹™wait¦“™¥¡ < 32ªstop°¼ˆ_game¦…€Š¡—‰½o§e¶rtŒ‰†t_y 240‘¼t¶rtŒYOU ARE NOW LEVELŠ¡Y¨ m© i¢one o’y¨r attributes.‘¼t°dŒ‰·Atck¯·Def•†¯·Mag§¯½o§e°dŒ‚º1±stˆng¾«}º2±def•«}º3±mag§«–šlifemax3ƒ –”†{Šexp ‡0ƒ s©("Wha£a gyp!", 1…–d»w¶tusŒkill_¾is_skŒ–

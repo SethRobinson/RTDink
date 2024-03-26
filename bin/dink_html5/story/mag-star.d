@@ -1,2 +1,0 @@
-À
-, ;€cr&m)‚sp„yƒaˆp= †_in‰…‹‡y(&16‘9tes‡x0‚ Št Œ˜6Œk”ƒ—ƒ•š_†-ŠdrŸ’a“i“r›–™‰¢¨"£ ¡d ¦ (¤r§±¥h¬°²µ³s´"·e¶ª¹”eœi¼p»q½t//makes stars aroun¯D›€€voi¯maŒ( voi¯)€€™•—‹x(1,-1…™—‹y(1,-1…®6©„º1¾(„’¿(„¸…®3–•®3©&dº3¾«’frame«3¿«¸…€ +Š1–• +Š6©&rºš¿­¸¾­’frame­6…€kill_this_task(…}€

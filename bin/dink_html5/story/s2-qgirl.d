@@ -1,2 +1,0 @@
-ª
-sp;€)‚re_, t…r„n‡uˆŠ‰c‹&Œ33teir‘’†(“seƒin•qp„(˜š_›ƒ™dœaoŸl ¡–_ido¤v¥€ ¦ ”1¨ma— ( ¨)€{€debug("Mak—g girl"¢1¢3¢7¢9£ba•_walk”0–…eed©ƒ//_tim—g”66£p˜”1£pframe©£bra—©6ƒ}€§¨talk(¦)§{§ say("`#Hi†D—k."†’ƒ }€

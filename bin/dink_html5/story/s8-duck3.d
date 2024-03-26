@@ -1,2 +1,0 @@
-Æ
-€ );re‚it_s,   d oiurnt‹ƒŒ†r…"‡y†Š‰pa‘c“v’s•–”&™("p›oœt˜še1„„Ÿe(…(€€fƒz£a¤e§w¨¦©ª250¬­ˆˆ.®¢thho)€ „ —s « ¶´un¹{»ƒ ¡}¥`3&³µ±°Â²eÁl—main(»€¿—talk(¼«¡¸¢ÀHello ÄƒÃHi‡w³ a½you?¾®)ŸÀI'm Ä moÄr duckÃOh‡I see°¡±An‰³w a½yo‹ kid·dŠng?¾±ÀThey'½fineÃHey‡²at'·gƒat°¡º«¡º¸‚€}¯¯¯€—h¤¼¸¢Yeah‡²i·i·fº!¾º¸‚€¿—die (¼ iŒ Å‰= sp_ed…or_num(µ if (Å‰!= 0) ed…or_typ£Åd‡6‚ ¥¿¥

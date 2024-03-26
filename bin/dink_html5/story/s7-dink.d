@@ -1,2 +1,0 @@
-¢
-);it€spd (&reinaˆ  , ‹1‚eoivhoor)€_„r‡…rt“—–u”c™†šn˜›œs t „_l•m‰(d’{€}€•talk( •’{€f‡eze(1ƒsay_stop("That... s‘Ÿof looklike me."Œƒwa‚(500ƒ br‰_parmŒ0ƒ br‰Œ2ƒ€Š//kill thim so ‚ doesn'Ÿsw up ag‰ f‘ thiplayer€ŠˆŸ&¡…=  ed‚‘_numƒŠif †¡…!= 0’Šed‚‘_type†¡dŒ €€unf‡eze(1ƒ€€}€

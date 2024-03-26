@@ -1,2 +1,0 @@
-É
-  ;€sp)‚reit(&nt, _ƒr…r†ˆŠu‹Œc‡‘d ƒ_’e€•‰–s sein„”= mathtoe 0,//raadšq€€1‚p…d†i“¤›+ Ÿl ˜ o¥_¦­¨o«²(eªb¬l¯l± ³v´µ5©¹½¼uc ¿gÀholhÃ¶oonÅrst£¥d™Æ¡  a¸Èats§»›( )€{€¾5„¾6„¾7„€”Â_daÁe—-1œ¦—75œ·—6„€}§»Â( »)€{€&Áicº&È…ngŸº&defenšºsay("MegapotiÆ!A¸Èat™¤iš“by Æe.",1„Playsound(1¢2205¢¢¢0„£shr›k  ®i™perceˆ®en die€”·_parm—200œ·—12œÂ_daÁe—0œtim›g—0„–iˆ &Ä“”Ç_num•„if ‡Ä“!0)˜{°£Ÿi™wa™place“by®¡Ç‰let™k¡† not com¡back°Ç_type‡Äd‰1); °£ki¸foo“fo…ver˜}§}˜

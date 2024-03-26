@@ -1,2 +1,0 @@
-£
-;€)oabƒ„t(&‚ sp, †…‡ˆŠ‰‹_= rain)€26id-… † c0‘4’f•7”s›iš   &la—p yvo“ ma( vo“ ‘{€€tŸ¡–get_burn(‚€¡ =˜p¢m“i("1006"‚¡ > ˜p¢m“i("1018"‚€œ =˜{€ prelƒd_seq(™‡tŸ…–create_ˆrite(7’,287‰0,™,1scriptŒ"œ"ˆeedŒ1timgŒ66bŒ6seqŒ™fme_de¢Œ200‡Ÿœ–1 }€€}€

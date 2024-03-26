@@ -1,2 +1,0 @@
-Å  
-€€spit, (&);enˆt‚_ƒr„r‰‹Œruc‘†’ƒ_“e•…e d ins t mathtoŠ‚‡ ”//1‡ 0,raucŸ¨if©hord„¡”e–§ši™i›a= Š lªe­·¬o±b°d³v¹_»«½se¾gilolhÂÁl£²scripœfÄ›¶—up…À—musœb—¿œŸ -1. (run scripœmode)˜¼š( ){¢¿q–52‡¢f§m¯¤ £so¥—¿q wÄ start¢º–6‡¢À¯-¤¢noh„–¤˜}˜¼«( ¼){&¶—´&¶ex;Playsound(1¦2205¦¦¦0¡£shršk Ÿ¥²perc‰¥ˆ die”º_parm–5®º–12®À¯0®timšg–0‡˜€šœ&Ã™´”¸_num•¡€ª †Ã™!´0)Š{µ£²wa›place™by¥—¸…let›k—„ noœcom—backµ¸_type†Ãd…¤ µ£kÄ foo™f¬everŠ}˜˜}

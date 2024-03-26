@@ -1,2 +1,0 @@
-  €€
-cr, ‚‚0„d &ƒ‚…‰ate‹p‡‡‚ );spntsƒlˆ Š 2-s—//“išp›t™œ for au’s house†voiˆmain( voiˆ)‚{™bui”au’i’• = ƒeaŒ_‘riŒ(290,25‡0&Œmp2ho”=•;‘_œ(„"˜nadp"†if (&˜naˆ> 2)Š€{–™bui”little girl–i’• = ƒeaŒ_‘riŒ(390,21‡0–‘_œ(„"˜qgirl"Š€ }†}††

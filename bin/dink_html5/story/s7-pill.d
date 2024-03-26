@@ -1,2 +1,0 @@
-Õ
-spre);itƒ€, _r„‡ˆ‰entr‚‹ŠuŒc&‘†(’_€€0…d € looi1…š—vœ= seina gep‚–”£™_Ÿr¡b§d¦a©¥ªq(«¬//“1­1la™cnd²kthhoenou)€}€c‚h„0†”)˜   f r¢Â(0,p±¸³»·&¶À¹iÄsÇsÈ(ÊyÌÆÏedÉl”tÎ{®pillbug ¨•m¡Ô€Í´(›”¨“9…‡eÑ“2…Óim g¯¤exp¯0¤baŸ_walk¯3¤baŸ_deaµ¯4¤t¸ch_dama¢“25…”¼pš‹s“5–°3›°33…°4›°43…€Ëra³om(2,1) =1¿{˜ÓaÃt“› º}•€¼Ô€ÓaÃt“&·emyŠ…Ğ(3½1505½400½’–®´ on to µe guy w¶ just ¼ us€®Ğ€ºdieÔ•Ë¢tŠ_w„h_µis_¨(9†‘) =0¿{˜ ®no mo‚ ¨ 9 monsters he‚†lets un´ µe Í•ÁÍ´(–ÁĞ(43†2205ÅÅÅ–˜}••˜ i‹ Ò—¾Ñ„or_num(‘…ÁËÒ—!0¿ Ñ„or_type(Òd†6ƒ •&save_x ¾x“-›&save_y ¾y“-›˜external("emake","±Ã"…€º

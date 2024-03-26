@@ -1,2 +1,0 @@
-Š
-eridinar;€)….. tat//why both makƒg a maƒ?  I'mˆoo sm„t forˆh‰‡€€vo‚ˆalk( vo‚)€{€say_stop("`%Priv‰e propty! Keep out! - Wiz„d M„tr‚ge", &current_sprite†wait(500†say("How ƒtestƒg.  I wond wh‰ is h‚den „ound he‡.",1†}€

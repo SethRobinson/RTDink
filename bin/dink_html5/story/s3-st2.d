@@ -1,2 +1,0 @@
-
-, € sp);pe&…tein†p„‚ƒ_‰Š‹(Œt 0ˆg‡x„€a‡&’e”r–//1serial svoid maˆ( void )€{€˜C— ’on wœl‚ˆ•=ay_xy("The besˆ bows"1823“debug("Okchang‘ ƒ›‡ •t"kill(•t0“‚˜C—œeƒerson orometh‘‚ˆ‰;‚‰ = c—_ƒ›‡(30130braˆ™6baš_wœk370ƒeed™tim‘0Š˜šstart‘ pic‚‹pšq373pframe™sc›pt"s3-st2p"“}€€

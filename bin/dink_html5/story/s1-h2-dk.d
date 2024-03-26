@@ -1,2 +1,0 @@
-¯
-;€)‚ , d ooi…o‡vˆ"„("saaistŒy0ƒp‹w_ƒ’o‘”–“—!!t(•šwh&œo)€{€}€†† ‰5˜›£Ÿe ¦ 2¤Š¥(¨ª©`3ou‰mn «¡€‰talk «‹I knew y®'…com§back.Š1‚¡€‰di§« int  = sp(23ƒ&old_womans_duck = 5 freeze(1›50˜­Dink„n¢¢™!¬­Y® littl§baard™¬­Get ®t™¬Uh„sorry.Š1ƒunfreeze(1‚¡

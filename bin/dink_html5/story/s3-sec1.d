@@ -1,2 +1,0 @@
-Æ
-;€)sp, reƒ_(&0‚rite_ƒ‰Š‹Œurnt„…‘’c“‡”0,e_ido˜v™––(1raseqou€€1‚ˆ†v—= š  ¥a¤s¨22lap«tasc¬y)€‚€œ„0ˆe•†Ÿs -¢¡¦d(&©n(¯¶67n¹¼¾ma…esichis°{//®‰pt for tÁ¸Ài» ¦Å€p…load_Ÿœ½±}¸die( šÅ€µ‡mÄÂl—­rget„2ˆ¿6„800›&mÄÂl—­rget,ˆwait(5³wait(5³¿43„ª05›–ˆ€ºx§†x•·ºy§†y•·i &mcp§c…aŠ‡©x„ºy„7„1½„¢µ‡mcp„1½±†bin•£Âz´10£t Ã_daÀg´·µ•£pŸ•89‚†pfm´1ˆ€}¸t Ã(šÅ¡if ‡life < 1) …tn¿39„ª05›–£dir²8±®‰pt_at­Ãœ0³&¯er_Àp§ª7†x²515‚†y²383‚load_®Á»ª7‚dw_®Á»‚kill_thÄ_­sk(‚}€

@@ -1,2 +1,0 @@
-¸
-  spit;€(&en)„, †trƒ_‚‹Šr‰rŒuc…‘‚_’e€”ˆd ins ma•‡“th€€0,//šgtoordƒi—i™a˜ = ¤£e t › o¥r§eªb¯v®uc¢³´holh¶ ¦scrip¬fill™¡ic²š˜( )€{€“µ_da¡e–-1œseq–57œ±–6‡€}²µ( ²)€{€&¡ic +©1„Playsound(1Ÿ2205ŸŸŸ0‡ shr˜k ¢¨¦perc‰¨† die€“±_parm–5œ±–12œµ_da¡e–0œtim˜g–0‡•˜¬&·—©“°_num”‡if …·—!©0)›{­ ¦wa™place—by¨«°ˆlet™šk«ƒ no¬com«back­°_type…·dˆ1); ­ kill foo—f£ever›}€}•

@@ -1,2 +1,0 @@
-Ä
-sp);it‚€re, _ntrƒ‡‰(&Šer…ˆŒuc‘†‹’_„”d seoi€€˜–všlo)€1„= (1hƒp…0•_—¢œq ¤¦d§a¨¥©//edho{€}€0†Ÿ”a— ›³  “-b²(´£·¹_maratagendck­linou«pillbug b¼Â™›»Â¸®«sc…enœÀ •b¼Â“9„‡e¬“3•no¡“£exp“5ºwalk“13ºdeath“14ºat½À¶1•tÃch_da»¾“4•¡p˜ˆs“35„ª3ª33„ª4ª43„€if (¼¿om(2,1) =Ÿ1 ® ”½r¾t“ ¯}™€›¡¸®”½r¾t“&enemyŒ„playsÃ¿(3°1705°400°&’0„«œÀ on to the guy w­ just ¡ us€«playsÃ¿€¯›die¸{™€µiˆ &Á–±¬ƒor_num‹‘„µif ‹Á–!Ÿ0µ¬ƒor_type‹Ád†6‚ ™&save_x ±x¶&save_y ±y¶€ external("e»ke","m¬ium"„€¯

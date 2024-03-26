@@ -1,2 +1,0 @@
-Å
-void talk( void )Ä{Ä say("`%East to Terris", &current_sprite);Ä}Ä
