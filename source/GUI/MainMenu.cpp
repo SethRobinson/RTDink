@@ -648,6 +648,13 @@ Entity * MainMenuCreate( Entity *pParentEnt, bool bFadeIn )
 
 #endif
 
+	bool bDoSlowIntro = true;
+
+	if (GetApp()->GetSkipMode())
+	{
+		g_bDidVersionCheck = true;
+		bDoSlowIntro = false; //don't do slow animations
+	}
 
 	if (!g_bDidVersionCheck && IsDesktop())
 	{
@@ -746,25 +753,29 @@ Entity * MainMenuCreate( Entity *pParentEnt, bool bFadeIn )
 			pButtonEntity = CreateOverlayButtonEntity(pBG, "New", ReplaceWithDeviceNameInFileName("interface/iphone/main_but_new.rttex"), vNewButPt.x, vNewButPt.y); 
 			pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&MainMenuOnSelect);
 			SetTouchPaddingEntity(pButtonEntity, CL_Rectf(0,0,0,0));
-			FadeInEntity(pButtonEntity, false, 500, 100);
+			if (bDoSlowIntro)
+				FadeInEntity(pButtonEntity, false, 500, 100);
 
 			//SetupTextEntity(pButtonEntity, fontID, fontScale);
 			pButtonEntity = CreateOverlayButtonEntity(pBG, "Add-ons", ReplaceWithDeviceNameInFileName("interface/iphone/main_but_addon10.rttex"), vAddonButPt.x, vAddonButPt.y); 
 			pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&MainMenuOnSelect);
 			//SetupTextEntity(pButtonEntity, fontID, fontScale);
 			SetTouchPaddingEntity(pButtonEntity, CL_Rectf(0,0,0,0));
-			FadeInEntity(pButtonEntity, false, 500, 1000);
+			if (bDoSlowIntro)
+				FadeInEntity(pButtonEntity, false, 500, 1000);
 		
 			pButtonEntity = CreateOverlayButtonEntity(pBG, "Load", ReplaceWithDeviceNameInFileName("interface/iphone/main_but_load.rttex"), vLoadButPt.x, vLoadButPt.y); 
 			pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&MainMenuOnSelect);
 			//SetupTextEntity(pButtonEntity, fontID, fontScale);
 			SetTouchPaddingEntity(pButtonEntity, CL_Rectf(0,0,0,0));
-			FadeInEntity(pButtonEntity, false, 500, 400);
+			if (bDoSlowIntro)
+				FadeInEntity(pButtonEntity, false, 500, 400);
 
 			pButtonEntity = CreateOverlayButtonEntity(pBG, "Continue", ReplaceWithDeviceNameInFileName("interface/iphone/main_but_continue.rttex"), vContinueButPt.x, vContinueButPt.y); 
 			pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&MainMenuOnSelect);
 			SetTouchPaddingEntity(pButtonEntity, CL_Rectf(0,0,0,0));
-			FadeInEntity(pButtonEntity, false, 500, 700);
+			if (bDoSlowIntro)
+				FadeInEntity(pButtonEntity, false, 500, 700);
 
 			if (!FileExists(GetSavePath()+"dink/"+string("continue_state.dat")))
 			{
@@ -775,19 +786,22 @@ Entity * MainMenuCreate( Entity *pParentEnt, bool bFadeIn )
 			pButtonEntity = CreateOverlayButtonEntity(pBG, "About", ReplaceWithDeviceNameInFileName("interface/iphone/main_but_about.rttex"), vAboutButPt.x, vAboutButPt.y); 
 			pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&MainMenuOnSelect);
 			SetTouchPaddingEntity(pButtonEntity, CL_Rectf(0,0,0,0));
-			FadeInEntity(pButtonEntity, false, 500, 1300);
+			if (bDoSlowIntro)
+				FadeInEntity(pButtonEntity, false, 500, 1300);
 
 			pButtonEntity = CreateOverlayButtonEntity(pBG, "Options", ReplaceWithDeviceNameInFileName("interface/iphone/main_but_options.rttex"), vOptionsButPt.x, vOptionsButPt.y); 
 			pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&MainMenuOnSelect);
 			SetTouchPaddingEntity(pButtonEntity, CL_Rectf(0,0,0,0));
-			FadeInEntity(pButtonEntity, false, 500, 1500);
+			if (bDoSlowIntro)
+				FadeInEntity(pButtonEntity, false, 500, 1500);
 		
 			if (GetEmulatedPlatformID() == PLATFORM_ID_WINDOWS)
 			{
 				pButtonEntity = CreateOverlayButtonEntity(pBG, "Quit", ReplaceWithDeviceNameInFileName("interface/iphone/main_but_quit.rttex"), vQuitButPt.x, vQuitButPt.y);
 				pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&MainMenuOnSelect);
 				SetTouchPaddingEntity(pButtonEntity, CL_Rectf(0, 0, 0, 0));
-				FadeInEntity(pButtonEntity, false, 300, 1000);
+				if (bDoSlowIntro)
+					FadeInEntity(pButtonEntity, false, 300, 1000);
 			}
 			else
 			{
@@ -795,7 +809,8 @@ Entity * MainMenuCreate( Entity *pParentEnt, bool bFadeIn )
 				pButtonEntity = CreateOverlayButtonEntity(pBG, "rtsoftlogo", ReplaceWithDeviceNameInFileName("interface/iphone/logo_rtsoft.rttex"), vRtsoftLogoPt.x, vRtsoftLogoPt.y);
 				SetTouchPaddingEntity(pButtonEntity, CL_Rectf(0, 0, 0, -10)); //no padding, it overlaps other buttons..
 				pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&MainMenuOnSelect);
-				FadeInEntity(pButtonEntity, false, 300, 1000);
+				if (bDoSlowIntro)
+					FadeInEntity(pButtonEntity, false, 300, 1000);
 			}
 
 			DestroyUnusedTextures();

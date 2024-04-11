@@ -190,7 +190,7 @@ void AboutMenuAddScrollContent(Entity *pParent)
 	
 
 	string msg =
-		GetAppName()+string("`$ ")+GetApp()->GetVersionString()+" Build "+toString(GetApp()->GetBuild())+"``\nCopyright (c) 1997-2022 Robinson Technologies\n"\
+		GetAppName()+string("`$ ")+GetApp()->GetVersionString()+" Build "+toString(GetApp()->GetBuild())+"``\nCopyright (c) 1997-2023 Robinson Technologies\n"\
 		"\nDink Script Version: `$"+toString(float(C_DINK_VERSION)/100)+"``\nGame Dir : "+ g_dglo.m_gamePathWithDir +\
 		"\nDMOD Base Dir: " + GetDMODRootPath() + "\n\n"\
 		;
@@ -388,7 +388,7 @@ msg += \
 
 	msg = "`8`$Dink Smallwood HD`` was created by `wSeth A. Robinson`` (code), `wJustin Martin`` (graphics) and includes additional contributions from Dan Walma.\n\n"\
 		"`8The original `$Dink Smallwood`` was created by `wSeth A. Robinson`` (engine/scripting/music), `wJustin Martin`` (graphics), `wGreg Smith`` (scripting/music), and `wShawn Teal``. It also featured music by `wJoel Bakker`` and `wMitch Brink``."\
-		"\n\nSpecial thanks to `wDan Walma``, `wRobj`` and the `wdinksmallwood.net`` community for their `$Dink`` creations and support over the years!"\
+		"\n\nSpecial thanks to `wDan Walma``, `wRobj``, `wSimonK``, `wdrone1400`` and the `wdinksmallwood.net`` community for their `$Dink`` creations and support over the years!"\
 		"\n\n"\
 		"This product is less buggy thanks to:\n\n`w"\
 		"Shawn Teal\n"\
@@ -423,8 +423,6 @@ msg += \
 		"LeProChaUn\n"\
 		"DinkDude95\n"\
 		"thenewguy\n"\
-	
-		
 		;
 	
 			

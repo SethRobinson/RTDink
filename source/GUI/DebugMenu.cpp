@@ -7,6 +7,7 @@
 #include "PopUpMenu.h"
 
 extern bool g_script_debug_mode;
+void save_game(int num);
 
 void DebugMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity sent from
 {
@@ -18,7 +19,6 @@ void DebugMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity se
 	{
 		GetBaseApp()->SetFPSVisible(!GetBaseApp()->GetFPSVisible());
 	}
-
 
 	if (pEntClicked->GetName() == "music_on")
 	{
@@ -38,6 +38,11 @@ void DebugMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity se
 		GetMessageManager()->CallEntityFunction(pEntClicked->GetParent(), 500, "OnDelete", NULL);
 	}
 
+	if (pEntClicked->GetName() == "forcesave")
+	{
+		save_game(9);
+		ShowQuickMessage("Game force saved here in slot 9 - will probably break the game!");
+	}
 
 	if (pEntClicked->GetName() == "Back")
 	{
@@ -169,7 +174,7 @@ if (GetApp()->GetCheatsEnabled() || g_script_debug_mode)
 
 	
 }
-	pButtonEntity = CreateTextButtonEntity(pBG, "log", x, y, "View log"); y += ySpacer;
+	pButtonEntity = CreateTextButtonEntity(pBG, "forcesave", x, y, "Force save to slot 9"); y += ySpacer;
 	pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&DebugMenuOnSelect);
 
 	pButtonEntity = CreateTextButtonEntity(pBG, "debug_mode", x, y, "Debug DinkC Toggle"); y += ySpacer;

@@ -383,7 +383,7 @@ Entity * DMODInstallMenuCreate(Entity *pParentEnt, string dmodURL, string instal
 		pBG->GetVar("autoplay")->Set(uint32(1));
 	}
 
-
+	 
 	if (!sourceFileName.empty())
 	{
 		//don't download, we already have the file

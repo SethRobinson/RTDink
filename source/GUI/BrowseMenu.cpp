@@ -72,7 +72,7 @@ void BrowseMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity s
 		return;
 	}
 	
-	int totalDMODPages = g_dmodData.size() / g_dmods_per_screen;
+	int totalDMODPages = (int)g_dmodData.size() / (int)g_dmods_per_screen;
 
 
 	if (pEntClicked->GetName() == "Next")
@@ -230,7 +230,7 @@ void UpdateBrowseControlButtons(Entity *pParent)
 	pParent->RemoveEntityByName("Next");
 	pParent->RemoveEntityByName("Label");
 
-	int totalDMODPages = g_dmodData.size() / g_dmods_per_screen;
+	int totalDMODPages = (int)g_dmodData.size() / (int)g_dmods_per_screen;
 
 	//if (g_dmod_cur_page > 0)
 	{
@@ -338,15 +338,15 @@ void BrowseMenuAddScrollContent(Entity *pParent, TextScanner *t)
 			if (s.m_name == "Title") continue;
 			s.m_url = p[1];
 			s.m_author = p[2];
-			s.m_size = atof(p[3].c_str());
-			s.m_rating = atof(p[4].c_str());
+			s.m_size = (float)atof(p[3].c_str());
+			s.m_rating = (float)atof(p[4].c_str());
 			s.m_description = p[5];
 			s.m_version = p[6];
 			s.m_date = p[7].c_str();
 			StringReplace("V", "", s.m_version);
 			StringReplace("v", "", s.m_version);
 
-			s.m_thumb = atof(p[8].c_str());
+			s.m_thumb = p[8].c_str();
 
 
 			g_dmodData.push_back(s);

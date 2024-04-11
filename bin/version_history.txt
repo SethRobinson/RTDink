@@ -375,3 +375,16 @@ use timing (Myster island camera sequence for example) easier though, not sure.
 * Dink source updated to compile with (up to) C++ '17.
 * Scrollbars can now be manipulated with a mouse as expected, in addition to the normal "click the content to move it" carry over from touch screens on mobile.  I added this because it turns out having nearly 400 dmods installed was too slow to navigate without it
 * Will now use .png tile screen images if available
+
+------ Change log for 2.05 --------- (April 2024)
+
+* BUGFIX: Detects divide by 0 errors in some DinkC situations and avoids a crash (Fix by drone1400)
+* BUGFIX: Fixed issue where HD would get tricked into improperly eating a punch/magic keystroke to skip dialog when DMODS did certain tricky things (SimonK)
+* Now correctly handles the case when a DMOD directory filename is different than the savestate it is in (ie, it was renamed after the savestate was made)
+* (Win) Added "-skip" command-line parm support, will skip the new version check and make the main menu load without fancy animations
+some Windows/proton keyboard problems. At least the method I used should work on non-US keyboards too
+* Added "Force save to slot 9" option to debug menu, might break the game but useful for debugging because unlike savestates it will force all scripts to be reloaded
+* (Win) Added ` (backtick) to toggle an overlay window showing the log.  I wanted to do Shift-Tilde or something so it wasn't accidently hit but ran into 
+* Removed "View log" from debug menu because the above option replaces it
+* Added "set_music_vol" DinkC command.  Accepts between 0 and 100.  50 means set the music/midi to 50% of whatever the current setting is in options.
+* get_version now returns 113 instead of 112 due to the DinkC addition

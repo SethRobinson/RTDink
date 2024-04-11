@@ -24,6 +24,7 @@ Alt-Enter - Toggle between windowed fullscreen
 (Hold) Tab - Turbo mode, entire game runs 3x speed
 (Hold) Shift + Tab - Super Turbo mode, entire game runs up to 6x speed
 (Hold) Shift + Tab + Ctrl - Ludicrous Speed mode, entire game runs up to 18x speed
+` (backtick/grave/unshifted tilde) to toggle debug log overlay
 
 Looking for the Dink files? They are installed to %USERPROFILE%\AppData\Local\DinkSmallwoodHD by default.
 
@@ -32,6 +33,8 @@ Supported command line options:
 -game <dmod directory> (Example:  dink.exe -game c:\dmods\island ) (this also sets -dmodpath automatically to the dmods parent directory)
 -dmodpath or --refdir <dir containing DMOD dirs> (Example:  dink.exe -game c:\dmods )
 -debug (turns on extra debug mode options for dmod authors)
+-skip (skips version check)
+-window (forces windowed mode)
 
 Note:  If a .dmod file is put in the Dink HD directory (where the .exe is) it will be automatically installed and then deleted
 

@@ -9,7 +9,7 @@ set NO_PAUSE=1
 :call update_media.bat
 cd ..
 
-goto testy
+
 
 cd script
 
@@ -95,35 +95,32 @@ rmdir /S /Q builds\win
 mkdir builds\win
 cd builds\win
 
-copy "..\..\bin\dink.exe" .
- 
-
-  copy "..\..\bin\dink.exe" .
+  copy "..\..\..\bin\dink.exe" .
   ;dink.pdf is optional, it's like 11 MB but it allows auto logged crash stacks to contain useful info
-  copy "..\..\bin\dink.pdb" .
-  copy "readme.txt" .
-  copy "..\..\bin\fmod.dll" .
-  copy "..\..\bin\zlib1.dll" .
-  copy "..\..\bin\version_history.txt" .
+  copy "..\..\..\bin\dink.pdb" .
+  copy "..\..\..\readme.txt" .
+  copy "..\..\..\bin\fmod.dll" .
+  copy "..\..\..\bin\zlib1.dll" .
+  copy "..\..\..\bin\version_history.txt" .
   
   
-   copy "..\..\bin\zlibwapi.dll" .
-   copy "..\..\bin\libcrypto-1_1-x64.dll" .
-   copy "..\..\bin\libcurl-x64.dll" .
-   copy "..\..\bin\libssl-1_1-x64.dll" .
-   copy "..\..\bin\curl-ca-bundle.crt" .
+   copy "..\..\..\bin\zlibwapi.dll" .
+   copy "..\..\..\bin\libcrypto-1_1-x64.dll" .
+   copy "..\..\..\bin\libcurl-x64.dll" .
+   copy "..\..\..\bin\libssl-1_1-x64.dll" .
+   copy "..\..\..\bin\curl-ca-bundle.crt" .
   
  mkdir audio
- xcopy /r /E ..\..\bin\audio audio
+ xcopy /r /E ..\..\..\bin\audio audio
 
  mkdir dink
- xcopy /r /E "..\..\bin\dink" dink
+ xcopy /r /E "..\..\..\bin\dink" dink
 
  mkdir interface
- xcopy /r /E "..\..\bin\interface" interface
+ xcopy /r /E "..\..\..\bin\interface" interface
 
  mkdir dmods
   
-copy "..\..\bin\dmods\info.txt" dmods
+copy "..\..\..\bin\dmods\info.txt" dmods
 
 pause

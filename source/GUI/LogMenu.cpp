@@ -38,7 +38,6 @@ void LogAddScrollContent(Entity *pParent)
 	float x = iPhoneMapX(5);
 	float y = 0;
 
-	
 	CL_Vec2f vTextBoxPos(iPhoneMapX(20),y);
 	CL_Vec2f vTextBounds(iPhoneMapX(434), iPhoneMapY(200));
 	string msg = GetBaseApp()->GetConsole()->GetAsSingleString();

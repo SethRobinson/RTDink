@@ -98,6 +98,8 @@ public:
 	bool GetSystemNeedsTouchControls();
 	void OnGamepadConnected(Gamepad* pPad);
 	void OnGamepadDisconnected(eGamepadID id);
+	void SetSkipMode(bool bSkip) { m_bSkipMode = bSkip; }
+	bool GetSkipMode() { return m_bSkipMode; }
 
 private:
 
@@ -117,6 +119,7 @@ private:
 	float m_version;
 	string m_versionString;
 	int m_build;
+	bool m_bSkipMode = false; //skip version check and startup animations
 
 	float m_desktopVersion;
 	string m_desktopVersionString;

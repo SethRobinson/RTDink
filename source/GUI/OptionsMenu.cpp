@@ -305,7 +305,7 @@ void OnProgressChangedMusic(Variant *pDataObject)
 {
 	float musicVol = pDataObject->GetFloat();
 	GetApp()->GetVar("music_vol")->Set(musicVol);
-	//LogMsg("Music vol changed to %.2f", musicVol);
+	LogMsg("Music vol changed to %.2f", musicVol);
 	GetAudioManager()->SetMusicVol(musicVol);
 }
 
@@ -580,6 +580,9 @@ void OptionsMenuAddScrollContent(Entity *pParent)
 	//music vol slider
 	y += spacerY+iPhoneMapY2X(26);
 	EntityComponent *pSliderComp = CreateSlider(pBG, startX, y, iPhoneMapX(360), "interface/slider_button.rttex", "Min", "Music volume", "Max");
+	
+	LogMsg("Music vol %.2f", GetApp()->GetVar("music_vol")->GetFloat());
+	
 	pSliderComp->GetVar("progress")->Set( GetApp()->GetVar("music_vol")->GetFloat());
 	pSliderComp->GetVar("progress")->GetSigOnChanged()->connect(&OnProgressChangedMusic);
 

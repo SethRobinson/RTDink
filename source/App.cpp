@@ -205,8 +205,8 @@ App::App()
 	m_bDidPostInit = false;
 	m_bHasDMODSupport = true;
 	//for mobiles
-	m_version = 2.02f;
-	m_versionString = "V2.02";
+	m_version = 2.05f;
+	m_versionString = "V2.05";
 	m_build = 1;
 	m_bCheatsEnabled = false;
 
@@ -308,6 +308,8 @@ bool App::Init()
 	bool bScaleScreenActive = true; //if true, we'll stretch every screen to the coords below
 	int scaleToX = 1024;
 	int scaleToY = 768;
+
+	GetBaseApp()->GetConsole()->SetMaxLines(200);
 
 	switch (GetEmulatedPlatformID())
 	{
@@ -644,6 +646,7 @@ bool App::Init()
 				std::string("-dmodpath or --refdir <dir containing DMOD dirs> (Example:  dink.exe - game c:\\dmods)\n\n") +
 				std::string("-debug (turns on extra debug mode options for dmod authors, available from Dink HD menu as well)\n\n") +
 				std::string("-window (Forces windowed mode)\n\n") +
+				std::string("-skip (skips latest version check)\n\n") +
 				std::string("If a.dmod file is put in the Dink HD directory(where the.exe is) it will be automatically installed and then deleted\n");
 			    std::string("dink.exe <dmod url> will install a dmod directly from the net.\n");
 
@@ -657,6 +660,11 @@ bool App::Init()
 		fullscreen = false;
 		GetApp()->GetVar("fullscreen")->Set(uint32(0));
 	}
+	if (DoesCommandLineParmExist("-skip"))
+	{
+		SetSkipMode(true);
+	}
+
 
 	if (DoesCommandLineParmExist("-debug") )
 	{
@@ -850,6 +858,7 @@ void App::Update()
 		AddKeyBinding(pComp, "Quicksave", VIRTUAL_KEY_F5, VIRTUAL_KEY_F5);
 		AddKeyBinding(pComp, "Quickload", VIRTUAL_KEY_F9, VIRTUAL_KEY_F9);
 		AddKeyBinding(pComp, "DinkHDMenu", VIRTUAL_KEY_F1, VIRTUAL_KEY_F1);
+		AddKeyBinding(pComp, "ToggleLog", VIRTUAL_KEY_BACKTICK, VIRTUAL_KEY_BACKTICK, false);
 
 		if (GetVar("check_icade")->GetUINT32() == 0)
 		{
@@ -1190,7 +1199,7 @@ void ImportNormalSaveSlot(string fileName, string outputFileName)
 
 	//fix outputfilename if it's wrong
 	StripWhiteSpace(outputFileName);
-	int index = outputFileName.find_first_of('(');
+	int index = (int)outputFileName.find_first_of('(');
 	if (index != string::npos)
 	{
 		//it probably looks like "save2 (2).dat" due to chrome renaming if it existed, fix it

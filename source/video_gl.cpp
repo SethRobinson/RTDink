@@ -133,7 +133,7 @@ IDirectDrawSurface * InitOffscreenSurface(int x, int y, IDirectDrawSurface::eMod
 		case IDirectDrawSurface::MODE_PRIMARY_GL:
 
 		break;
-	}
+	} 
 
 	return pdds;
 }
@@ -205,7 +205,7 @@ int IDirectDrawSurface::Blt( rtRect32 *pDestRect, IDirectDrawSurface * pSrcSurf,
 			else
 			{
 				//sort of a hack for 8 bit index passing
-				glColorBytes palIndex(pFX->dwFillColor, 0, 0, 255);
+				glColorBytes palIndex((GLubyte) pFX->dwFillColor, 0, 0, 255);
 				m_pSurf->FillColor(palIndex);
 
 			}
@@ -233,7 +233,7 @@ int IDirectDrawSurface::Blt( rtRect32 *pDestRect, IDirectDrawSurface * pSrcSurf,
 
 			if (!pSrcSurf)
 			{
-				assert(!"huh?!");
+				//assert(!"huh?!");
 				return DD_OK;
 			}
 			if (pSrcSurf->m_mode == MODE_SHADOW_GL)
@@ -382,7 +382,10 @@ int IDirectDrawSurface::BltFast( int x, int y, IDirectDrawSurface *pSrcSurf, rtR
 		
 		if (!pSrcSurf) 
 		{
+#ifdef _DEBUG
 			assert(!"Shit!");
+		//	LogMsg("Null surface sent in IDirectDrawSurface::BltFast");
+#endif
 			return DD_OK;
 		}
  		
@@ -405,7 +408,7 @@ int IDirectDrawSurface::BltFast( int x, int y, IDirectDrawSurface *pSrcSurf, rtR
 			}
 
 			//pSrcSurf->m_pGLSurf->SetBlendingMode(Surface::BLENDING_NORMAL);
-			pSrcSurf->m_pGLSurf->BlitEx(rtRectf(x, y, x+pSrcRect->GetWidth(), y +pSrcRect->GetHeight())+ rtRectf(0,0, 0.5f, 0.5f), rtRectf(*pSrcRect));
+			pSrcSurf->m_pGLSurf->BlitEx(rtRectf((float)x, (float)y, (float)x+pSrcRect->GetWidth(), (float)y +pSrcRect->GetHeight())+ rtRectf(0,0, 0.5f, 0.5f), rtRectf(*pSrcRect));
 			break;
 		}
 		

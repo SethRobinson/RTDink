@@ -9,7 +9,7 @@
 #include "OptionsMenu.h"
 #include "PopUpMenu.h"
 #include "Entity/SelectButtonWithCustomInputComponent.h"
-
+#include "Entity/LogDisplayComponent.h"
 
 #if defined _DEBUG || defined PLATFORM_HTML5
 
@@ -40,7 +40,8 @@ void PlayMenuMusic()
 
 Entity * DinkQuitGame()
 {
-
+	KillConsoleIfActive();
+	GetAudioManager()->SetMusicVol(GetApp()->GetVar("music_vol")->GetFloat());
 	SetDinkGameState(DINK_GAME_STATE_NOT_PLAYING);
 
 	Entity *pMenu = GetEntityRoot()->GetEntityByName("GameMenu");

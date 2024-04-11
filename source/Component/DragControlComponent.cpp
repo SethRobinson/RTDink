@@ -197,38 +197,8 @@ void DragControlComponent::ProcessLastJoystickReading()
 	
 	std::deque< DragUnit> sampleTemp;
 
-	for (int i=m_samples.size()-1; i >= 0;)
+	for (int i= (int)m_samples.size()-1; i >= 0;)
 	{
-		//if (m_samples.size() < SAMPLE_COUNT) break;
-
-		/*
-		if (1)
-		//if (m_samples.at(i).m_timeMade+100 < GetTick(TIMER_GAME))
-			{
-			vDir = CL_Vec2f(0,0);
-	//would removing this stop us from moving?
-			for (int h=1; h < m_samples.size();h++)
-			{
-				vDir += m_samples[h].m_vPos;
-			}
-			
-			if (vDir.length() < LENGTH_REQUIRED_FOR_MOVE)
-			{
-				//yes it would.  Just let it be, for now.
-				//break;
-			} else
-			{
-				//it's not needed
-			}
-
-			m_samples.erase(m_samples.begin()+i);
-			continue;
-		} else
-		{
-			break;
-		}
-
-		*/
 		vDir += m_samples[i].m_vPos;
 		sampleTemp.push_front( m_samples[i]);
 		
@@ -243,14 +213,6 @@ void DragControlComponent::ProcessLastJoystickReading()
 	
 	m_samples = sampleTemp;
 
-	//vDir = CL_Vec2f(0,0);
-
-	/*
-	for (unsigned int i=0; i < m_samples.size();i++)
-	{
-		vDir += m_samples[i].m_vPos;
-	}
-	*/
 	ClearKeyInput();
 
 	//LogMsg("vDir length is %.2f", vDir.length());
@@ -261,9 +223,7 @@ void DragControlComponent::ProcessLastJoystickReading()
 	//recalculate the points
 	sampleTemp.clear();
 
-	//sampleTemp.push_front(m_samples[m_samples.size()-1]);
-
-	sampleTemp.push_front(DragUnit( (vDir*LENGTH_REQUIRED_FOR_MOVE)*1.1, 0));
+	sampleTemp.push_front(DragUnit( (vDir*LENGTH_REQUIRED_FOR_MOVE)*1.1f, 0));
 	m_samples = sampleTemp;
 
 #ifdef _DEBUG

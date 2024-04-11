@@ -73,11 +73,11 @@ struct BackgroundSprite
 class BackgroundSpriteManager
 {
 public:
-
+	 
 	void Clear();
 	void Add(int spriteID);
 	void Render(LPDIRECTDRAWSURFACE lpdest);
-	int GetCount() {return m_sprites.size();}
+	int GetCount() {return (int)m_sprites.size();}
 private:
 
 	deque<BackgroundSprite> m_sprites;
@@ -213,7 +213,7 @@ struct sequence
 	
 };
 
-const int32 C_DINK_VERSION = 112;
+const int32 C_DINK_VERSION = 113;
 const int32 num_soundbanks = 20;
 const int32 max_idata = 1000; 
 const int32 max_sounds = 100;
@@ -724,8 +724,10 @@ struct DinkGlobalsStatic
 	int32 status_might_not_require_update;
 	int32 m_saveStatesDisabled;
 
+	int32 m_hasMusicModApplied;
+	float m_musicModVolume;
 	//add new vars above this, and remove the byte count from below.  You can safely assume they start as 0
-	char m_bufferForExpansion[4831];
+	char m_bufferForExpansion[4823];
 };
 
 

@@ -932,7 +932,7 @@ void fix_dead_sprites( void )
 	{
 		if (g_dglos.g_playerInfo.spmap[*pmap].type[i] == 6)
 		{
-			if (g_dglos.g_playerInfo.spmap[*pmap].last_time > GetApp()->GetGameTick())
+			if (g_dglos.g_playerInfo.spmap[*pmap].last_time > (int)GetApp()->GetGameTick())
 			{
 #ifdef _DEBUG
 				LogMsg("Woah, crazy time on dead map sprite (%d) detected", i);
@@ -3005,64 +3005,12 @@ void BlitGUIOverlay()
 	rcRect.right = C_DINK_SCREENSIZE_X;
 	rcRect.bottom = 80;
 
-	/*
-	if (*pupdate_status == 0)
-	{
-		//draw black bars around things
-		DrawFilledRect(0, 400, rcRect.right, rcRect.bottom, MAKE_RGBA(0,0,0,255));
-
-		rcRect.right = 20;
-		rcRect.bottom = 400;
-		DrawFilledRect(0, 0, rcRect.right, rcRect.bottom, MAKE_RGBA(0,0,0,255));
-		DrawFilledRect(620, 0, rcRect.right, rcRect.bottom, MAKE_RGBA(0,0,0,255));
-		
-		return;
-	}
-	*/
-
-
-	/*
-
-	g_dglos.g_guiRaise = next_raise();
-	if ( *pexper < g_dglos.g_guiRaise )
-	{
-		g_dglos.g_guiExp = *pexper;
-	}
-	else
-	{
-		g_dglos.g_guiExp = g_dglos.g_guiRaise - 1;
-	}
-
-	*/
-
-	/*
-	g_dglos.g_guiStrength = *pstrength;
-	g_dglos.g_guiMagic = *pmagic;
-	g_dglos.g_guiGold = *pgold;
-	g_dglos.g_guiDefense = *pdefense;
-	*/
 	g_dglos.g_guiLastMagicDraw = 0;    
 	
 	if (g_dglo.m_curView == DinkGlobals::VIEW_ZOOMED || g_dglo.m_viewOverride == DinkGlobals::VIEW_ZOOMED) return;
 	
 	if (!check_seq_status(180)) return;
-
-	/*
-	if (lpDDSBack && lpDDSBack->m_pSurf && lpDDSBack->m_pSurf->GetSurfaceType() == SoftSurface::SURFACE_PALETTE_8BIT
-		&& g_pSpriteSurface[g_dglos.g_seq[180].frame[3]]->m_pSurf->GetSurfaceType() == SoftSurface::SURFACE_RGBA
-		|| g_pSpriteSurface[g_dglos.g_seq[180].frame[3]]->m_pSurf->GetSurfaceType() == SoftSurface::SURFACE_RGBA)
-	{
-		LogMsg("Freak out!");
-		//delete lpDDSBuffer;
-		//lpDDSBuffer = InitOffscreenSurface(C_DINK_SCREENSIZE_X, C_DINK_SCREENSIZE_Y, IDirectDrawSurface::MODE_SHADOW_GL, true);
-
-	}
-
-	SwitchToRGBAIfNeeded(&lpDDSBack, g_pSpriteSurface[g_dglos.g_seq[180].frame[1]]->m_pSurf);
-	SwitchToRGBAIfNeeded(&lpDDSBack, g_pSpriteSurface[g_dglos.g_seq[180].frame[2]]->m_pSurf);
-	SwitchToRGBAIfNeeded(&lpDDSBack, g_pSpriteSurface[g_dglos.g_seq[180].frame[3]]->m_pSurf);
-	*/
-		
+	
 	lpDDSBack->BltFast( 0, 400, g_pSpriteSurface[g_dglos.g_seq[180].frame[3]], &rcRect  , DDBLTFAST_NOCOLORKEY );
 	
 	rcRect.left = 0;
@@ -3229,40 +3177,7 @@ bool get_box (int spriteID, rtRect32 * pDstRect, rtRect32 * pSrcRect )
 	if (originalSurfPic != g_dglos.g_seq[g_sprite[spriteID].pseq].frame[g_sprite[spriteID].pframe]
 		&& originalSurfPic != 0)
 	{
-		//wait.. this isn't the original picture, a set_frame_frame has been used!  We want the offset from the original.
 		
-		/*
-		//is the parent seq of the original an anim?
-		if (g_dglos.g_seq[g_dglos.g_picInfo[originalSurfPic].m_parentSeq].m_bIsAnim )
-		{
-		
-			//first, does the original pic have stuff set for it?
-			txoffset = g_dglos.g_picInfo[originalSurfPic].xoffset;
-			tyoffset = g_dglos.g_picInfo[originalSurfPic].yoffset;
-					
-			if (txoffset == 0 && tyoffset == 0)
-			{
-				//No?  Well, how about the whole anim in general
-				txoffset = g_dglos.g_seq[g_dglos.g_picInfo[originalSurfPic].m_parentSeq].m_xoffset;
-				tyoffset = g_dglos.g_seq[g_dglos.g_picInfo[originalSurfPic].m_parentSeq].m_yoffset;
-
-			}
-		}
-		else
-		{
-			txoffset = g_dglos.g_picInfo[originalSurfPic].xoffset;
-			tyoffset = g_dglos.g_picInfo[originalSurfPic].yoffset;
-
-		}
-		*/
-//		picID = originalSurfPic;
-	//	txoffset = g_dglos.g_picInfo[picID].xoffset;
-		//tyoffset = g_dglos.g_picInfo[picID].yoffset;
-
-
-		//this is.. probably not a good solution.  Some dmods want the original offset, others want to keep the offset of the frame they are replacing.  If speed == 0, it's probably not a real anim and we'll
-		//be happy with the replacement pics offset.  I think.
-
 		//this works for the dmod mayhem
 		if (g_dglos.g_seq[g_dglos.g_picInfo[originalSurfPic].m_parentSeq].m_speed == 0)
 		{
@@ -3275,8 +3190,6 @@ bool get_box (int spriteID, rtRect32 * pDstRect, rtRect32 * pSrcRect )
 			txoffset = g_dglos.g_picInfo[picID].xoffset;
 			tyoffset = g_dglos.g_picInfo[picID].yoffset;
 		}
-
-	
 
 	}
 	else
@@ -3989,15 +3902,6 @@ int get_var(int script, char* name)
 		if (script <= 0)
 			break;
 
-		//Bugfix... if there is no rinfo[script] entry (like if kill this task was used), we go directly to the globals.
-		//Thanks Tal!
-		//if (!rinfo[script])
-		//  script = 0;
-		//Go into the next proc from the script.  If there are no parent procs, it should be 0, which is global.
-		//else
-		//    script = rinfo[script]->proc_return;
-
-		//Changed to not reference the parent procedure's variable list at all... just go on to globals.
 		script = 0;
 	}
 
@@ -4091,26 +3995,6 @@ void decipher_string(char line[512], int script)
 	//redink1 replaced with recursive function for finding longest variable
     //recurse_var_replace( 1, script, line, NULL );
     var_replace(script, line);
-
-	//  	
-// Old version that can make mistakes, I turned it back on to test the difference in speed...
-// Hmm, Dan had recurse_scope(g_dglos.g_playerInfo.var[i].scope, script) in here but I don't see that function so
-// skipping for now
-//
-
-// 
-// 	for (int i = 1; i < max_vars; i ++)
-// 	{
-// 		
-// 		if (g_dglos.g_playerInfo.var[i].active == true)
-// 			if ( g_dglos.g_playerInfo.var[i].scope == 0 || g_dglos.g_playerInfo.var[i].scope == script)
-// 			{
-// 			sprintf(crap, "%d", g_dglos.g_playerInfo.var[i].var);
-// 			replace(g_dglos.g_playerInfo.var[i].name, crap, line);
-// 			
-// 			}
-// 	}
-
 
 	if ((strchr(line, '&') != NULL) && (script != 0))
 	{
@@ -4432,8 +4316,6 @@ LPDIRECTDRAWSURFACE GetSurfaceFromSeq(int seq, int frame = 1)
 
 bool check_sprite_status(int spriteID)
 {
-
-	
 	check_seq_status(g_sprite[spriteID].pseq, g_sprite[spriteID].pframe);
 	check_seq_status(g_sprite[spriteID].seq, g_sprite[spriteID].frame);
 	return true;
@@ -5373,7 +5255,8 @@ bool PlayMidi(const char *sFileName)
 	string finalPath = GetFileLocationString(fName);
 	if (FileExists(finalPath))
 	{
-		GetAudioManager()->Play(GetFileLocationString(fName), true, true, false);
+		AudioHandle musicHandle = GetAudioManager()->Play(GetFileLocationString(fName), true, true, false);
+		//GetAudioManager()->SetVol(musicHandle, 0.1);
 	}
 	else
 	{
@@ -5383,15 +5266,6 @@ bool PlayMidi(const char *sFileName)
 
 	g_dglo.m_lastMusicPath = sFileName;
 
-	/*
-	if (!FileExists(fName) && !g_dglo.m_dmodGameDir.empty())
-	{
-		//asking for a mid that doesn't exist in the DMOD dir probably, let's use the original Dink one
-		fName = g_dglo.m_gamePathWithDir+
-	}
-	*/
-
-	
 	//LogMsg("Playing music %s", sFileName);
 	return true;
 }
@@ -8663,8 +8537,6 @@ pass:
 						ShowQuickMessage("Game loaded.");
 					}
 
-
-
 				} else
 				{
 					LoadGame(gameSlot);
@@ -9065,6 +8937,29 @@ pass:
 			}  else LogMsg("Failed to set mode");
 
 			strcpy_safe(pLineIn, h);  
+			ugly_return(0);
+		}
+		if (compare(ev[1], (char*)"set_music_vol"))
+		{
+			h = &h[strlen(ev[1])];
+			int32 p[20] = { 1,0,0,0,0,0,0,0,0,0 };
+			if (get_parms(ev[1], script, h, p))
+			{
+				float volMod = (float)g_nlist[0] / (float)100;
+				//force volMod to be between 0 and 1
+				if (volMod < 0) volMod = 0;
+				if (volMod > 1) volMod = 1;
+
+				LogMsg("Setting DMOD music mod to %.2f", volMod);
+				GetAudioManager()->SetMusicVol(GetApp()->GetVar("music_vol")->GetFloat() * volMod);
+
+				//oh, let's allow savestates to remember this setting
+				g_dglos.m_hasMusicModApplied = true;
+				g_dglos.m_musicModVolume = volMod;
+			}
+			else LogMsg("Failed to set_music_vol");
+
+			strcpy_safe(pLineIn, h);
 			ugly_return(0);
 		}
 
@@ -13708,7 +13603,7 @@ void UpdateInterfaceWithoutTransitionAndThinking() //transition
 	}
 
 	glPushMatrix();
-	SetOrthoRenderSize(g_dglo.m_orthoRenderRect.right, g_dglo.m_orthoRenderRect.GetHeight(), -g_dglo.m_orthoRenderRect.left, -g_dglo.m_orthoRenderRect.top);
+	SetOrthoRenderSize((float)g_dglo.m_orthoRenderRect.right, (float)g_dglo.m_orthoRenderRect.GetHeight(), (float)-g_dglo.m_orthoRenderRect.left, (float)-g_dglo.m_orthoRenderRect.top);
 	GetBaseApp()->SetGameTickPause(true); //don't let logic actually happen in here
 
 
@@ -14644,7 +14539,7 @@ bool DinkSkipDialogLine()
 	{
 
 		//Msg("Checking %d, brain %d, script %d, my freeze is %d",jj, spr[jj].brain, spr[jj].script, spr[h].freeze);
-		if (g_sprite[jj].brain == 8) if (g_sprite[jj].script == g_dglos.g_playerInfo.last_talk)
+		if (g_sprite[jj].active && g_sprite[jj].brain == 8) if (g_sprite[jj].script == g_dglos.g_playerInfo.last_talk)
 		{
 			//this sprite owns its freeze
 
@@ -16178,8 +16073,8 @@ CL_Vec2f NativeToDinkCoords(CL_Vec2f vPos)
 		vPos.y * (g_dglo.m_orthoRenderRect.GetHeight() / GetScreenSizeYf())
 	);
 
-	r.x /= g_dglo.m_aspectRatioModX;
-	r.y /= g_dglo.m_aspectRatioModY;
+	r.x /= (float)g_dglo.m_aspectRatioModX;
+	r.y /= (float)g_dglo.m_aspectRatioModY;
 	r -= g_dglo.m_centeringOffset;
 	return r;
 }
@@ -17704,6 +17599,13 @@ void SetDefaultVars(bool bFullClear)
 	g_dglos.bKeepReturnInt = false;
 	g_dglos.process_count = 0;
 	
+	//fix audio to be normal again
+	
+	g_dglos.m_hasMusicModApplied = 0;
+	g_dglos.m_musicModVolume = 0;
+
+	GetAudioManager()->SetMusicVol(GetApp()->GetVar("music_vol")->GetFloat());
+    
 
 	if (bFullClear)
 	{
@@ -18398,7 +18300,7 @@ bool SaveHeader(FILE *fp)
 	return true;
 }
 
-bool LoadHeader(FILE *fp)
+bool LoadHeader(FILE *fp, string DMODPathOrBlank)
 {
 	float version;
 	LoadFromFile(version, fp);
@@ -18408,10 +18310,26 @@ bool LoadHeader(FILE *fp)
 		return false;
 	}
 
+	
+	
 	string tempGameDir = g_dglo.m_dmodGameDir;
 
 	LoadFromFile(g_dglo.m_dmodGameDir, fp);
 	LoadFromFile(g_dglo.m_gameDir, fp);
+
+	if (!DMODPathOrBlank.empty())
+	{
+		if (DMODPathOrBlank != "dink/")
+		{
+			DMODPathOrBlank = GetPathFromString(DMODPathOrBlank);
+			//special case for if the DMOD directory changed after the savestate was made
+			if (!g_dglo.m_dmodGameDir.empty())
+			{
+				g_dglo.m_dmodGameDir = DMODPathOrBlank;
+			}
+		}
+
+	}
 
 	if (!g_dglo.m_dmodGameDir.empty())
 	{
@@ -18439,7 +18357,6 @@ bool SaveSoundState(FILE *fp)
 	{
 		g_dglo.m_lastMusicPath = "";
 	} 
-
 	
 	SaveToFile(g_dglo.m_lastMusicPath, fp);
 	if (g_dglo.m_lastMusicPath.empty())
@@ -18486,6 +18403,16 @@ bool LoadSoundState(FILE *fp)
 	
 	uint32 pos;
 	LoadFromFile(pos, fp);
+
+	if (g_dglos.m_hasMusicModApplied)
+	{
+		GetAudioManager()->SetMusicVol(GetApp()->GetVar("music_vol")->GetFloat() * g_dglos.m_musicModVolume);
+	} else
+	{
+		GetAudioManager()->SetMusicVol(GetApp()->GetVar("music_vol")->GetFloat());
+	}
+	
+
 
 	if (!g_dglo.m_lastMusicPath.empty())
 	{
@@ -18646,10 +18573,6 @@ bool SaveState(string const &path, bool bSyncSaves)
 
 	FILE *fp = fopen(path.c_str(), "wb");
 	
-	
-	//why unload crap when you're saving?!
-	//DinkUnloadUnusedGraphicsByUsageTime(0);
-
 	if (!fp)
 	{
 		LogMsg("Error saving state");
@@ -18689,7 +18612,7 @@ bool SaveState(string const &path, bool bSyncSaves)
 
 bool GetDMODDirFromState(string const &path, string &dmodDirOut)
 {
-	LogMsg("Loading %s", path.c_str());
+	LogMsg("Game dir is Loading %s", path.c_str());
 	FILE *fp = fopen(path.c_str(), "rb");
 
 	if (!fp)
@@ -18767,10 +18690,12 @@ bool LoadState(string const &path, bool bLoadPathsOnly)
 	kill_all_sounds();
 	kill_all_scripts_for_real();
 	ResetDinkTimers();
+
+	
 	g_dglo.m_bgSpriteMan.Clear();
 	g_dglo.UnSetViewOverride();
 
-	bool bOk = LoadHeader(fp);
+	bool bOk = LoadHeader(fp, path);
 
 
 	if (bOk)
@@ -19173,10 +19098,18 @@ void DinkOnForeground()
 
 void WriteLastPathSaved(string dmodDir)
 {
+#ifdef _DEBUG
+	LogMsg("Writing Last saved path: %s", dmodDir.c_str());
+#endif
+
 	GetApp()->GetShared()->GetVar("last_saved_path")->Set(dmodDir);
 }
 
 string ReadLastPathSaved()
 {
+
+#ifdef _DEBUG
+	LogMsg("Reading Last saved path: %s", GetApp()->GetShared()->GetVar("last_saved_path")->GetString().c_str());
+#endif
 	return GetApp()->GetShared()->GetVar("last_saved_path")->GetString();
 }

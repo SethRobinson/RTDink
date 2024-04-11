@@ -14,9 +14,14 @@
 #include "Entity/SelectButtonWithCustomInputComponent.h"
 #include "Entity/ArcadeInputComponent.h"
 #include "Renderer/SoftSurface.h"
+#include "GUI/LogMenu.h"
+#include "Entity/LogDisplayComponent.h"
 
 #define AUTO_SAVE_MS (1000*60*5)
 
+#ifdef C_DINK_KEYBOARD_INPUT
+short GetKeyboard(int key);
+#endif
 void UpdatePauseMenuPosition(Entity *pBG);
 
 void ShowQuickMessage(string msg)
@@ -70,7 +75,7 @@ void GameOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity sent fr
 	if (pEntClicked->GetName() == "pause")
 	{
 		if (g_dglos.g_wait_for_button.active == true)
-		{
+		{ 
 			//sjoy.joybit[5] = TRUE
 			g_dglo.m_dirInput[DINK_INPUT_BUTTON5] = true;
 			g_dglo.m_dirInputFinished[DINK_INPUT_BUTTON5] = true;
@@ -121,7 +126,7 @@ void GameOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity sent fr
 			{
 				//g_dglo.m_dirInputFinished[DINK_INPUT_BUTTON1] = true;
 				//don't really attack
-				return;
+				//return;
 			}
 		}
 
@@ -145,7 +150,7 @@ void GameOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity sent fr
 			{
 				//g_dglo.m_dirInputFinished[DINK_INPUT_BUTTON1] = true;
 				//don't really attack
-				return;
+				//return;
 			}
 		}
 		g_dglo.m_dirInput[DINK_INPUT_BUTTON3] = true;
@@ -276,13 +281,13 @@ void KillControls(float fadeTimeMS)
         VariantList vList(pControls);
         pControls->GetFunction("OnKillingControls")->sig_function(&vList); //just in case someone wants to listen to this message to do 
 		//something like stop a fade in-in progress
-		FadeEntity(pControls, true, 0, fadeTimeMS, 0);
+		FadeEntity(pControls, true, 0, (int) fadeTimeMS, 0);
 	}
 
 	g_dglo.m_lastGameMode = DINK_GAME_MODE_NONE;
 	g_dglo.m_bFullKeyboardActive = false;
 
-	KillEntity(pControls, fadeTimeMS, TIMER_SYSTEM);
+	KillEntity(pControls, (int)fadeTimeMS, TIMER_SYSTEM);
 }
 
 void AddViewModeHotspot(Entity *pBG)
@@ -780,7 +785,7 @@ void BuildControls(float fadeTimeMS)
 
 	}
 
- 		FadeEntity(pBG, true, GetApp()->GetVar("gui_transparency")->GetFloat(), fadeTimeMS, 0);
+ 		FadeEntity(pBG, true, GetApp()->GetVar("gui_transparency")->GetFloat(), (int)fadeTimeMS, 0);
 	}
 
 	eControlStyle controlStyle = (eControlStyle) GetApp()->GetVar("controlStyle")->GetUINT32();
@@ -966,7 +971,7 @@ void BuildDialogModeControls(float fadeTimeMS)
 
 	Entity * pSelect = pButtonEntity;
 
-	FadeEntity(pBG, true, GetApp()->GetVar("gui_transparency")->GetFloat(), fadeTimeMS, 0);
+	FadeEntity(pBG, true, GetApp()->GetVar("gui_transparency")->GetFloat(), (int)fadeTimeMS, 0);
 
 
 	//disable it until it's visible
@@ -1177,6 +1182,33 @@ void OnAutoSave(VariantList *pVList)
 	GetMessageManager()->CallEntityFunction(pVList->Get(0).GetEntity(), 5000, "OnAutoSave", pVList);
 }
 
+
+void ToggleQuickLog()
+{
+	//oh, let's add a scrolling text window to see the log
+	//SetConsole(true, true);
+	Entity* pBG = GetEntityRoot()->GetEntityByName("GameMenu");
+
+	if (pBG)
+	{
+
+		ToggleDinkStyleConsole(pBG);
+
+	}
+
+	
+	
+	/*
+	//adjust the console so it isn't full screen
+	Entity* pConsole = GetEntityRoot()->GetEntityByName("ConsoleEnt");
+	pConsole->GetVar("pos2d")->Set(CL_Vec2f(0, 370));
+	pConsole->GetVar("size2d")->Set(CL_Vec2f(GetScreenSizeXf(), 300));
+	EntityComponent* pComp = pConsole->AddComponent(new RectRenderComponent);
+	pComp->GetVar("visualStyle")->Set((uint32)RectRenderComponent::STYLE_BORDER_ONLY);
+	pComp->GetVar("borderColor")->Set(MAKE_RGBA(0, 0, 255, 200));
+	*/
+
+}
 void OnArcadeInput(VariantList *pVList)
 {
 
@@ -1203,6 +1235,19 @@ void OnArcadeInput(VariantList *pVList)
 		SaveStateWithExtra();
 		break;
 
+	case VIRTUAL_KEY_BACKTICK:
+
+		if (bIsDown)
+		{
+			if (!QuickLogIsActive())
+			{
+				LogMsg("`$-=-`` Toggled log with Backtick/Unshifted tilde button.  `$Alt-D`` to toggle extra debug info.  Mouse wheel to scroll.");
+			}
+			ToggleQuickLog();
+		}
+
+		break;
+
 	case VIRTUAL_KEY_F1:
 
 		if (bIsDown)
@@ -1215,6 +1260,7 @@ void OnArcadeInput(VariantList *pVList)
 					if (!pMenu->GetEntityByName("PauseMenu"))
 					{
 						pMenu->RemoveComponentByName("FocusInput");
+						KillConsoleIfActive();
 						PauseMenuCreate(pMenu);
 					}
 				}
@@ -1255,7 +1301,7 @@ void OnArcadeInput(VariantList *pVList)
 			{
 				if (DinkSkipDialogLine())
 				{
-					return;
+					//return;
 				}
 			}
 			g_dglo.m_dirInput[DINK_INPUT_BUTTON3] = true;
@@ -1306,7 +1352,7 @@ void OnArcadeInput(VariantList *pVList)
 			{
 				if (DinkSkipDialogLine())
 				{
-					return;
+					//return;
 				}
 			}
 			
