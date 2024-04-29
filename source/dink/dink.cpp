@@ -9511,13 +9511,13 @@ pass:
 
 		if (compare(ev[1], (char*)"disable_all_sprites"))
 		{     
-			for (int jj = 1; jj < g_dglos.last_sprite_created; jj++)
+			for (int jj = 1; jj <= g_dglos.last_sprite_created; jj++)
 				if (g_sprite[jj].active) g_sprite[jj].disabled = true;
 			ugly_return(0);
 		}
 		if (compare(ev[1], (char*)"enable_all_sprites"))
 		{     
-			for (int jj = 1; jj < g_dglos.last_sprite_created; jj++)
+			for (int jj = 1; jj <= g_dglos.last_sprite_created; jj++)
 				if (g_sprite[jj].active) g_sprite[jj].disabled = false;
 			ugly_return(0);
 		}
@@ -11125,6 +11125,8 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 		}
 
 		//redink1 added so developers can change or see what tile is at any given position
+		//4/29/2024 changed as per this thread: https://www.dinknetwork.com/forum.cgi?MID=209752&Posts=16
+
 		if (compare(ev[1], (char*)"map_tile"))
 		{     
 			h = &h[strlen(ev[1])];
@@ -11132,7 +11134,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			if (get_parms(ev[1], script, h, p))
 			{
 				//Yeah... they can only modify valid tiles
-				if (g_nlist[0] > 0 && g_nlist[0] <= 96)
+				if (g_nlist[0] >= 0 && g_nlist[0] <= 96)
 				{
 					//Only change the value if it is greater than 0...
 					
@@ -11141,7 +11143,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 					
 					if (g_nlist[1] > 0 )
 					{
-						if (g_nlist[1] <= 5216)
+						if (g_nlist[1] < 5248)
 						{
 							g_dglos.g_smallMap.t[g_nlist[0] - 1].num = g_nlist[1];
 						}

@@ -681,6 +681,7 @@
     <ClCompile Include="..\..\shared\Entity\HTTPComponent.cpp" />
     <ClCompile Include="..\..\shared\Entity\InputTextRenderComponent.cpp" />
     <ClCompile Include="..\..\shared\Entity\InterpolateComponent.cpp" />
+    <ClCompile Include="..\..\shared\Entity\LogDisplayComponent.cpp" />
     <ClCompile Include="..\..\shared\Entity\OverlayRenderComponent.cpp" />
     <ClCompile Include="..\..\shared\Entity\ProgressBarComponent.cpp" />
     <ClCompile Include="..\..\shared\Entity\RectRenderComponent.cpp" />
@@ -705,6 +706,8 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\Entity\TextBoxRenderComponent.cpp" />
     <ClCompile Include="..\..\shared\Entity\TextRenderComponent.cpp" />
+    <ClCompile Include="..\..\shared\Entity\TouchDragComponent.cpp" />
+    <ClCompile Include="..\..\shared\Entity\TouchDragMoveComponent.cpp" />
     <ClCompile Include="..\..\shared\Entity\TouchHandlerComponent.cpp" />
     <ClCompile Include="..\..\shared\Entity\TouchStripComponent.cpp" />
     <ClCompile Include="..\..\shared\Entity\TrailRenderComponent.cpp" />
@@ -2460,6 +2463,7 @@
     <ClInclude Include="..\..\shared\Entity\HTTPComponent.h" />
     <ClInclude Include="..\..\shared\Entity\InputTextRenderComponent.h" />
     <ClInclude Include="..\..\shared\Entity\InterpolateComponent.h" />
+    <ClInclude Include="..\..\shared\Entity\LogDisplayComponent.h" />
     <ClInclude Include="..\..\shared\Entity\OverlayRenderComponent.h" />
     <ClInclude Include="..\..\shared\Entity\ProgressBarComponent.h" />
     <ClInclude Include="..\..\shared\Entity\RectRenderComponent.h" />
@@ -2484,6 +2488,8 @@
     </CustomBuild>
     <ClInclude Include="..\..\shared\Entity\TextBoxRenderComponent.h" />
     <ClInclude Include="..\..\shared\Entity\TextRenderComponent.h" />
+    <ClInclude Include="..\..\shared\Entity\TouchDragComponent.h" />
+    <ClInclude Include="..\..\shared\Entity\TouchDragMoveComponent.h" />
     <ClInclude Include="..\..\shared\Entity\TouchHandlerComponent.h" />
     <ClInclude Include="..\..\shared\Entity\TouchStripComponent.h" />
     <ClInclude Include="..\..\shared\Entity\TrailRenderComponent.h" />
