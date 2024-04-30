@@ -11134,14 +11134,14 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			if (get_parms(ev[1], script, h, p))
 			{
 				//Yeah... they can only modify valid tiles
-				if (g_nlist[0] >= 0 && g_nlist[0] <= 96)
+				if (g_nlist[0] > 0 && g_nlist[0] <= 96)
 				{
 					//Only change the value if it is greater than 0...
 					
 					//max should be 5216.  And shouldn't it start at zero?
 					
 					
-					if (g_nlist[1] > 0 )
+					if (g_nlist[1] >= 0 )
 					{
 						if (g_nlist[1] < 5248)
 						{
