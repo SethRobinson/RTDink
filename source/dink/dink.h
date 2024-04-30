@@ -625,6 +625,8 @@ struct soundstruct
 	int32 freq; //what speed it was played at
 };
 
+double ConvertMillibelsToPercentage(int value);
+
 class SoundBankDummy
 {
 public:
@@ -634,8 +636,31 @@ public:
 	}
 
 	void Stop() {GetAudioManager()->Stop(m_audioID); m_audioID = 0; m_soundIDThatPlayedUs = 0;};
-	void SetPan(float f) {GetAudioManager()->SetPan(m_audioID,f/1700);};
-	void SetVolume(float f){GetAudioManager()->SetVol(m_audioID, (1800+f) / 1800);};
+	void SetPan(float f) 
+	{
+	
+		float finalPan = f/1700;
+#ifdef _DEBUG
+		//LogMsg("Setting pan of %.02f to %f", f, finalPan);
+#endif
+		GetAudioManager()->SetPan(m_audioID, finalPan);
+	};
+
+	void SetVolume(float f)
+	{
+		GetAudioManager()->SetVol(m_audioID, (1800+f) / 1800);
+	};
+
+	void SetVolumeLogarithmic(float f)
+	{
+#ifdef _DEBUG
+		//LogMsg("Old SetVolume: Changing %.02f to final vol of %.2f", f, (1800 + f) / 1800);
+		//LogMsg("New SetVolume: Changing vol %.02f to %f", f, ConvertMillibelsToPercentage(f));
+#endif
+		GetAudioManager()->SetVol(m_audioID, ConvertMillibelsToPercentage(f));
+	};
+
+
 	bool IsInUse() {if (m_audioID == 0) return false; return GetAudioManager()->IsPlaying(m_audioID);}
 	void Reset()
 	{
@@ -716,7 +741,6 @@ struct DinkGlobalsStatic
 
 	bool m_bRenderBackgroundOnLoad;
 	
-	
 	char g_lastBitmapShown[C_SHOWN_BITMAP_SIZE];
 	int32 last_fill_screen_palette_color;
 
@@ -729,7 +753,6 @@ struct DinkGlobalsStatic
 	//add new vars above this, and remove the byte count from below.  You can safely assume they start as 0
 	char m_bufferForExpansion[4823];
 };
-
 
 
 enum eDinkGameState

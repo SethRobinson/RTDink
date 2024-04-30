@@ -171,6 +171,20 @@ void UnloadAllGraphics();
 
 #endif
 
+
+//adjusted from https://stackoverflow.com/questions/36072054/get-the-inverse-of-a-function-millibels-to-percentage-percentage-to-millibels
+
+double ConvertMillibelsToPercentage(int value)
+{
+	double exponent = ((value / 1000.0) + 10);
+	double numerator = 100.0 * (pow(2, exponent) - 1);
+	double final =  (numerator / 1023.0) / 100.0f;
+
+
+	return final;
+}
+
+
 void BackgroundSpriteManager::Clear()
 {
 	m_sprites.clear();
@@ -8422,12 +8436,10 @@ pass:
 			{
 				if (sound_on)  
 				{
-					//let's set one sound to survive
 					if (g_nlist[0] > 0)
 					{
 						soundinfo[g_nlist[0]].vol = g_nlist[1];
-
-						soundbank[g_nlist[0]].SetVolume(g_nlist[1]);
+						soundbank[g_nlist[0]].SetVolumeLogarithmic(g_nlist[1]);
 					}
 				}
 			}
@@ -8445,7 +8457,6 @@ pass:
 			{
 				if (sound_on)  
 				{
-					//let's set one sound to survive
 					if (g_nlist[0] > 0)
 					{
 						soundbank[g_nlist[0]].Stop();

@@ -366,7 +366,7 @@ use timing (Myster island camera sequence for example) easier though, not sure.
 * say() text is now drawn under choice menus rather than above, previously dmods that used sp_kill to make text permanent could cause visual problems in choice menus (Robj)
 * A saved game is no longer included, oops
 * The screen scroll effect now respects sprites that were drawn over the GUI parts (Robj)
-* Overlapping text is easier to read now, for two reasons, the main problem was Proton SDK does batching under the hood (this didn't exist when the original Dink HD was made)  and it was trying to batch all the the text backgrounds together on the same later which isn't what we wanted, and two, I made the bg slightly darker
+* Overlapping text is easier to read now, for two reasons, the main problem was Proton SDK does batching under the hood (this didn't exist when the original Dink HD was made)  and it was trying to batch all the the text backgrounds together on the same layer which isn't what we wanted, and two, I made the bg slightly darker
 * attack_wait for sprite 1 is now preserved across saves to match functionality of other dink versions (RobJ)
 * DinkC change: LogMsg (a script command that let's a script print text to the log.txt file directly) now properly handles &variables
 * DMOD installer fixed to work with older v7 tar format (big thanks to drone1400 for help with this)
@@ -388,3 +388,9 @@ some Windows/proton keyboard problems. At least the method I used should work on
 * Removed "View log" from debug menu because the above option replaces it
 * Added "set_music_vol" DinkC command.  Accepts between 0 and 100.  50 means set the music/midi to 50% of whatever the current setting is in options.
 * get_version now returns 113 instead of 112 due to the DinkC addition
+
+------- Chang
+
+* BUGFIX with map_tile, now goes 0 to 5247 (Robj, yeoldetoast, https://www.dinknetwork.com/forum.cgi?MID=209752&Posts=16 )
+* BUGFIX with disable_all_sprites/enable_all_sprites (Robj, yeoldetoast, https://www.dinknetwork.com/forum.cgi?MID=209752&Posts=16 )
+* sound_set_vol behaves more like original Dink ( https://www.dinknetwork.com/forum.cgi?MID=209752#209908 )
