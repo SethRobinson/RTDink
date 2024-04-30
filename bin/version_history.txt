@@ -389,7 +389,7 @@ some Windows/proton keyboard problems. At least the method I used should work on
 * Added "set_music_vol" DinkC command.  Accepts between 0 and 100.  50 means set the music/midi to 50% of whatever the current setting is in options.
 * get_version now returns 113 instead of 112 due to the DinkC addition
 
-------- Chang
+------- Change log for 2.06 --------- (April 2024)
 
 * BUGFIX with map_tile, now goes 0 to 5247 (Robj, yeoldetoast, https://www.dinknetwork.com/forum.cgi?MID=209752&Posts=16 )
 * BUGFIX with disable_all_sprites/enable_all_sprites (Robj, yeoldetoast, https://www.dinknetwork.com/forum.cgi?MID=209752&Posts=16 )
