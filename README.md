@@ -85,7 +85,8 @@ If you have any issues, check out these two pages for more info on the Proton en
 
 6. Your DinkHD build should run now, but you are not quite done! You also need the Dink game assets, or your application will crash when you try to start a new game. To get those, simply download an official distribution of DinkHD or DinkV1.08 and copy the `dink` subfolder from there to your `proton\RTDink\bin` folder!
 * You can download the official releases of DinkHD from https://www.rtsoft.com/pages/dink.php or https://www.dinknetwork.com/file/dink_smallwood_hd/ 
-* You can also download the classic Dink V1.08 from https://www.dinknetwork.com/file/dink_smallwood/   
+* You can also download the classic Dink V1.08 from https://www.dinknetwork.com/file/dink_smallwood/
+
 You can get the `dink` game assets from either of these releases.
 
 7. Your DinkHD should finally work now!
