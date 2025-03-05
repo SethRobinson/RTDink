@@ -334,6 +334,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;fmod_vc.lib;zlibwapi.lib;ws2_32.lib;dinput8.lib;dxguid.lib;libcurl.dll.a;%(AdditionalDependencies)</AdditionalDependencies>
@@ -343,6 +344,8 @@
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <StackReserveSize>52428800</StackReserveSize>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapExports>true</MapExports>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -1991,6 +1994,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug GL|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\shared\Irrlicht\source\Irrlicht\libpng\pngwrite.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug GL|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\..\shared\Irrlicht\source\Irrlicht\libpng\pngwtran.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL|Win32'">NotUsing</PrecompiledHeader>
@@ -2000,6 +2010,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug GL|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\Irrlicht\source\Irrlicht\libpng\pngwutil.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release GL|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug GL|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -2648,7 +2665,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\AndroidGradle\app\src\main\cpp\CMakeLists.txt" />
-    <Text Include="..\android\proguard\config.txt" />
     <Text Include="..\bin\version_history.txt" />
     <Text Include="..\dinkhd_license.txt" />
     <Text Include="..\flash\exports.txt" />
@@ -2658,10 +2674,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\AndroidGradle\app\src\main\AndroidManifest.xml" />
-    <Xml Include="..\android\AndroidManifest.xml">
-      <SubType>Designer</SubType>
-    </Xml>
-    <Xml Include="..\android\build.xml" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\shared\Audio\AudioManagerOS.mm">
@@ -2697,19 +2709,6 @@
     <None Include="..\AndroidGradle\app\src\main\java\com\rtsoft\RTAndroidApp\Main.java" />
     <None Include="..\AndroidGradle\local.properties" />
     <None Include="..\AndroidGradle\PrepareResources.bat" />
-    <None Include="..\android\ant.properties" />
-    <None Include="..\android\app_info_setup.bat" />
-    <None Include="..\android\build.bat" />
-    <None Include="..\android\buildRelease.bat" />
-    <None Include="..\android\build_prepare.bat" />
-    <None Include="..\android\Clean.bat" />
-    <None Include="..\android\default.properties" />
-    <None Include="..\android\InstallOnDefaultPhone.bat" />
-    <None Include="..\android\InstallOnDefaultPhoneRelease.bat" />
-    <None Include="..\android\jni\Android.mk" />
-    <None Include="..\android\jni\Application.mk" />
-    <None Include="..\android\src\Main.java" />
-    <None Include="..\android\ViewLogDefaultPhone.bat" />
     <None Include="..\Entitlements.plist" />
     <None Include="..\flash\app_info_setup.bat" />
     <None Include="..\flash\BuildDebug.bat" />

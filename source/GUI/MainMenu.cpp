@@ -248,8 +248,13 @@ string GetNextDMODToInstall(bool &bIsCommandLineInstall, const bool bDeleteComma
 
 		for (int i = 0; i < parms.size(); i++)
 		{
+#ifdef _DEBUG
+			LogMsg("Checking DMOD %s", parms[i].c_str());
+#endif
 			StringReplace("\"", "", parms[i]);
-			if (IsInString(ToLowerCaseString(parms[i]), ".dmod"))
+			if (IsInString(ToLowerCaseString(parms[i]), ".dmod")
+				|| IsInString(ToLowerCaseString(parms[i]), "export=download") //for google drive
+					)
 			{
 				bIsCommandLineInstall = true;
 
@@ -295,13 +300,21 @@ void MainOnStartLoading(VariantList *pVList)
 	
 	if (IsInString(fName, "http:") || IsInString(fName, "https:")
 		||
-		(GetEmulatedPlatformID() == PLATFORM_ID_HTML5 && IsInString(fName, ".dmod"))
+		(GetEmulatedPlatformID() == PLATFORM_ID_HTML5 && (IsInString(fName, ".dmod") || IsInString(fName, "export=download") ) )
 		)
 	{
 		//we should download and install this
 		StringReplace("-game ", "", fName);
 		StringReplace("dmod=", "", fName);
-		DMODInstallMenuCreate(pBG->GetParent(), fName, GetDMODRootPath(), "", true, fName);
+
+		string dmodName = fName;
+
+		if (GetEmulatedPlatformID() == PLATFORM_ID_HTML5)
+			{
+				dmodName = ""; //we'll take it directly from the download data, so it will work with google drive links
+			}
+				
+		DMODInstallMenuCreate(pBG->GetParent(), fName, GetDMODRootPath(), "", true, dmodName);
 		return;
 	}
 

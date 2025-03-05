@@ -112,7 +112,7 @@ void AboutMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity se
 	}
 	if (pEntClicked->GetName() == "twitter")
 	{
-		PopUpCreate(pEntClicked->GetParent()->GetParent()->GetParent(), "View the `wRTsoft twitter page``?", "https://twitter.com/rtsoft",
+		PopUpCreate(pEntClicked->GetParent()->GetParent()->GetParent(), "Visit `wrtsoft.com``?", "https://rtsoft.com",
 			"cancel", "`wCancel", "url", "`wLaunch", true);
 		return;
 	}
@@ -190,7 +190,7 @@ void AboutMenuAddScrollContent(Entity *pParent)
 	
 
 	string msg =
-		GetAppName()+string("`$ ")+GetApp()->GetVersionString()+" Build "+toString(GetApp()->GetBuild())+"``\nCopyright (c) 1997-2023 Robinson Technologies\n"\
+		GetAppName()+string("`$ ")+GetApp()->GetVersionString()+" Build "+toString(GetApp()->GetBuild())+"``\nCopyright (c) 1997-2025 Robinson Technologies\n"\
 		"\nDink Script Version: `$"+toString(float(C_DINK_VERSION)/100)+"``\nGame Dir : "+ g_dglo.m_gamePathWithDir +\
 		"\nDMOD Base Dir: " + GetDMODRootPath() + "\n\n"\
 		;
@@ -330,7 +330,7 @@ msg += \
 // 	y += ySpacer;
 	
 
-	pButton = CreateTextButtonEntity(pParent, "twitter", iPhoneMapX(x), y, "Click here for the RTsoft twitter page", true);
+	pButton = CreateTextButtonEntity(pParent, "twitter", iPhoneMapX(x), y, "Our webpage and social media", true);
 	pButton->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&AboutMenuOnSelect);
 	y += pButton->GetVar("size2d")->GetVector2().y;
 	y += ySpacer;
@@ -388,7 +388,7 @@ msg += \
 
 	msg = "`8`$Dink Smallwood HD`` was created by `wSeth A. Robinson`` (code), `wJustin Martin`` (graphics) and includes additional contributions from Dan Walma.\n\n"\
 		"`8The original `$Dink Smallwood`` was created by `wSeth A. Robinson`` (engine/scripting/music), `wJustin Martin`` (graphics), `wGreg Smith`` (scripting/music), and `wShawn Teal``. It also featured music by `wJoel Bakker`` and `wMitch Brink``."\
-		"\n\nSpecial thanks to `wDan Walma``, `wRobj``, `wSimonK``, `wdrone1400`` and the `wdinksmallwood.net`` community for their `$Dink`` creations and support over the years!"\
+		"\n\nSpecial thanks to `wDan Walma``, `wRobj``, `wSimonK``, `wdrone1400`` and the entire `wdinksmallwood.net`` community for their `$Dink`` creations and support over the years!"\
 		"\n\n"\
 		"This product is less buggy thanks to:\n\n`w"\
 		"Shawn Teal\n"\

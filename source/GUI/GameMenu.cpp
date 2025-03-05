@@ -1209,6 +1209,7 @@ void ToggleQuickLog()
 	*/
 
 }
+
 void OnArcadeInput(VariantList *pVList)
 {
 

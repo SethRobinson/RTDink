@@ -330,6 +330,16 @@ Entity * DMODInstallMenuCreate(Entity *pParentEnt, string dmodURL, string instal
 	Entity *pProgressBar = pBG->AddEntity(new Entity("bar"));
 	Entity *pTitleLabel = CreateTextLabelEntity(pBG, "title_label", iPhoneMapX(100), iPhoneMapY(80), "Please wait");
 
+#ifdef _DEBUG
+	LogMsg("Setting dmodName to %s", dmodName.c_str());
+	LogMsg("Setting dmodSize to %f", dmodSize);
+	LogMsg("Setting dmodURL to %s", dmodURL.c_str());
+	LogMsg("Setting installDirectory to %s", installDirectory.c_str());
+	LogMsg("Setting sourceFileName to %s", sourceFileName.c_str());
+
+	LogMsg("Setting originalFileName to %s", GetFileNameFromString(dmodURL).c_str());
+#endif
+
 	//save these for later
 	pBG->GetVar("dmodURL")->Set(dmodURL);
 	pBG->GetVar("dmodName")->Set(dmodName);

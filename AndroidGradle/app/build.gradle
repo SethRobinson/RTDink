@@ -38,17 +38,17 @@ android {
             keyPassword = props['RTkeyPassword']
         }
     }
+    compileSdk 35
 
-	compileSdk 32
 
     defaultConfig {
         applicationId = props['RTappID']
 
         println 'Setting package name to '+applicationId
-        minSdk 21
-        targetSdk 32
-        versionCode 199
-        versionName "1.99"
+        minSdk 24
+        targetSdk 35
+        versionCode 208
+        versionName "2.08"
 
         //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -57,6 +57,10 @@ android {
                 cppFlags ''
             }
 
+
+             ndk {
+                    abiFilters 'arm64-v8a', 'x86_64'
+             }
 
         }
     }
@@ -83,6 +87,8 @@ android {
         viewBinding true
     }
     namespace 'com.rtsoft.RTAndroidApp'
+    buildToolsVersion '35.0.1'
+    ndkVersion '27.0.12077973'
 }
 
 dependencies {

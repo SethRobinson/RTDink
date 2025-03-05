@@ -174,9 +174,10 @@ const int C_MAX_SCRIPTS = 400;
 
 #else
 
+/*
 //Watch yourself, changing any of these will break quicksaves unless you check the quicksave version and upgrading old saves
 const int32 C_MAX_SEQUENCES = 1300; //Max # of sprite animations
-const int32 C_MAX_SPRITES = 6000;
+const int32 C_MAX_SPRITES_ADDRESSABLE = 6000;
 const int32 C_MAX_SPRITES_AT_ONCE = 300; //don't change, there are still hardcoded numbers elsewhere and some weird stuff with screen lock and "flub" stuff whatever that is
 const int32 C_MAX_SCRIPT_CALLBACKS = 100;
 const int32 max_vars = 250;
@@ -184,6 +185,22 @@ const int32 max_vars = 250;
 #define C_MAX_SPRITE_FRAMES 100
 #define C_SPRITE_MAX_FILENAME_SIZE 64
 const int32 C_MAX_SCRIPTS = 200;
+*/
+
+const int32 C_MAX_SEQUENCES = 2000; //Max # of sprite animations, was 1300
+const int32 C_MAX_SPRITES_ADDRESSABLE = 30000; //was 6000
+const int32 C_MAX_SPRITES_AT_ONCE = 300; //don't change, there are still hardcoded numbers elsewhere and some weird stuff with screen lock and "flub" stuff whatever that is
+const int32 C_MAX_SCRIPT_CALLBACKS = 200; //was 100
+const int32 max_vars = 250;
+const int32 C_MAX_SCRIPTS = 400; //was 200
+const int32 C_DINK_VERSION = 114; //dink script version
+const int32 num_soundbanks = 64; //was 20
+const int32 max_sounds = 200; //was 100
+const int32 C_TILE_SCREEN_COUNT = 61 + 1;
+
+#define C_MAX_BACKGROUND_SPRITES_AT_ONCE 200
+#define C_MAX_SPRITE_FRAMES 100
+#define C_SPRITE_MAX_FILENAME_SIZE 64
 
 
 #endif
@@ -210,19 +227,15 @@ struct sequence
 	uint8 m_bFrameSetUsed;
 	uint8 m_bIsAnim;
 	uint8 m_bDidFileScan;
-	
 };
 
-const int32 C_DINK_VERSION = 113;
-const int32 num_soundbanks = 20;
-const int32 max_idata = 1000; 
-const int32 max_sounds = 100;
+
+
+
 const int32 text_timer = 77;
 const int32 text_min = 2700;
+//const int32 C_TILE_SCREEN_COUNT = 41+1;
 
-
-const int32 max_game = 20;
-const int32 C_TILE_SCREEN_COUNT = 41+1;
 
 const int32 g_gameAreaRightBarStartX = 620;
 const int32 g_gameAreaLeftOffset = 20;
@@ -609,7 +622,7 @@ struct pic_info
 	int16 m_parentFrame;
 };
 
-extern LPDIRECTDRAWSURFACE     g_pSpriteSurface[C_MAX_SPRITES];
+extern LPDIRECTDRAWSURFACE     g_pSpriteSurface[C_MAX_SPRITES_ADDRESSABLE];
 
 struct seth_sound
 {
@@ -679,7 +692,7 @@ public:
 struct DinkGlobalsStatic
 {
 	sequence g_seq[C_MAX_SEQUENCES];
-	pic_info g_picInfo[C_MAX_SPRITES];       // Sprite data
+	pic_info g_picInfo[C_MAX_SPRITES_ADDRESSABLE];       // Sprite data
 
 	ShowingBitmapInfo g_bShowingBitmap;
 	wait_for_button g_wait_for_button;
@@ -751,7 +764,9 @@ struct DinkGlobalsStatic
 	int32 m_hasMusicModApplied;
 	float m_musicModVolume;
 	//add new vars above this, and remove the byte count from below.  You can safely assume they start as 0
-	char m_bufferForExpansion[4823];
+	int32 m_gfx_alttext_disable; //if 1, disable our fancy backgrounds
+	int32 m_use_latest_fixes_level;//1 is the highest right now
+	char m_bufferForExpansion[4815];
 };
 
 

@@ -394,3 +394,44 @@ some Windows/proton keyboard problems. At least the method I used should work on
 * BUGFIX with map_tile, now goes 0 to 5247 (Robj, yeoldetoast, https://www.dinknetwork.com/forum.cgi?MID=209752&Posts=16 )
 * BUGFIX with disable_all_sprites/enable_all_sprites (Robj, yeoldetoast, https://www.dinknetwork.com/forum.cgi?MID=209752&Posts=16 )
 * sound_set_vol behaves more like original Dink ( https://www.dinknetwork.com/forum.cgi?MID=209752#209908 )
+* Text fit better inside the black background (RobJ)
+* Text stays visible during fades to match functionality with the original (RobJ)
+
+------- Change log for 2.07 --------- (June 2024)
+
+* Catches and logs invalid seq ids from the dink.ini instead of crashing (Simon)
+
+------- Change log for 2.08 --------- (March 2025)
+
+* Checked midi issue with 9 gems of life II, 1.mid doesn't play at startup because FMOD doesn't like the format of it.  If replaced with a different midi it will work.  (unfixable by me, FMOD issue)
+* make_global function now works (thanks RobJ, yeoldetoast)
+* text brains X won't go past 470 (for RobJ)
+* re-enabeled preload_seq DinkC command
+* Added get_dinkspeed to DinkC (RobJ)
+* gfx_alttext_disable in the ini will disable the text shadow effect.  set_gfx_alttext_disable(0 or 1) can also be used in DinkC (for RobJ)
+* Fixed issue where some variables weren't be totally cleared when a second game/dmod was loaded, could cause the intro screen to have tiles on it from the previous game, oops
+* set_use_latest_fixes_level() dinkC command added, currently level 1 will cause next two bugs to be fixed.  (the idea is new DMODs can say "hey, fix the bugs" but old ones won't break because things got fixed.
+* Fixed issue where the black background used with aspect correction of the window size might not fully cover an 8k monitor (untested, I don't have one!)
+* When playing with "Smoothing" off and at an exact 4:3 screen ratio, DinkHD will now be "pixel perfect" (thanks Drone).  I guess with some work this could also work with smoothing on (sub pixel and texture clamp settings?) but maybe for another day
+* Dink limits have been increased so folks like Simon making more demanding DMODs can be supported (trying to keep it roughly in parity with YeOldeDink as well)
+
+-Sorry, I was too lazy to make it stay compatible with old save states, but of course normal save-machine saves work
+
+const int32 C_MAX_SEQUENCES = 2000; //Max # of sprite animations, was 1300
+const int32 C_MAX_SPRITES_ADDRESSABLE = 30000; //was 6000
+const int32 C_MAX_SPRITES_AT_ONCE = 300; //don't change, there are still hardcoded numbers elsewhere and some weird stuff with screen lock and "flub" stuff whatever that is
+const int32 C_MAX_SCRIPT_CALLBACKS = 200; //was 100
+const int32 max_vars = 250;
+const int32 C_MAX_SCRIPTS = 400; //was 200
+const int32 C_DINK_VERSION = 114; //dink script version
+const int32 num_soundbanks = 64; //was 20
+const int32 max_sounds = 200; //was 100
+const int32 C_TILE_SCREEN_COUNT = 61 + 1; //(20 more than before)
+
+#define C_MAX_BACKGROUND_SPRITES_AT_ONCE 200
+#define C_MAX_SPRITE_FRAMES 100
+
+if set_use_latest_fixes_level() is > 0 these bugs are fixed:
+
+  BUGFIX: "/=" math operations now work correctly (previously, only "/" worked right.. so er.. yeah)
+  BUGFIX: Missile weapons with an odd # like strength 5 can now actually do 5 damage sometimes, previously they couldn't due to using integer division

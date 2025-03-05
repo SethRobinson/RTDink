@@ -10,6 +10,8 @@ SoftSurface g_palette;
 
 extern LPDIRECTDRAWSURFACE lpDDSBackGround;
 
+bool NeedsSeamFix();
+
 bool InitializeVideoSystem()
 {
 	assert(!lpDDSBack);
@@ -240,7 +242,17 @@ int IDirectDrawSurface::Blt( rtRect32 *pDestRect, IDirectDrawSurface * pSrcSurf,
 			{
 				//blit from a GL surface instead
 				pSrcSurf->UpdateShadowSurface();
-				pSrcSurf->m_pGLSurf->BlitEx(rtRectf(*pDestRect) + rtRectf(0,0, 0.5f, 0.5f), rtRectf(*pSrcRect));
+				
+
+
+				rtRectf seamFixRect = rtRectf(0, 0, 0.5f, 0.5f);
+
+				if (!NeedsSeamFix())
+				{
+					seamFixRect = rtRectf(0, 0, 0, 0);
+				}
+
+				pSrcSurf->m_pGLSurf->BlitEx(rtRectf(*pDestRect) + seamFixRect, rtRectf(*pSrcRect));
 				break;
 			}
 			
@@ -404,11 +416,16 @@ int IDirectDrawSurface::BltFast( int x, int y, IDirectDrawSurface *pSrcSurf, rtR
 				//LogMsg("Skipping blit, original Dink 1.08 would have rejected it for not fitting");
 #endif
 				break;
-
 			}
 
+			rtRectf seamFixRect = rtRectf(0, 0, 0.5f, 0.5f);
+
+			if (!NeedsSeamFix())
+			{
+				seamFixRect = rtRectf(0, 0, 0, 0);
+			}
 			//pSrcSurf->m_pGLSurf->SetBlendingMode(Surface::BLENDING_NORMAL);
-			pSrcSurf->m_pGLSurf->BlitEx(rtRectf((float)x, (float)y, (float)x+pSrcRect->GetWidth(), (float)y +pSrcRect->GetHeight())+ rtRectf(0,0, 0.5f, 0.5f), rtRectf(*pSrcRect));
+			pSrcSurf->m_pGLSurf->BlitEx(rtRectf((float)x, (float)y, (float)x+pSrcRect->GetWidth(), (float)y +pSrcRect->GetHeight())+ seamFixRect, rtRectf(*pSrcRect));
 			break;
 		}
 		

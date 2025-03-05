@@ -22,7 +22,8 @@ int DepthSortSprites();
 #define C_DINK_SCREEN_TRANSITION_TIME_MS 400
 
 
-const float SAVE_FORMAT_VERSION = 3.2f; //make higher to invalidate all saves
+//const float SAVE_FORMAT_VERSION = 3.2f; //make higher to invalidate all saves
+const float SAVE_FORMAT_VERSION = 3.3f; //make higher to invalidate all saves
 const int C_DINK_FADE_TIME_MS = 300;
 
 const float G_TRANSITION_SCALE_TRICK = 1.01f;
@@ -108,7 +109,7 @@ void FreeSequence(int h);
 LPDIRECTDRAWSURFACE     lpDDSBackGround;       // Offscreen surface 
 LPDIRECTDRAWSURFACE     lpDDSBuffer;       // Offscreen surface 
 LPDIRECTDRAWSURFACE     g_tileScreens[C_TILE_SCREEN_COUNT];       // Game pieces
-LPDIRECTDRAWSURFACE     g_pSpriteSurface[C_MAX_SPRITES];
+LPDIRECTDRAWSURFACE     g_pSpriteSurface[C_MAX_SPRITES_ADDRESSABLE];
 
 
 bool IsCorruptedSeq(int seq);
@@ -163,13 +164,8 @@ bool get_box (int spriteID, rtRect32 * box_crap, rtRect32 * box_real );
 void fill_screen(int num);
 void UnloadAllGraphics();
 
-#ifdef WINAPI
-#define C_MAX_BACKGROUND_SPRITES_AT_ONCE 300 //too many and it will slow down
 
-#else
-#define C_MAX_BACKGROUND_SPRITES_AT_ONCE 200 //too many and it will slow down
 
-#endif
 
 
 //adjusted from https://stackoverflow.com/questions/36072054/get-the-inverse-of-a-function-millibels-to-percentage-percentage-to-millibels
@@ -179,8 +175,6 @@ double ConvertMillibelsToPercentage(int value)
 	double exponent = ((value / 1000.0) + 10);
 	double numerator = 100.0 * (pow(2, exponent) - 1);
 	double final =  (numerator / 1023.0) / 100.0f;
-
-
 	return final;
 }
 
@@ -320,12 +314,12 @@ void OneTimeDinkInit()
 
 	if (GetDeviceMemoryClass() >= C_DEVICE_MEMORY_CLASS_4)
 	{
-		C_DINK_MEM_MAX_ALLOWED = (1024*1024*80);
-		C_DINK_TEX_MEM_MAX_ALLOWED = (1024*1024*200);
+		C_DINK_MEM_MAX_ALLOWED = (1024*1024*600);
+		C_DINK_TEX_MEM_MAX_ALLOWED = (1024*1024*1000);
 
 		//avoid texture thrashing with this
-		C_DINK_MEM_CACHE_MAX_ALLOWED_AFTER_A_DUMP = (1024*1024*64);
-		C_DINK_TEX_MEM_MAX_ALLOWED_AFTER_A_DUMP = (1024*1024*128);
+		C_DINK_MEM_CACHE_MAX_ALLOWED_AFTER_A_DUMP = (1024*1024*128);
+		C_DINK_TEX_MEM_MAX_ALLOWED_AFTER_A_DUMP = (1024*1024*256);
 	}
 
 
@@ -344,7 +338,7 @@ void OneTimeDinkInit()
 	bInitted = true;
 	g_dglos.g_curPicIndex = 1; //we actually need this set before finiObjects is called
 
-	memset(g_dglos.g_picInfo, 0, sizeof(pic_info)*C_MAX_SPRITES);
+	memset(g_dglos.g_picInfo, 0, sizeof(pic_info)*C_MAX_SPRITES_ADDRESSABLE);
 	memset(g_sprite, 0, sizeof(SpriteStruct) *C_MAX_SPRITES_AT_ONCE);
 	memset(g_dglos.g_seq, 0, sizeof(sequence) * C_MAX_SEQUENCES);
 	memset(g_dglos.g_scriptCallback, 0, sizeof(call_back) * C_MAX_SCRIPT_CALLBACKS);
@@ -353,7 +347,7 @@ void OneTimeDinkInit()
 	memset(&g_hmap, 0, sizeof(hardness));
 
 //just to help me keep track of memory better
-	GetApp()->ModMemUsed(sizeof(pic_info)*C_MAX_SPRITES);
+	GetApp()->ModMemUsed(sizeof(pic_info)*C_MAX_SPRITES_ADDRESSABLE);
 	GetApp()->ModMemUsed(sizeof(SpriteStruct) *C_MAX_SPRITES_AT_ONCE);
 	GetApp()->ModMemUsed(sizeof(sequence) * C_MAX_SEQUENCES);
 	GetApp()->ModMemUsed( sizeof(call_back) * C_MAX_SCRIPT_CALLBACKS);
@@ -379,7 +373,7 @@ void finiObjects()
 
 	memset(g_sprite, 0, sizeof(SpriteStruct) *C_MAX_SPRITES_AT_ONCE);
 
-	for (int i=1; i < C_MAX_SPRITES; i++)
+	for (int i=1; i < C_MAX_SPRITES_ADDRESSABLE; i++)
 	{
 		SAFE_DELETE(g_pSpriteSurface[i]);
 	}
@@ -1213,27 +1207,25 @@ void DefragUsedPicIDs()
 	std::map<int, int> used_pic_ids;
 	
 	int maxPicsUsed = g_dglos.g_curPicIndex;
-	if (maxPicsUsed >= C_MAX_SPRITES)
+	if (maxPicsUsed >= C_MAX_SPRITES_ADDRESSABLE)
 	{
 		LogError("Why did we used %d pics?", maxPicsUsed);
-		maxPicsUsed = C_MAX_SPRITES - 1;
+		maxPicsUsed = C_MAX_SPRITES_ADDRESSABLE - 1;
 	}
 		
 	int newID = 1;
-	
 	//we need to do two passes
-	
 	//first just full sequences, ignore any frame replacements
 	
-	pic_info picInfoTemp[C_MAX_SPRITES];       // Sprite data
-	
+	//pic_info picInfoTemp[C_MAX_SPRITES_ADDRESSABLE];       // Sprite data
+	pic_info* picInfoTemp = new pic_info[C_MAX_SPRITES_ADDRESSABLE];
+
 	//make a backup
 	memcpy(picInfoTemp, g_dglos.g_picInfo, sizeof(g_dglos.g_picInfo));
 
 	//interate through all g_dglos.g_seq and find used graphic ids
 	for (int i = 0; i < C_MAX_SEQUENCES; i++)
 	{
-		
 	
 		if (g_dglos.g_seq[i].active)
 		{
@@ -1288,6 +1280,8 @@ void DefragUsedPicIDs()
 		}
 	}
 	g_dglos.g_curPicIndex = newID;
+
+	delete[] picInfoTemp;
 }
 
 bool add_time_to_saved_game(int num)
@@ -1368,7 +1362,7 @@ bool load_game(int num)
 	DinkUnloadUnusedGraphicsByUsageTime(0);
     SetDefaultVars(false);
 	
-	DefragUsedPicIDs(); //only save to do after all images are unloaded
+	DefragUsedPicIDs(); //only safe to do after all images are unloaded
 
 	
 	g_sprite[1].active = true;
@@ -1729,7 +1723,7 @@ bool LoadSpriteSingleFrame(string fNameBase, int seq, int oo, int picIndex, eTra
 	
 #endif
 
-	if (picIndex >= C_MAX_SPRITES)
+	if (picIndex >= C_MAX_SPRITES_ADDRESSABLE)
 	{
 		LogError("Can't load any more sprites, already mapped out %d of 'em.  Starting from a real savegame will help.", g_dglos.g_curPicIndex);
 		return false;
@@ -2405,6 +2399,16 @@ void program_idata(void)
 	return;
 }
 
+bool SequenceIsValid(int myseq)
+{
+	if (myseq >= 0 && myseq < C_MAX_SEQUENCES) return true;
+
+	return false;
+}
+
+//write a function to sum numbers
+
+
 bool pre_figure_out(const char *line, int load_seq, bool bLoadSpriteOnly)
 {
 
@@ -2480,7 +2484,14 @@ bool pre_figure_out(const char *line, int load_seq, bool bLoadSpriteOnly)
 		return bReturn;
 	}
 
-	
+	if (compare(ev[1], "gfx_alttext_disable"))
+	{
+		LogMsg("gfx_alttext_disable - Disabling our own GUI background due");
+		g_dglos.m_gfx_alttext_disable = 1;
+		return bReturn;
+	}
+
+
 	if (compare(ev[1],"SET_SPRITE_INFO"))
 	{
 
@@ -2488,6 +2499,14 @@ bool pre_figure_out(const char *line, int load_seq, bool bLoadSpriteOnly)
 	//           name   seq    speed       offsetx     offsety       hardx      hardy   
 	//if (k[seq[myseq].frame[myframe]].frame = 0) Msg("Changing sprite that doesn't exist...");
 	myseq = atol(ev[2]);
+	
+	if (!SequenceIsValid(myseq))
+	{
+		//show error about being over the max
+		LogError("Error:  SET_SPRITE_INFO> Sequence %d is invalid", myseq);
+		return 1;
+	}
+
 	myframe = atol(ev[3]);
 
 	ScanSeqFilesIfNeeded(myseq);
@@ -2522,7 +2541,16 @@ bool pre_figure_out(const char *line, int load_seq, bool bLoadSpriteOnly)
 	//           name   seq    speed       offsetx     offsety       hardx      hardy   
 	//if (k[seq[myseq].frame[myframe]].frame = 0) Msg("Changing sprite that doesn't exist...");
 
+	
 	myseq = atol(ev[2]);
+
+	//make sure myseq is within bounds
+	if (!SequenceIsValid(myseq))
+	{
+		//show error about being over the max
+		LogError("Error:  SET_FRAME_SPECIAL> Sequence %d is over the max of %d", myseq, C_MAX_SEQUENCES);
+		return 1;
+	}
 	myframe = atol(ev[3]);
 	special = atol(ev[4]);
 
@@ -2538,6 +2566,14 @@ bool pre_figure_out(const char *line, int load_seq, bool bLoadSpriteOnly)
 
 
 	myseq = atol(ev[2]);
+
+	if (!SequenceIsValid(myseq))
+	{
+		//show error about being over the max
+		LogError("Error:  SET_FRAME_DELAY> Sequence %d is over the max of %d", myseq, C_MAX_SEQUENCES);
+		return 1;
+	}
+
 	myframe = atol(ev[3]);
 	special = atol(ev[4]);
 
@@ -2563,6 +2599,14 @@ bool pre_figure_out(const char *line, int load_seq, bool bLoadSpriteOnly)
 	{
 
 	myseq = atol(ev[2]);
+
+	if (!SequenceIsValid(myseq))
+	{
+		//show error about being over the max
+		LogError("Error:  SET_FRAME_DELAY> Sequence %d is over the max of %d", myseq, C_MAX_SEQUENCES);
+		return 1;
+	}
+
 	myframe = atol(ev[3]);
 	special = atol(ev[4]);
 	special2 = atol(ev[5]);
@@ -3501,7 +3545,7 @@ bool read_next_line(int script, char *line)
 int load_script(const char *pScript, int sprite, bool set_sprite, bool bQuietError)
 {
 
-	if (sprite != 0 && sprite != 1000 && sprite >= C_MAX_SPRITES)
+	if (sprite != 0 && sprite != 1000 && sprite >= C_MAX_SPRITES_ADDRESSABLE)
 	{
 		LogError("load_script tried to load script %s into sprite %d?  That would crash, so ignoring.", pScript, sprite);
 		return 0;
@@ -4366,7 +4410,7 @@ void FreeSequence(int seq)
 			//LogMsg("Deleting seq %d, frame %d  (%d) (image: %d)", seq, i, g_dglos.g_seq[seq].frame[1]+i, g_dglos.g_picInfo[g_dglos.g_seq[seq].frame[1]+i] );
 			int picIndex = g_dglos.g_seq[seq].frame[1] + i;
 			
-			if (picIndex  >= C_MAX_SPRITES)
+			if (picIndex  >= C_MAX_SPRITES_ADDRESSABLE)
 			{
 				LogError("FreeSequence trying to delete illegal picindex %d", picIndex);
 				
@@ -4613,8 +4657,8 @@ void make_function(char file[10], char func[20])
 	}
 	else
 	{
-		strncpy(g_dglos.g_playerInfo.func[0].file, file, 10);
-		strncpy(g_dglos.g_playerInfo.func[0].func, func, 20);
+		strncpy(g_dglos.g_playerInfo.func[i].file, file, 10);
+		strncpy(g_dglos.g_playerInfo.func[i].func, func, 20);
 	}
 }
 
@@ -5106,10 +5150,8 @@ morestuff:
 					goto redo;
 				}
 
-				assert("!You better check this..");
 				line[strlen(line)] = 0;
-				//Msg("LINE IS: %s: Like it?",line);
-
+			
 				decipher_string(line, script);
 				strcat(g_dglos.g_talkInfo.buffer, line);
 				//talk.buffer[strlen(talk.buffer)-1] = 0;   
@@ -5250,10 +5292,7 @@ bool PlayMidi(const char *sFileName)
 		} else
 		if (!g_dglo.m_dmodGameDir.empty() && FileExists(g_dglo.m_dmodGamePathWithDir+fName))
 		{
-			
 				//found it, no changed needed
-				
-			
 		} else
 		{
 			//try the base dir for oggs too, but not if it's a dmod
@@ -6734,7 +6773,6 @@ void BuildScreenBackground( bool bFullRebuild, bool bBuildImageFromScratch )
 
 	if (bBuildImageFromScratch)
 	{
-
 		if (lpDDSBackGround)
 		{
 			DDBLTFX     ddbltfx;
@@ -6946,24 +6984,6 @@ void fill_screen(int num)
 	DDBLTFX     ddbltfx;
 	ddbltfx.dwFillColor = num;
 	lpDDSBackGround->Blt(NULL ,NULL,NULL, DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
-
-/*
-	
-	DDBLTFX     ddbltfx;
-	ZeroMemory(&ddbltfx, sizeof(ddbltfx));
-	ddbltfx.dwSize = sizeof( ddbltfx);
-
-	//redink1 fix for correct fill_screen colors in truecolor mode
-	if (truecolor)
-	{
-		lpDDPal->GetEntries(0,0,256,pe);
-		ddbltfx.dwFillColor = pe[num].peBlue << wBPos | pe[num].peGreen << wGPos | pe[num].peRed << wRPos;
-	}
-	else
-		ddbltfx.dwFillColor = num;
-	crap = lpDDSTwo->Blt(NULL ,NULL,NULL, DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
-*/
-
 }
 
 
@@ -7055,6 +7075,7 @@ bool IsBadSpriteIndex(int sprite, char* pName)
 
 #define ugly_return(r) {uglyReturn = r; goto ugly;}
 
+//stack hack  stackhack
 //Ok, so certain ports (Android) had trouble with the stack space because certain DMODs (Charlies Legacy for example) go 10+ layers deep with
 //recursive scripts.  I couldn't change the stack space so I modified process_line to use the heap with news which made things very ugly.  But
 //it works so don't judge me.  I'm sorry. - Signed by... actually, let's not say who
@@ -8055,7 +8076,7 @@ pass:
 
 		if (compare(ev[1], (char*)"preload_seq"))
 		{
-			/*
+			//re-enabled, can't hurt?
 
 			h = &h[strlen(ev[1])];
 			int32 p[20] = {1,0,0,0,0,0,0,0,0,0};  
@@ -8065,7 +8086,7 @@ pass:
 			}
 
 			strcpy_safe(pLineIn, h);  
-			*/
+			
 			ugly_return(0);
 		}
 
@@ -8830,6 +8851,14 @@ pass:
 			ugly_return(0);
 		}
 
+		if (compare(ev[1], (char*)"get_dinkspeed"))
+		{
+			h = &h[strlen(ev[1])];
+			g_dglos.g_returnint = g_dglos.dinkspeed;
+			strcpy_safe(pLineIn, h);
+			ugly_return(0);
+		}
+
 		if (compare(ev[1], (char*)"get_client_fork"))
 		{
 			h = &h[strlen(ev[1])];
@@ -8876,6 +8905,38 @@ pass:
 			strcpy_safe(pLineIn, h);
 			ugly_return(0);
 		}
+
+		
+
+			if (compare(ev[1], (char*)"set_use_latest_fixes_level"))
+			{
+				h = &h[strlen(ev[1])];
+				int32 p[20] = { 1,0,0,0,0,0,0,0,0,0 };
+				if (get_parms(ev[1], script, h, p))
+				{
+					if (g_nlist[0] == 0 || g_nlist[0] == 1)
+					{
+						g_dglos.m_use_latest_fixes_level = g_nlist[0];
+					}
+				}
+				g_dglos.g_returnint = g_dglos.m_use_latest_fixes_level;
+				ugly_return(0);
+			}
+
+			if (compare(ev[1], (char*)"set_gfx_alttext_disable"))
+			{
+				h = &h[strlen(ev[1])];
+				int32 p[20] = { 1,0,0,0,0,0,0,0,0,0 };
+				if (get_parms(ev[1], script, h, p))
+				{
+					if (g_nlist[0] == 0 || g_nlist[0] == 1)
+					{
+						g_dglos.m_gfx_alttext_disable = g_nlist[0];
+					}
+				}
+				g_dglos.g_returnint = g_dglos.m_gfx_alttext_disable;
+				ugly_return(0);
+			}
 
 		if (compare(ev[1], (char*)"set_disable_savestates"))
 		{
@@ -11233,7 +11294,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 		}
 
 
-		if (compare(ev[2], "/") || compare(ev[2], "/="))
+		if (compare(ev[2], "/"))
 		{
 			h = &h[strlen(ev[1])];
 			strip_beginning_spaces(h);
@@ -11246,7 +11307,28 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			ugly_return(0);
 		}
 
-		if (compare(ev[2], "*") || compare(ev[2], "*="))
+		if (compare(ev[2], "/="))
+		{
+			h = &h[strlen(ev[1])];
+			strip_beginning_spaces(h);
+			if (g_dglos.m_use_latest_fixes_level > 0)
+			{
+				h = &h[2];
+			}
+			else
+			{
+				h = &h[1]; //broken, but possibly neccesary
+			}
+
+			strip_beginning_spaces(h);
+
+			var_equals(ev[1], ev[3], '/', script, h);
+
+			strcpy_safe(pLineIn, h);
+			ugly_return(0);
+		}
+
+		if (compare(ev[2], "*"))
 		{
 			h = &h[strlen(ev[1])];
 			strip_beginning_spaces(h);
@@ -11258,6 +11340,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			strcpy_safe(pLineIn, h);  
 			ugly_return(0);
 		}
+
 		if (compare(ev[1], (char*)"external"))
 		{
 
@@ -11762,19 +11845,15 @@ void text_draw(int h)
             cr = &cr[2];
         }
 
-        //Msg("Final is %s.",cr);
         if (g_sprite[h].owner == 1000)
         {
             rcRect = rtRect32 (g_sprite[h].x,g_sprite[h].y,g_sprite[h].x+620,g_sprite[h].y+400);
         } else
         {
-
            rcRect = rtRect32 (g_sprite[h].x,g_sprite[h].y,g_sprite[h].x+150,g_sprite[h].y+150);
-
 		
-            if (g_sprite[h].x+150 > maxX)
+           if (g_sprite[h].x+150 > maxX)
                 OffsetRect(&rcRect, ((g_sprite[h].x+150)-maxX) - (((g_sprite[h].x+150)-maxX) * 2), 0);
-        
 		
 			if (rcRect.left < minX && rcRect.left >= 0)
 			{
@@ -11789,23 +11868,19 @@ void text_draw(int h)
         cr = &crap[0];
         if (g_sprite[h].brain_parm == 5000)  color = 14;
 
-
         if (g_sprite[h].y < minX) g_sprite[h].y = minX;
         rcRect = rtRect32 (g_sprite[h].x,g_sprite[h].y,g_sprite[h].x+50 ,g_sprite[h].y+50);
     }       
 
-	
-/*   
-	if (g_dglos.bFadedDown || g_dglos.process_downcycle)
-        color = 15;
-		*/
-
 	uint32 rgbColor = MAKE_RGBA(g_dglos.font_colors[color].red, g_dglos.font_colors[color].green, g_dglos.font_colors[color].blue, 255);
-
 	uint32 bgColor = MAKE_RGBA(0,0,0,150);
-	
     rtRect rTemp(rcRect);
     
+	if (g_dglos.m_gfx_alttext_disable)
+	{
+		bgColor = MAKE_RGBA(0, 0, 0, 0);
+	}
+
    // SetTextColor(hdc,RGB(8,14,21));
     if (g_sprite[h].owner == 1200)
     {
@@ -11820,7 +11895,6 @@ void text_draw(int h)
 		} else
 		{
  			GetApp()->GetFont(FONT_SMALL)->DrawWrapped(rTemp, cr, true, false, rgbColor,  g_dglo.m_fontSize, false , bgColor);
-		
 			g_globalBatcher.Flush();
 		}
 	}
@@ -13858,6 +13932,21 @@ void EndProcessTransition()
 	glTranslatef((-g_dglo.m_transitionOffset.x*inverseProg), (- ( (g_dglo.m_transitionOffset.y*inverseProg))), 0);
 };
 
+bool NeedsSeamFix()
+{
+	if (GetApp()->GetVar("smoothing")->GetUINT32() != 0)
+	{
+		return true;
+
+	}
+	if (fabs((g_dglo.m_nativeGameArea.GetWidth() / g_dglo.m_nativeGameArea.GetHeight()) - (4.0f / 3.0f)) < 0.01f)
+	{
+		return false;
+	}
+	return true;
+
+}
+
 void BlitSecondTransitionScreen() //TRANSITION
 {
 
@@ -13886,9 +13975,13 @@ void BlitSecondTransitionScreen() //TRANSITION
 		}
 		else
 		{
-			//without normal antialiasing we don't need to do much, but this does fix tiny black artifacts during the screen transition
-			dstOffset = rtRectf(-0.05, -0.05f, 0.05f, 0.05);
-			srcOffset = rtRectf(0.4, 0.4, -0.4, -0.4);
+
+			if (NeedsSeamFix())
+			{
+				//without normal antialiasing we don't need to do much, but this does fix tiny black artifacts during the screen transition
+				dstOffset = rtRectf(-0.05, -0.05f, 0.05f, 0.05);
+				srcOffset = rtRectf(0.4, 0.4, -0.4, -0.4);
+			}
 		}
 
 		dstRect.AdjustPosition((-g_dglo.m_transitionOffsetNative.x*g_dglo.m_transitionProgress),
@@ -13916,72 +14009,15 @@ void BlitSecondTransitionScreen() //TRANSITION
 			//well, at this point we're done except there is garbage on the area outside the playfield if we're letterboxed so aspect ratio is right.  This could have all been
 			//avoided with a render to surface but I think this will be faster
 
-			g_onePixelSurf.BlitScaled(g_dglo.m_nativeGameArea.left, 0, CL_Vec2f(5000, 5000), ALIGNMENT_RIGHT_CENTER, blackBarsColor);
-			g_onePixelSurf.BlitScaled(g_dglo.m_nativeGameArea.right, 0, CL_Vec2f(5000, 5000), ALIGNMENT_LEFT_CENTER, blackBarsColor);
+			g_onePixelSurf.BlitScaled(g_dglo.m_nativeGameArea.left, 0, CL_Vec2f(12000, 12000), ALIGNMENT_RIGHT_CENTER, blackBarsColor);
+			g_onePixelSurf.BlitScaled(g_dglo.m_nativeGameArea.right, 0, CL_Vec2f(12000, 12000), ALIGNMENT_LEFT_CENTER, blackBarsColor);
 
-			g_onePixelSurf.BlitScaled(0, g_dglo.m_nativeGameArea.top, CL_Vec2f(5000, 5000), ALIGNMENT_DOWN_CENTER, blackBarsColor);
-			g_onePixelSurf.BlitScaled(0, g_dglo.m_nativeGameArea.bottom, CL_Vec2f(5000, 5000), ALIGNMENT_UPPER_CENTER, blackBarsColor);
+			g_onePixelSurf.BlitScaled(0, g_dglo.m_nativeGameArea.top, CL_Vec2f(12000, 12000), ALIGNMENT_DOWN_CENTER, blackBarsColor);
+			g_onePixelSurf.BlitScaled(0, g_dglo.m_nativeGameArea.bottom, CL_Vec2f(12000, 12000), ALIGNMENT_UPPER_CENTER, blackBarsColor);
 
 		}
 		
 		glPopMatrix( );
-
-		/*
-
-		if (g_dglo.GetActiveView() != DinkGlobals::VIEW_ZOOMED)
-		{
-			//Oy, let's also blit the GUI pieces from our frozen surface
-
-			glMatrixMode(GL_MODELVIEW);
-			glPushMatrix();
-			
-
-			dstOffset = rtRectf(0, 0, 0, 0);
-			srcOffset = rtRectf(0, 0, 0, 0);
-
-			
-			double offsetX = g_dglo.m_centeringOffset.x * (1.0f - ((double)GetFakePrimaryScreenSizeX() / (double)C_DINK_SCREENSIZE_X));
-			double offsetY = g_dglo.m_centeringOffset.y * (1.0f - ((double)GetFakePrimaryScreenSizeY() / (double)C_DINK_SCREENSIZE_Y));
-			
-			//force offsetX and offsetY to be a whole number
-
-			
-			glTranslatef(-offsetX, -offsetY, 0);
-
-
-
-			
-
-			//left bar
-			rtRectf dstRect = rtRect(0, 0, g_dglo.m_nativeGameArea.left, GetScreenSizeYf());
-			rtRectf srcRect = ConvertFakeScreenRectToReal(dstRect);
-			g_transitionSurf.BlitEx(dstRect + dstOffset, srcRect + srcOffset);
-
-			//right bar
-			dstRect = rtRect(g_dglo.m_nativeGameArea.right, 0, GetScreenSizeXf(), GetScreenSizeYf());
-			srcRect = ConvertFakeScreenRectToReal(dstRect);
-			g_transitionSurf.BlitEx(dstRect + dstOffset, srcRect + srcOffset);
-
-			
-			//bottom bar
-			dstRect = rtRect(0, g_dglo.m_nativeGameArea.bottom,  GetScreenSizeXf(), GetScreenSizeYf());
-			srcRect = ConvertFakeScreenRectToReal(dstRect);
-			g_transitionSurf.BlitEx(dstRect + dstOffset, srcRect + srcOffset);
-		
-		
-
-#ifdef _DEBUG
-			LogMsg("Final Trans Src rect: %s", PrintRect(srcRect).c_str());
-			LogMsg("Trans Dest rect: %s", PrintRect(dstRect).c_str());
-			LogMsg("Trans surf size: %s", PrintRect(g_transitionSurf.GetRectf()).c_str());
-#endif
-		
-
-
-			glPopMatrix();
-		
-		}
-			*/
 	}
 
 	
@@ -14267,8 +14303,7 @@ void missile_brain( int h, bool repeat)
     for (int j = 1; j <= g_dglos.last_sprite_created; j++)
     {
         if (g_sprite[j].active) if (h != j) if (g_sprite[j].nohit != 1) if (g_sprite[j].notouch == false)
-            if (g_sprite[h].brain_parm != j) if (g_sprite[h].brain_parm2!= j) //if (spr[j].brain != 15) if
-                //(spr[j].brain != 11)
+            if (g_sprite[h].brain_parm != j) if (g_sprite[h].brain_parm2!= j) 
             {
                 box = g_dglos.g_picInfo[getpic(j)].hardbox;
                 OffsetRect(&box, g_sprite[j].x, g_sprite[j].y);
@@ -14305,10 +14340,35 @@ void missile_brain( int h, bool repeat)
                     if ( g_sprite[j].hitpoints > 0)  if (g_sprite[h].strength != 0)
                     {
                         int hit = 0;
-                        if (g_sprite[h].strength == 1) hit = g_sprite[h].strength - g_sprite[j].defense; else
+						if (g_sprite[h].strength == 1)
+						{
+							hit = g_sprite[h].strength - g_sprite[j].defense;
+						}
+						else
+						{
+							
+							if (g_dglos.m_use_latest_fixes_level > 0)
+							{
 
-                            hit = (g_sprite[h].strength / 2) + ((rand() % (g_sprite[h].strength / 2))+1)
-                            - g_sprite[j].defense;
+								//Using floating point so strength of 5 can actually do 5 damage
+
+								float fHit = 0.0f;
+								fHit += (float)g_sprite[h].strength / 2.0f;
+								fHit += (float)(rand() % (int)((float)g_sprite[h].strength * 100 / 2.0f)) / 100;
+								fHit += 1.0f;
+								hit = (int)fHit - g_sprite[j].defense;
+							}
+							else
+							{
+								//Old way for compatibility
+								hit = (g_sprite[h].strength / 2) + ((rand() % (g_sprite[h].strength / 2)) + 1)
+									- g_sprite[j].defense;
+							}
+
+
+
+							
+						}
 
                         if (hit < 0) hit = 0;
 
@@ -15789,6 +15849,9 @@ void text_brain(int h)
 
         if (g_sprite[h].y < 1) g_sprite[h].y = 1;
 
+		if (g_sprite[h].x > 470) g_sprite[h].x = 470; //not really required, but if anyone asks the position, this is the
+		//actual left of the text being drawn
+
 
     } else
     {
@@ -15806,7 +15869,7 @@ void text_brain(int h)
 }
 
 
-void process_talk()
+void process_talk(bool bRenderSimpleTextOnly)
 {
 
     int px = 48, py = 44;
@@ -15832,83 +15895,80 @@ void process_talk()
 
 	int fake_page;
 
-    if (check_seq_status(30))
+	if (!bRenderSimpleTextOnly)
 	{
 
-	
-	
-    ddrval = lpDDSBack->BltFast( px, py, g_pSpriteSurface[g_dglos.g_seq[30].frame[2]],
-        &g_dglos.g_picInfo[g_dglos.g_seq[30].frame[2]].box  , DDBLTFAST_SRCCOLORKEY  );
+		
+			if (check_seq_status(30))
+			{
 
-	
+				ddrval = lpDDSBack->BltFast(px, py, g_pSpriteSurface[g_dglos.g_seq[30].frame[2]],
+					&g_dglos.g_picInfo[g_dglos.g_seq[30].frame[2]].box, DDBLTFAST_SRCCOLORKEY);
 
-	ddrval = lpDDSBack->BltFast(px + 169, py + 42, g_pSpriteSurface[g_dglos.g_seq[30].frame[3]],
-		&g_dglos.g_picInfo[g_dglos.g_seq[30].frame[3]].box, DDBLTFAST_SRCCOLORKEY);
 
-	ddrval = lpDDSBack->BltFast(px + 169 + 180, py + 1, g_pSpriteSurface[g_dglos.g_seq[30].frame[4]],
-		&g_dglos.g_picInfo[g_dglos.g_seq[30].frame[4]].box, DDBLTFAST_SRCCOLORKEY);
-	/*
-    ddrval = lpDDSBack->BltFast( px+170, py+42, g_pSpriteSurface[g_dglos.g_seq[30].frame[3]],
-        &g_dglos.g_picInfo[g_dglos.g_seq[30].frame[3]].box  , DDBLTFAST_SRCCOLORKEY  );
-   
-    ddrval = lpDDSBack->BltFast( px+170+181, py+1, g_pSpriteSurface[g_dglos.g_seq[30].frame[4]],
-        &g_dglos.g_picInfo[g_dglos.g_seq[30].frame[4]].box  , DDBLTFAST_SRCCOLORKEY  );
-		*/
+
+				ddrval = lpDDSBack->BltFast(px + 169, py + 42, g_pSpriteSurface[g_dglos.g_seq[30].frame[3]],
+					&g_dglos.g_picInfo[g_dglos.g_seq[30].frame[3]].box, DDBLTFAST_SRCCOLORKEY);
+
+				ddrval = lpDDSBack->BltFast(px + 169 + 180, py + 1, g_pSpriteSurface[g_dglos.g_seq[30].frame[4]],
+					&g_dglos.g_picInfo[g_dglos.g_seq[30].frame[4]].box, DDBLTFAST_SRCCOLORKEY);
+				/*
+				ddrval = lpDDSBack->BltFast( px+170, py+42, g_pSpriteSurface[g_dglos.g_seq[30].frame[3]],
+					&g_dglos.g_picInfo[g_dglos.g_seq[30].frame[3]].box  , DDBLTFAST_SRCCOLORKEY  );
+
+				ddrval = lpDDSBack->BltFast( px+170+181, py+1, g_pSpriteSurface[g_dglos.g_seq[30].frame[4]],
+					&g_dglos.g_picInfo[g_dglos.g_seq[30].frame[4]].box  , DDBLTFAST_SRCCOLORKEY  );
+					*/
+
+			}
+		
+
 
 	}
 
-    int talk_hold = g_dglos.g_talkInfo.cur;  
-//    if (sjoy.rightd) g_dglos.g_talkInfo.cur++;
-//	if (sjoy.leftd) g_dglos.g_talkInfo.cur--;
- 
-	if (sjoy.downd) g_dglos.g_talkInfo.cur++;
-    if (sjoy.upd) g_dglos.g_talkInfo.cur--;
-    
-	
-    if (g_dglos.g_playerInfo.mouse > 20)
-    {
-        g_dglos.g_talkInfo.cur++;
-        g_dglos.g_playerInfo.mouse = 0;
-    }
+	int talk_hold = g_dglos.g_talkInfo.cur;
 
-    if (g_dglos.g_playerInfo.mouse < -20)
-    {
-        g_dglos.g_talkInfo.cur--;
-        g_dglos.g_playerInfo.mouse = 0;
-    }
+	if (!bRenderSimpleTextOnly)
+	{
+		if (sjoy.downd) g_dglos.g_talkInfo.cur++;
+		if (sjoy.upd) g_dglos.g_talkInfo.cur--;
 
-    if (talk_hold != g_dglos.g_talkInfo.cur)
-    {
-        if (g_dglos.g_talkInfo.cur >= g_dglos.g_talkInfo.cur_view) if (g_dglos.g_talkInfo.cur <= g_dglos.g_talkInfo.cur_view_end) 
-            SoundPlayEffect(11, 22050,0,0,0);
-    }
-uint32 rgbColor = MAKE_RGBA(255,255,255,255);
+
+		if (g_dglos.g_playerInfo.mouse > 20)
+		{
+			g_dglos.g_talkInfo.cur++;
+			g_dglos.g_playerInfo.mouse = 0;
+		}
+
+		if (g_dglos.g_playerInfo.mouse < -20)
+		{
+			g_dglos.g_talkInfo.cur--;
+			g_dglos.g_playerInfo.mouse = 0;
+		}
+
+		if (talk_hold != g_dglos.g_talkInfo.cur)
+		{
+			if (g_dglos.g_talkInfo.cur >= g_dglos.g_talkInfo.cur_view) if (g_dglos.g_talkInfo.cur <= g_dglos.g_talkInfo.cur_view_end)
+				SoundPlayEffect(11, 22050, 0, 0, 0);
+		}
+	}
+
+	uint32 rgbColor = MAKE_RGBA(255,255,255,255);
 
         if (strlen(g_dglos.g_talkInfo.buffer) > 0)
         {
 
            rcRect = rtRect32 (sx,94,463,400);
             if (g_dglos.g_talkInfo.newy != -5000) rcRect.bottom = g_dglos.g_talkInfo.newy+15;
-			
 			int color = 15;
-
-          //  SetTextColor(hdc,RGB(8,14,21));
-            //DrawText(hdc,talk.buffer,strlen(talk.buffer),&rcRect,DT_VCENTER | DT_CENTER | DT_WORDBREAK);    
-
             if (g_dglos.g_talkInfo.color >= 1 && g_dglos.g_talkInfo.color <= 15)
             {
 	             color = g_dglos.g_talkInfo.color;
             }
 
 			rgbColor = MAKE_RGBA(g_dglos.font_colors[color].red, g_dglos.font_colors[color].green, g_dglos.font_colors[color].blue, 255);
-
-          //  OffsetRect(&rcRect, 1, 1);
-            //DrawText(hdc,talk.buffer,strlen(talk.buffer),&rcRect,DT_VCENTER | DT_CENTER | DT_WORDBREAK);    
-			
             rtRect rTemp(rcRect);
-            
             GetApp()->GetFont(FONT_SMALL)->DrawWrapped(rTemp, g_dglos.g_talkInfo.buffer, true, false, rgbColor,  g_dglo.m_fontSize)  ;
-          //  SetTextColor(hdc,RGB(8,14,21));
         }
 
         //tabulate distance needed by text, LORDII experience helped here
@@ -15920,14 +15980,9 @@ uint32 rgbColor = MAKE_RGBA(255,255,255,255);
             
             y_hold = (int)GetApp()->GetFont(FONT_SMALL)->DrawWrapped(rTemp, g_dglos.g_talkInfo.line[i], true, false, rgbColor, g_dglo.m_fontSize, true).y;
             sy_hold += y_hold;   
-
-            //Msg("Sy_hold = %d (%d)", sy_hold,i);
-
             if (sy_hold > x_depth) 
             {
-
                 g_dglos.g_talkInfo.cur_view_end = i-1;
-                //Msg("Sy is over, sp cur_view is %d ", talk.cur_view_end);
                 goto death;
             }
         }
@@ -15936,14 +15991,13 @@ uint32 rgbColor = MAKE_RGBA(255,255,255,255);
 
         if (g_dglos.g_talkInfo.cur_view == 1) if (g_dglos.g_talkInfo.cur_view_end == g_dglos.g_talkInfo.last)
         {
-
             //Msg("Small enough to fit on one screen, lets center it!");
             sy += ( (x_depth - sy_hold) / 2) - 20;
 
         }
 death:
 
-
+		
         if (g_dglos.g_talkInfo.cur > g_dglos.g_talkInfo.last) 
         {
             SoundPlayEffect(11, 22050,0,0,0);
@@ -15980,8 +16034,12 @@ death:
                 // talk.cur = 1;
 
                 g_dglos.g_talkInfo.page--;
-                LogMsg("Page backed to %d.", g_dglos.g_talkInfo.page);
-                fake_page = 1;
+                
+#ifdef _DEBUG
+			LogMsg("Page backed to %d.", g_dglos.g_talkInfo.page);
+#endif
+                
+				fake_page = 1;
                 for (i = 1; i < g_dglos.g_talkInfo.last; i++)
                 {
                     rcRect = rtRect32 (sx,sy_ho,463,x_depth);
@@ -16052,16 +16110,22 @@ fin:
         if (g_dglos.g_talkInfo.curf > 7) g_dglos.g_talkInfo.curf = 1;
 
 
-		if (check_seq_status(456) && check_seq_status(457))
+		if (!bRenderSimpleTextOnly)
 		{
-        ddrval = lpDDSBack->BltFast( curxl, curyl, g_pSpriteSurface[g_dglos.g_seq[456].frame[g_dglos.g_talkInfo.curf]],
-            &g_dglos.g_picInfo[g_dglos.g_seq[456].frame[g_dglos.g_talkInfo.curf]].box  , DDBLTFAST_SRCCOLORKEY  );
-  
-        ddrval = lpDDSBack->BltFast( curxr, curyr, g_pSpriteSurface[g_dglos.g_seq[457].frame[g_dglos.g_talkInfo.curf]],
-            &g_dglos.g_picInfo[g_dglos.g_seq[456].frame[g_dglos.g_talkInfo.curf]].box  , DDBLTFAST_SRCCOLORKEY  );
+
+			if (check_seq_status(456) && check_seq_status(457))
+			{
+				ddrval = lpDDSBack->BltFast(curxl, curyl, g_pSpriteSurface[g_dglos.g_seq[456].frame[g_dglos.g_talkInfo.curf]],
+					&g_dglos.g_picInfo[g_dglos.g_seq[456].frame[g_dglos.g_talkInfo.curf]].box, DDBLTFAST_SRCCOLORKEY);
+
+				ddrval = lpDDSBack->BltFast(curxr, curyr, g_pSpriteSurface[g_dglos.g_seq[457].frame[g_dglos.g_talkInfo.curf]],
+					&g_dglos.g_picInfo[g_dglos.g_seq[456].frame[g_dglos.g_talkInfo.curf]].box, DDBLTFAST_SRCCOLORKEY);
+			}
 		}
      
-		if (GetBaseApp()->GetGameTickPause()) return;
+
+
+		if (GetBaseApp()->GetGameTickPause() || bRenderSimpleTextOnly) return;
 
     if ( sjoy.button[1] || g_dinkMouseRightClick) //(sjoy.button[2]))
     {
@@ -16531,7 +16595,7 @@ void process_item( void )
 	if (g_dglos.g_talkInfo.active) 
 	{
 		assert(!"People use this?")	;
-		process_talk();
+		process_talk(false);
 	}
 
 	//g_dglo.SetViewOverride(DinkGlobals::VIEW_ZOOMED);
@@ -17056,15 +17120,14 @@ void SetupFirstScript()
 	
 	if (!g_dglo.m_dmodGameDir.empty())
 	{
+		int crap2 = add_sprite(0,450,8,0,0);
 
-	int crap2 = add_sprite(0,450,8,0,0);
+		g_sprite[crap2].hard = 1;
+		g_sprite[crap2].noclip = 1;
+		strcpy_safe(g_sprite[crap2].text, g_dglos.dversion_string);
 
-	g_sprite[crap2].hard = 1;
-	g_sprite[crap2].noclip = 1;
-	strcpy_safe(g_sprite[crap2].text, g_dglos.dversion_string);
-
-	g_sprite[crap2].damage = -1;
-	g_sprite[crap2].owner = 1000;
+		g_sprite[crap2].damage = -1;
+		g_sprite[crap2].owner = 1000;
 	}
 
 	
@@ -17253,11 +17316,9 @@ void updateFrame()
 	
 	if (g_dglos.g_dinkTick > g_dglos.g_DinkUpdateTimerMS+100)
 	{
-	//	g_dglos.mbase_timing = (g_dglos.mbase_count / 100);
 		g_dglos.mbase_timing = 135; //hardcoded now to avoid fluctuations
 		g_dglos.g_DinkUpdateTimerMS = g_dglos.g_dinkTick;
 		if (g_dglos.g_bowStatus.active) g_dglos.g_bowStatus.hitme = true;
-		
 		
 		if (*pupdate_status == 1) update_status_all();
 
@@ -17348,7 +17409,7 @@ void updateFrame()
 	{
 		if (g_dglos.g_talkInfo.active)
 		{
-			process_talk(); 
+			process_talk(false); 
 		}
 		else
 		{
@@ -17406,7 +17467,7 @@ void updateFrame()
 
 	if (!GetBaseApp()->GetGameTickPause())
 	{
-		if (g_dglos.g_talkInfo.active) process_talk();
+		if (g_dglos.g_talkInfo.active) process_talk(false);
 		process_callbacks();
 	}
 
@@ -17414,8 +17475,6 @@ flip:
 
 	if (g_dinkFadeAlpha *255 > 1)
 	{
-		//g_dglo.m_gameArea.bottom++; //hack to fix a little glitchy line
-		
 		if (IsDrawingDinkStatusBar())
 		{
 			DrawFilledRect(g_dglo.m_gameArea, MAKE_RGBA(0,0,0,g_dinkFadeAlpha* 255));
@@ -17424,7 +17483,19 @@ flip:
 			DrawFilledRect(g_dglo.m_orthoRenderRect, MAKE_RGBA(0,0,0,g_dinkFadeAlpha* 255));
 		}
 
-		//g_dglo.m_gameArea.bottom--;
+		//however, we still want all text to be visible
+
+		if (bRenderDinkText)
+		{
+			DrawDinkText(max_s, g_spriteRank);
+		}
+
+		if (g_dglos.g_talkInfo.active)
+		{
+			process_talk(true);
+		}
+
+
 	}
 
 	if (::g_b_kill_app) return; 
@@ -17440,19 +17511,7 @@ flip:
 		
 	if (g_bTransitionActive)	
 	{
-		//SetOrthoRenderSize(C_DINK_SCREENSIZE_X, g_dglo.m_orthoRenderRect.GetHeight(), 0, -g_dglo.m_orthoRenderRect.top);
-		
-		//instead of blitting the real GUI which rebuilds it, let's blit our saved version, this way it won't change during transitions (added for Robj to match other dink versions)
-		//TRANSITION
-		//BlitSavedGUIOverlay();
-		//BlitGUIOverlay();
-	
-		//RemoveOrthoRenderSize();
-
-	
 		UpdateInterfaceWithoutTransitionAndThinking();
-
-
 	}
 	
 	if (bCaptureScreen)
@@ -17465,8 +17524,6 @@ flip:
 	{
 		 UpdateControlsGUIIfNeeded();
 	}
-
-	
 
 } 
 
@@ -17486,13 +17543,6 @@ void load_batch(int linesToProcess, float &percentOut)
 			assert(0);
 			return;
 		}
-
-//		g_sprite[1].x = 200;
-	//	g_sprite[1].y = 300;
-
-
-	//	g_sprite[1].x = 0;
-	//	g_sprite[1].y = 450;
 	}
 
         for (int i=0; i < linesToProcess; i++)
@@ -17535,6 +17585,17 @@ eDinkGameState GetDinkGameState()
 
 void SetDefaultVars(bool bFullClear)
 {
+
+	if (bFullClear)
+	{
+
+		memset(g_dglos.g_picInfo, 0, sizeof(pic_info) * C_MAX_SPRITES_ADDRESSABLE);
+		memset(g_sprite, 0, sizeof(SpriteStruct) * C_MAX_SPRITES_AT_ONCE);
+		memset(&g_hmap, 0, sizeof(hardness));
+
+		//memset g_dglo entirely
+		memset(&g_dglos, 0, sizeof(g_dglos));
+	}
 	ResetDinkTimers();
 
 	g_dglo.m_lastActiveView = g_dglo.VIEW_NONE;
@@ -17613,7 +17674,7 @@ void SetDefaultVars(bool bFullClear)
 	g_dglos.process_count = 0;
 	
 	//fix audio to be normal again
-	
+	g_dglos.m_gfx_alttext_disable = 0;
 	g_dglos.m_hasMusicModApplied = 0;
 	g_dglos.m_musicModVolume = 0;
 
@@ -17622,27 +17683,34 @@ void SetDefaultVars(bool bFullClear)
 
 	if (bFullClear)
 	{
+
+	
+
 		g_dglo.m_curLoadState = 0;
 		g_dglo.m_bSpeedUpMode = false;
 		g_dglos.m_bRenderBackgroundOnLoad = false;
 
 		memset(g_dglos.m_bufferForExpansion, 0, sizeof(g_dglos.m_bufferForExpansion));
-		memset(g_dglos.g_picInfo, 0, sizeof(pic_info)*C_MAX_SPRITES);
+		memset(g_dglos.g_picInfo, 0, sizeof(pic_info)*C_MAX_SPRITES_ADDRESSABLE);
 		//memset(g_id, '\0', sizeof(idata) * max_idata);
 		memset(g_dglos.g_seq, 0, sizeof(sequence) * C_MAX_SEQUENCES);
+		
+		
 		kill_all_vars(); //it zero's out the player struct
 		strcpy_safe(g_dglos.current_map, "map.dat");
 		strcpy_safe(g_dglos.current_dat,"dink.dat");
 		memset(&short_play, 0, sizeof(player_short_info));
 
 		//redink1 code for version change
-		strcpy_safe(g_dglos.dversion_string, "v1.12"); //dinkc version?
+		strcpy_safe(g_dglos.dversion_string, "v1.14"); //dinkc version? I don't use this, dan added it?
 		strcpy_safe(g_dglos.save_game_info, "Level &level");
 		g_dglos.g_curPicIndex = 1;
 		//GetBaseApp()->SetGameTick(0); //can cause problems .. don't do it here
 		g_dglos.time_start = GetBaseApp()->GetGameTick();
 		g_dglos.g_dinkTick = GetTick(TIMER_GAME);
 		g_dglos.g_playerInfo.minutes = 0;
+		if (lpDDSBackGround != NULL)
+			fill_screen(0);
 	}
 }
 
@@ -17671,7 +17739,6 @@ string GetDMODRootPath(string *pDMODNameOutOrNull)
 		*pDMODNameOutOrNull = "";
 	}
 	
-
 #if defined(WIN32)
 	
 	string dmodpath = "dmods/";
@@ -17864,7 +17931,8 @@ bool LoadGameChunk(int gameIDToLoad, float &progressOut)
 
 	case 0:
 		progressOut = 0.05f;
-		
+	
+	
 		if (!InitializeVideoSystem())
 		{
 			return false;
@@ -17877,6 +17945,7 @@ bool LoadGameChunk(int gameIDToLoad, float &progressOut)
 		//init back buffer at 8 bit, if highcolor is needed later it will auto convert
 		LogMsg("initting dink buffers...");
 
+	
 		lpDDSBackGround = InitOffscreenSurface(C_DINK_SCREENSIZE_X, C_DINK_SCREENSIZE_Y, IDirectDrawSurface::MODE_SHADOW_GL, false);
 		DDBLTFX     ddbltfx;
 		ddbltfx.dwFillColor = g_dglos.last_fill_screen_palette_color;
@@ -18173,7 +18242,7 @@ bool IsCorruptedSeq(int seq)
 
 void UnloadAllGraphics()
 {
-	for (int i=0; i < C_MAX_SPRITES; i++)
+	for (int i=0; i < C_MAX_SPRITES_ADDRESSABLE; i++)
 	{
 		SAFE_DELETE(g_pSpriteSurface[i]);
 	}
@@ -18182,8 +18251,8 @@ void UnloadAllGraphics()
 	{
 		SAFE_DELETE(g_tileScreens[i]);
 	}
-		
 }
+
 void DinkUnloadUnusedGraphicsByUsageTime(unsigned int timeMS)
 {
 	
@@ -18195,7 +18264,7 @@ void DinkUnloadUnusedGraphicsByUsageTime(unsigned int timeMS)
 			for (int g=0; g < g_dglos.g_seq[i].last; g++)
 			{
 				int picIndex = g_dglos.g_seq[i].frame[1] + g;
-				if (picIndex < C_MAX_SPRITES) //avoid crash
+				if (picIndex < C_MAX_SPRITES_ADDRESSABLE) //avoid crash
 				{
 					if (g_pSpriteSurface[picIndex])
 					{
@@ -18313,17 +18382,34 @@ bool SaveHeader(FILE *fp)
 	return true;
 }
 
-bool LoadHeader(FILE *fp, string DMODPathOrBlank)
+bool GetSaveStateCanBeUpgraded(float version)
+{
+
+	return false;
+	if (version == 3.2f)
+	{
+		//actually we know how to load this save state version
+		return true;
+	}
+
+	return false;
+}
+bool LoadHeader(FILE *fp, string DMODPathOrBlank, float &loadedSaveStateVersionOut)
 {
 	float version;
 	LoadFromFile(version, fp);
-	if (version < SAVE_FORMAT_VERSION) //save_state_version
+	
+	loadedSaveStateVersionOut = version;
+
+	bool bWeCanConvertThis = GetSaveStateCanBeUpgraded(version);
+
+	
+	
+	if (!bWeCanConvertThis && version < SAVE_FORMAT_VERSION) //save_state_version
 	{
 		LogMsg("Save state from newer version?!");
 		return false;
 	}
-
-	
 	
 	string tempGameDir = g_dglo.m_dmodGameDir;
 
@@ -18341,7 +18427,6 @@ bool LoadHeader(FILE *fp, string DMODPathOrBlank)
 				g_dglo.m_dmodGameDir = DMODPathOrBlank;
 			}
 		}
-
 	}
 
 	if (!g_dglo.m_dmodGameDir.empty())
@@ -18352,7 +18437,6 @@ bool LoadHeader(FILE *fp, string DMODPathOrBlank)
 			g_dglo.m_dmodGameDir = g_dglo.m_savePath;
 		}
 	}
-
 
 	uint32 gameTime;
 	LoadFromFile(gameTime, fp);
@@ -18684,10 +18768,11 @@ bool LoadState(string const &path, bool bLoadPathsOnly)
 
 	if (bLoadPathsOnly)
 	{
-
 		float version;
 		LoadFromFile(version, fp);
-		if (version < SAVE_FORMAT_VERSION)
+		bool bWeKnowHowToUpgradeThisSaveStateVersion = GetSaveStateCanBeUpgraded(version);
+		
+		if (!bWeKnowHowToUpgradeThisSaveStateVersion && version < SAVE_FORMAT_VERSION)
 		{
 			LogMsg("Save state from newer version?!");
 			fclose(fp);
@@ -18704,24 +18789,43 @@ bool LoadState(string const &path, bool bLoadPathsOnly)
 	kill_all_scripts_for_real();
 	ResetDinkTimers();
 
-	
 	g_dglo.m_bgSpriteMan.Clear();
 	g_dglo.UnSetViewOverride();
 
-	bool bOk = LoadHeader(fp, path);
+	float loadedSaveStateVersion = 0;
 
+	bool bOk = LoadHeader(fp, path, loadedSaveStateVersion);
 
 	if (bOk)
 	{
+
+		int sequencesToLoad = C_MAX_SEQUENCES;
+		int spritesToLoad = C_MAX_SPRITES_ADDRESSABLE;
+
+		/*
+		if (loadedSaveStateVersion == 3.2f)
+		{
+			//override latest version, this older version doesn't have that much stuff
+			sequencesToLoad = 1300;
+			spritesToLoad = 6000;
+		}
+		*/
+
+		int offsetToRestOfData = (sizeof(sequence) * sequencesToLoad) + (sizeof(pic_info) * spritesToLoad);
+
 		//keep loading
 		int dinkGloStaticSize = 0;
+		
 		fread(&dinkGloStaticSize, 1, sizeof(int32), fp);
 		memset(&g_dglos, 0, sizeof(DinkGlobalsStatic));
-		fread(&g_dglos, 1, dinkGloStaticSize, fp);
-
-	
+		
+		//let's load the first two chunks of our g_dglos manually, as the sizes may have changed
+		fread(&g_dglos.g_seq, 1, sizeof(sequence) * sequencesToLoad, fp);
+		fread(&g_dglos.g_picInfo, 1, sizeof(pic_info) * spritesToLoad, fp);
+		fread(&g_dglos.g_bShowingBitmap, 1, dinkGloStaticSize- offsetToRestOfData, fp);
+		
 		//kill the bad pointers to the graphics
-		for (int i=0; i < C_MAX_SPRITES; i++)
+		for (int i=0; i < C_MAX_SPRITES_ADDRESSABLE; i++)
 		{
 			g_pSpriteSurface[i] = NULL;
 		}
@@ -18968,8 +19072,6 @@ void ApplyAspectRatioGLMatrix()
 		return;
 	}
 
-	//float offsetX = ((float)GetPrimaryGLX() - (float)C_DINK_SCREENSIZE_X) / 2;
-
 	glScalef(g_dglo.m_aspectRatioModX, g_dglo.m_aspectRatioModY, 1);
 
 	CL_Mat4f mat;
@@ -18982,15 +19084,10 @@ void ApplyAspectRatioGLMatrix()
 	CL_Vec3f vTotal =  mat.get_transformed_point(CL_Vec3f(C_DINK_SCREENSIZE_X, C_DINK_SCREENSIZE_Y, 0));
 	CL_Vec3f vDinkSize = mat.get_transformed_point(CL_Vec3f(C_DINK_SCREENSIZE_X*g_dglo.m_aspectRatioModX, C_DINK_SCREENSIZE_Y *g_dglo.m_aspectRatioModY, 0));
 
-	//CL_Vec3f vScreenToWorldPixelMod;
-
-	//vScreenToWorldPixelModvTotal.x / vDinkSize
-
 	g_dglo.m_centeringOffset = (vTotal - vDinkSize)/2.0f;
 
 	glTranslatef(g_dglo.m_centeringOffset.x, g_dglo.m_centeringOffset.y, 0);
 
-	//glGetFloatv(GL_PROJECTION_MATRIX, &Matrix);
 }
 
 void RecomputeAspectRatio()
@@ -19007,17 +19104,7 @@ void RecomputeAspectRatio()
 	{
 		double aspect_r = (double)GetPrimaryGLX() / (double)GetPrimaryGLY(); // aspect ratio
 		const double correctAspectRatio = (double)C_DINK_SCREENSIZE_X / (double)C_DINK_SCREENSIZE_Y;
-
-		/*
-		if (GetFakePrimaryScreenSizeX() != 0)
-		{
-		//more reliable way to get the aspect ratio
-		aspect_r=(double)GetFakePrimaryScreenSizeX()/(double)GetFakePrimaryScreenSizeY(); // aspect ratio
-		}
-		*/
-
 		double aspectChange = correctAspectRatio / aspect_r;
-
 
 		if (aspectChange < 1.0f)
 		{
@@ -19052,10 +19139,7 @@ void DinkReInitSurfacesAfterVideoChange()
 		DDBLTFX     ddbltfx;
 		ddbltfx.dwFillColor = g_dglos.last_fill_screen_palette_color;
 		lpDDSBackGround->Blt(NULL, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
-
 		g_onePixelSurf.HardKill();
-
-		
 	}
 
 	RecomputeAspectRatio();

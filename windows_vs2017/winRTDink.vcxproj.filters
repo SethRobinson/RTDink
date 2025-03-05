@@ -143,18 +143,6 @@
     <Filter Include="source\platform\flash">
       <UniqueIdentifier>{5dc2e99f-6f89-4dd5-a6f0-6960892d984a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\platform\android">
-      <UniqueIdentifier>{e7f5f8ba-3ec6-4a9a-a66a-ccac70717cb9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\platform\android\proguard">
-      <UniqueIdentifier>{f127cd43-b61f-465e-beaf-fd88720186d3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\platform\android\jni">
-      <UniqueIdentifier>{ceaaf852-5bea-4de0-a684-2eb12481c5cb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\platform\android\src">
-      <UniqueIdentifier>{53e7a66d-1542-4c5c-b0f7-b7b262ec5095}</UniqueIdentifier>
-    </Filter>
     <Filter Include="source\platform\iOS">
       <UniqueIdentifier>{9a981f24-0170-4d14-9df5-c623ede0173f}</UniqueIdentifier>
     </Filter>
@@ -835,6 +823,21 @@
     <ClCompile Include="..\source\Component\EmulatedPointerComponent.cpp">
       <Filter>source\Component</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\shared\Entity\LogDisplayComponent.cpp">
+      <Filter>shared\Entity\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\Entity\TouchDragMoveComponent.cpp">
+      <Filter>shared\Entity\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\Entity\TouchDragComponent.cpp">
+      <Filter>shared\Entity\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\Irrlicht\source\Irrlicht\libpng\pngwrite.c">
+      <Filter>shared\Renderer\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\Irrlicht\source\Irrlicht\libpng\pngwutil.c">
+      <Filter>shared\Renderer\libpng</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\App.h">
@@ -1428,11 +1431,17 @@
     <ClInclude Include="..\source\Component\EmulatedPointerComponent.h">
       <Filter>source\Component</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\Entity\LogDisplayComponent.h">
+      <Filter>shared\Entity\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\Entity\TouchDragMoveComponent.h">
+      <Filter>shared\Entity\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\Entity\TouchDragComponent.h">
+      <Filter>shared\Entity\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\android\proguard\config.txt">
-      <Filter>source\platform\android\proguard</Filter>
-    </Text>
     <Text Include="..\flash\exports.txt">
       <Filter>source\platform\flash</Filter>
     </Text>
@@ -1448,56 +1457,11 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="..\android\AndroidManifest.xml">
-      <Filter>source\platform\android</Filter>
-    </Xml>
-    <Xml Include="..\android\build.xml">
-      <Filter>source\platform\android</Filter>
-    </Xml>
     <Xml Include="..\AndroidGradle\app\src\main\AndroidManifest.xml">
       <Filter>source\platform\AndroidGradle\App</Filter>
     </Xml>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\android\ant.properties">
-      <Filter>source\platform\android</Filter>
-    </None>
-    <None Include="..\android\app_info_setup.bat">
-      <Filter>source\platform\android</Filter>
-    </None>
-    <None Include="..\android\build.bat">
-      <Filter>source\platform\android</Filter>
-    </None>
-    <None Include="..\android\build_prepare.bat">
-      <Filter>source\platform\android</Filter>
-    </None>
-    <None Include="..\android\buildRelease.bat">
-      <Filter>source\platform\android</Filter>
-    </None>
-    <None Include="..\android\Clean.bat">
-      <Filter>source\platform\android</Filter>
-    </None>
-    <None Include="..\android\default.properties">
-      <Filter>source\platform\android</Filter>
-    </None>
-    <None Include="..\android\InstallOnDefaultPhone.bat">
-      <Filter>source\platform\android</Filter>
-    </None>
-    <None Include="..\android\InstallOnDefaultPhoneRelease.bat">
-      <Filter>source\platform\android</Filter>
-    </None>
-    <None Include="..\android\ViewLogDefaultPhone.bat">
-      <Filter>source\platform\android</Filter>
-    </None>
-    <None Include="..\android\jni\Android.mk">
-      <Filter>source\platform\android\jni</Filter>
-    </None>
-    <None Include="..\android\jni\Application.mk">
-      <Filter>source\platform\android\jni</Filter>
-    </None>
-    <None Include="..\android\src\Main.java">
-      <Filter>source\platform\android\src</Filter>
-    </None>
     <None Include="..\Info.plist">
       <Filter>source\platform\iOS</Filter>
     </None>

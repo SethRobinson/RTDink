@@ -24,13 +24,14 @@ include_directories("${SHARED}")
 include_directories("${SHARED}/util/boost")
 include_directories("${SHARED}/ClanLib-2.0/Sources")
 include_directories("${APP}")
+#include_directories("${SHARED}/android/optional_src/libs/libcurl_ssl/include")
 include_directories("${SHARED}/android/optional_src/libs")
-include_directories("${SHARED}/android/optional_src/libs/libcurl_ssl/include")
-
+include_directories("${SHARED}/android/optional_src/libs/libcurl-android/jni/build/curl/${ANDROID_ABI}/include")
 
 
 #the C_STACK_HACK define makes it so it won't crash on certain dmods, check dink.cpp to see how it's used there
-add_definitions(-Wno-error=format-security -Wl,-stack_size -Wl,0x800000 -DANDROID_NDK -DBOOST_ALL_NO_LIB -DBUILD_ANDROID -DPLATFORM_ANDROID -DRT_JPG_SUPPORT -DRT_ENABLE_FMOD -DRT_USE_LIBCURL -DRT_PNG_SUPPORT -DC_STACK_HACK)
+#add_definitions(-Wno-error=format-security -Wl,-stack_size -Wl,0x800000 -DANDROID_NDK -DBOOST_ALL_NO_LIB -DBUILD_ANDROID -DPLATFORM_ANDROID -DRT_JPG_SUPPORT -DRT_ENABLE_FMOD -DRT_USE_LIBCURL -DRT_PNG_SUPPORT -DC_STACK_HACK)
+add_definitions(-Wno-error=format-security -Wl,-stack_size -Wl,0x12800000 -DANDROID_NDK -DBOOST_ALL_NO_LIB -DBUILD_ANDROID -DPLATFORM_ANDROID -DRT_JPG_SUPPORT -DRT_ENABLE_FMOD -DRT_USE_LIBCURL -DRT_PNG_SUPPORT -DC_STACK_HACK)
 
 message("Building ${CMAKE_BUILD_TYPE}")
 
@@ -59,9 +60,8 @@ ${CLANMATH}/angle.cpp ${CLANMATH}/mat3.cpp ${CLANMATH}/mat4.cpp ${CLANMATH}/rect
 ${SHARED}/Entity/Entity.cpp ${SHARED}/Entity/Component.cpp ${SHARED}/GUI/RTFont.cpp ${SHARED}/Manager/Console.cpp ${SHARED}/FileSystem/FileManager.cpp 
 ${SHARED}/Manager/GameTimer.cpp ${SHARED}/Manager/MessageManager.cpp ${SHARED}/Manager/ResourceManager.cpp ${SHARED}/Manager/VariantDB.cpp ${SHARED}/Math/rtPlane.cpp 
 ${SHARED}/Math/rtRect.cpp ${SHARED}/Renderer/RenderBatcher.cpp ${SHARED}/Renderer/SoftSurface.cpp ${SHARED}/Renderer/Surface.cpp ${SHARED}/Renderer/SurfaceAnim.cpp 
-${SHARED}/util/CRandom.cpp ${SHARED}/util/GLESUtils.cpp ${SHARED}/util/MathUtils.cpp ${SHARED}/util/MiscUtils.cpp ${SHARED}/util/RenderUtils.cpp ${SHARED}/util/ResourceUtils.cpp 
-${SHARED}/util/Variant.cpp ${SHARED}/util/boost/libs/signals/src/connection.cpp ${SHARED}/util/boost/libs/signals/src/named_slot_map.cpp ${SHARED}/util/boost/libs/signals/src/signal_base.cpp 
-${SHARED}/util/boost/libs/signals/src/slot.cpp ${SHARED}/util/boost/libs/signals/src/trackable.cpp ${SHARED}/BaseApp.cpp ${SHARED}/FileSystem/FileSystem.cpp ${SHARED}/FileSystem/FileSystemZip.cpp 
+${SHARED}/util/CRandom.cpp ${SHARED}/util/GLESUtils.cpp ${SHARED}/util/MathUtils.cpp ${SHARED}/util/MiscUtils.cpp ${SHARED}/util/Variant.cpp ${SHARED}/util/RenderUtils.cpp ${SHARED}/util/ResourceUtils.cpp 
+${SHARED}/BaseApp.cpp ${SHARED}/FileSystem/FileSystem.cpp ${SHARED}/FileSystem/FileSystemZip.cpp 
 ${SHARED}/util/unzip/unzip.c ${SHARED}/util/unzip/ioapi.c ${SHARED}/util/TextScanner.cpp ${SHARED}/Entity/EntityUtils.cpp 
 ${SHARED}/Network/NetHTTP.cpp ${SHARED}/Network/NetHTTP_libCURL.cpp ${SHARED}/Network/NetSocket.cpp ${SHARED}/Network/NetUtils.cpp ${SHARED}/FileSystem/StreamingInstance.cpp 
 ${SHARED}/FileSystem/StreamingInstanceZip.cpp ${SHARED}/FileSystem/StreamingInstanceFile.cpp ${SHARED}/util/archive/TarHandler.cpp ${SHARED}/util/bzip2/blocksort.c 
@@ -83,14 +83,15 @@ ${JPGSRC}/jdsample.c ${JPGSRC}/jdtrans.c ${JPGSRC}/jerror.c ${JPGSRC}/jfdctflt.c
 ${JPGSRC}/jidctint.c ${JPGSRC}/jidctred.c ${JPGSRC}/jmemmgr.c ${JPGSRC}/jmemnobs.c ${JPGSRC}/jquant1.c ${JPGSRC}/jquant2.c ${JPGSRC}/jutils.c 
 
 ${PNGSRC}/png.c ${PNGSRC}/pngerror.c ${PNGSRC}/pnggccrd.c ${PNGSRC}/pngget.c ${PNGSRC}/pngmem.c ${PNGSRC}/pngpread.c ${PNGSRC}/pngread.c 
-${PNGSRC}/pngrio.c ${PNGSRC}/pngrtran.c ${PNGSRC}/pngrutil.c ${PNGSRC}/pngset.c ${PNGSRC}/pngtrans.c ${PNGSRC}/pngvcrd.c ${PNGSRC}/pngwio.c ${PNGSRC}/pngwtran.c 
+${PNGSRC}/pngrio.c ${PNGSRC}/pngrtran.c ${PNGSRC}/pngrutil.c ${PNGSRC}/pngset.c ${PNGSRC}/pngtrans.c ${PNGSRC}/pngvcrd.c ${PNGSRC}/pngwio.c ${PNGSRC}/pngwtran.c ${PNGSRC}/pngwrite.c ${PNGSRC}/pngwutil.c
 
 ${COMPPATH}/Button2DComponent.cpp ${COMPPATH}/FilterInputComponent.cpp ${COMPPATH}/FocusInputComponent.cpp ${COMPPATH}/FocusRenderComponent.cpp ${COMPPATH}/FocusUpdateComponent.cpp 
 ${COMPPATH}/HTTPComponent.cpp ${COMPPATH}/InputTextRenderComponent.cpp ${COMPPATH}/InterpolateComponent.cpp ${COMPPATH}/OverlayRenderComponent.cpp ${COMPPATH}/ProgressBarComponent.cpp 
 ${COMPPATH}/RectRenderComponent.cpp ${COMPPATH}/ScrollBarRenderComponent.cpp ${COMPPATH}/ScrollComponent.cpp ${COMPPATH}/TapSequenceDetectComponent.cpp ${COMPPATH}/TextBoxRenderComponent.cpp 
 ${COMPPATH}/TextRenderComponent.cpp ${COMPPATH}/TouchStripComponent.cpp ${COMPPATH}/TrailRenderComponent.cpp ${COMPPATH}/TyperComponent.cpp ${COMPPATH}/UnderlineRenderComponent.cpp 
 ${COMPPATH}/TouchHandlerComponent.cpp ${COMPPATH}/SelectButtonWithCustomInputComponent.cpp ${COMPPATH}/CustomInputComponent.cpp ${COMPPATH}/SliderComponent.cpp ${COMPPATH}/RenderClipComponent.cpp 
-${COMPPATH}/UnpackArchiveComponent.cpp ${COMPPATH}/ArcadeInputComponent.cpp ${COMPPATH}/EmitVirtualKeyComponent.cpp ${COMPPATH}/RenderScissorComponent.cpp 
+${COMPPATH}/UnpackArchiveComponent.cpp ${COMPPATH}/ArcadeInputComponent.cpp ${COMPPATH}/EmitVirtualKeyComponent.cpp ${COMPPATH}/RenderScissorComponent.cpp ${COMPPATH}/LogDisplayComponent.cpp ${COMPPATH}/TouchDragComponent.cpp
+
 
 
 ${PPATH}/L_Defination.cpp ${PPATH}/L_DroppingEffect.cpp ${PPATH}/L_EffectEmitter.cpp ${PPATH}/L_ExplosionEffect.cpp ${PPATH}/L_MotionController.cpp ${PPATH}/L_Particle.cpp 
@@ -105,23 +106,27 @@ ${APP}/GUI/PauseMenu.cpp ${APP}/GUI/PopUpMenu.cpp ${APP}/GUI/QuickTipMenu.cpp ${
 
         )
 
-# if you  need to add antoher C++ library, you can do it in the format below, then don't forget to add
+# if you  need to add another C++ library, you can do it in the format below, then don't forget to add
 # the lib name to the target_link_libraries command below as well
 #add_library(lib_crypto STATIC IMPORTED)
-#set_target_properties(lib_crypto PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/${SHARED}/android/optional_src/libs/libopenssl/${ANDROID_ABI}/libcrypto.a)
-
-add_library(lib_curl STATIC IMPORTED)
-set_target_properties(lib_curl PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/${SHARED}/android/optional_src/libs/libcurl_ssl/${ANDROID_ABI}/libcurl.a)
+#set_target_properties(lib_crypto PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/
 
 add_library(lib_openssl STATIC IMPORTED)
-set_target_properties(lib_openssl PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/${SHARED}/android/optional_src/libs/libopenssl/${ANDROID_ABI}/libssl.a)
+#set_target_properties(lib_openssl PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/${SHARED}/android/optional_src/libs/libopenssl/${ANDROID_ABI}/libssl.a)
+set_target_properties(lib_openssl PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/${SHARED}/android/optional_src/libs/libcurl-android/jni/build/openssl/${ANDROID_ABI}/lib/libssl.a)
+
+add_library(lib_curl STATIC IMPORTED)
+#set_target_properties(lib_curl PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/${SHARED}/android/optional_src/libs/libcurl_ssl/${ANDROID_ABI}/libcurl.a)
+set_target_properties(lib_curl PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/${SHARED}/android/optional_src/libs/libcurl-android/jni/build/curl/${ANDROID_ABI}/lib/libcurl.a)
+
+add_library(lib_crypto STATIC IMPORTED)
+#set_target_properties(lib_crypto PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/${SHARED}/android/optional_src/libs/libopenssl/${ANDROID_ABI}/libcrypto.a)
+set_target_properties(lib_crypto PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/${SHARED}/android/optional_src/libs/libcurl-android/jni/build/openssl/${ANDROID_ABI}/lib/libcrypto.a)
 
 #Change libfmod.so to libfmodL.so for the debug logging version, but don't forget to change "fmod" to System.loadLibrary("fmodL"); in Main.Java as well
 add_library(lib_fmod STATIC IMPORTED)
 set_target_properties(lib_fmod PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/${SHARED}/android/optional_src/libs/f/api/core/lib/${ANDROID_ABI}/libfmod.so)
 
-add_library(lib_crypto STATIC IMPORTED)
-set_target_properties(lib_crypto PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/${SHARED}/android/optional_src/libs/libopenssl/${ANDROID_ABI}/libcrypto.a)
 
 
 # Searches for a specified prebuilt library and stores the path as a
@@ -149,4 +154,4 @@ target_link_libraries( # Specifies the target library.
 
         # Links the target library to the log library
         # included in the NDK.
-        ${log-lib} lib_curl lib_openssl lib_crypto dl GLESv1_CM c z lib_fmod)
+        ${log-lib} lib_openssl lib_curl lib_crypto dl GLESv1_CM c z lib_fmod)

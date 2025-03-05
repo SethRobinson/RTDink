@@ -205,8 +205,8 @@ App::App()
 	m_bDidPostInit = false;
 	m_bHasDMODSupport = true;
 	//for mobiles
-	m_version = 2.06f;
-	m_versionString = "V2.06";
+	m_version = 2.08f;
+	m_versionString = "V2.08";
 	m_build = 1;
 	m_bCheatsEnabled = false;
 
@@ -376,11 +376,11 @@ bool App::Init()
 	string crap = pStringTemp;
 	free(pStringTemp); //emscripten thing, trust me
 
-	int n = crap.find_last_of('?');
+	int n = crap.find_first_of('?'); //? might be used later in the link, so let's do the first_of, although this could cause problems as well if a website URL used it?
 	if (n == string::npos)
 	{
 		//I thought maybe this would be useful later to use # instead of ? to prevent caching? Dunno, doesn't hurt to add though
-		n = crap.find_last_of('#');
+		//n = crap.find_first_of('#');
 	}
 	if (n != string::npos)
 	{
@@ -860,6 +860,11 @@ void App::Update()
 		AddKeyBinding(pComp, "DinkHDMenu", VIRTUAL_KEY_F1, VIRTUAL_KEY_F1);
 		AddKeyBinding(pComp, "ToggleLog", VIRTUAL_KEY_BACKTICK, VIRTUAL_KEY_BACKTICK, false);
 
+		if (GetEmulatedPlatformID() == PLATFORM_ID_HTML5)
+		{
+			AddKeyBinding(pComp, "HTML5Back", VIRTUAL_KEY_BACK, VIRTUAL_KEY_BACK, false);
+
+		}
 		if (GetVar("check_icade")->GetUINT32() == 0)
 		{
 			AddDroidKeyboardKeys();

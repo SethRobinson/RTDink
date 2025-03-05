@@ -69,6 +69,8 @@ RTDink.xcodeproj
 iOSIcons
 script/builds
 script/Old
-
+script/PSD
 AndroidGradle/app/libs/fmod.jar
+
+windows_vs2017/winRTDink/x64
 
