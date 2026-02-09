@@ -18196,6 +18196,7 @@ void DinkUnloadGraphicsCache()
 	DinkUnloadUnusedGraphicsByUsageTime(100); //unload anything not used in the last second
 
 #ifdef _WIN32
+	/*
 	if (GetKeyboard(18))
 	{
 		for (int i=1; i < C_MAX_SEQUENCES; i++)
@@ -18203,9 +18204,8 @@ void DinkUnloadGraphicsCache()
 			FreeSequence(i);
 		}
 	}
+	*/
 #endif
-
-	// Linux: No special keyboard handling needed here.
 }
 
 
