@@ -15,7 +15,7 @@ list(FILTER RTDINK_SOURCES EXCLUDE REGEX ".*Android.*|.*android.*|.*iOS.*|.*ios.
 # Includes
 include_directories(
     source
-    # Add more include dirs if needed
+    proton/shared
 )
 
 # Executable
