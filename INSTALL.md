@@ -18,7 +18,7 @@
 
 - **FMOD is a proprietary audio library and is NOT included in this repository.**
 - Download the FMOD Studio API for Linux from [FMOD Downloads](https://www.fmod.com/download).
-- Extract the archive (e.g., to `../fmodstudioapi20312linux` relative to your project root).
+- Extract the archive (e.g., to `../fmodstudio` relative to your project root).
 - You will need the `inc/` (headers) and `lib/` (libraries) directories from the FMOD package.
 - You do **not** need to set up pkg-config for FMOD; the build system will use the paths directly.
 - If you install FMOD somewhere non-standard, you may need to set `LD_LIBRARY_PATH` at runtime.
@@ -47,7 +47,7 @@
 4. **Run:**
    ```sh
    # If you get a 'libfmod.so not found' error, set LD_LIBRARY_PATH:
-   export LD_LIBRARY_PATH=../fmodstudioapi20312linux/api/core/lib/x86_64:$LD_LIBRARY_PATH
+   export LD_LIBRARY_PATH=../fmodstudio/api/core/lib/x86_64:$LD_LIBRARY_PATH
    ./RTDinkApp
    ```
 
@@ -57,7 +57,7 @@
   Make sure `libfmod.so` is in your library path.  
   You may need to set:
   ```sh
-  export LD_LIBRARY_PATH=../fmodstudioapi20312linux/api/core/lib/x86_64:$LD_LIBRARY_PATH
+  export LD_LIBRARY_PATH=../fmodstudio/api/core/lib/x86_64:$LD_LIBRARY_PATH
   ```
 
 - **Missing dependencies:**  

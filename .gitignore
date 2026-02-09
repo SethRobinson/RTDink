@@ -37,7 +37,7 @@ CMakeCache.txt
 cmake_install.cmake
 Makefile
 build/
-fmodstudioapi20312linux/
+fmodstudio/
 
 bin/Unused
 LegacyFiles

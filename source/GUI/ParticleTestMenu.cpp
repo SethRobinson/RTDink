@@ -1,6 +1,7 @@
 #include "ParticleTestMenu.h"
 #include "Entity/EntityUtils.h"
 #include "MainMenu.h"
+#include "PlatformPrecomp.h"
 #include "Component/ParticleTestComponent.h"
 
 void ParticleTestOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity sent from

@@ -9,7 +9,6 @@
 #include "Renderer/SoftSurface.h"
 #include "FileSystem/StreamingInstance.h"
 #include <time.h>
-#include "PlatformPrecomp.h
 
 const int C_DINK_MAX_ITEMS = 16;
 const int C_DINK_MAX_MAGICS = 8;

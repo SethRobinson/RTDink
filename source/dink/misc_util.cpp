@@ -313,3 +313,16 @@ done:
 
 	return(true);
 }
+
+#if defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(__APPLE__)
+void SyncPersistentData()
+{
+}
+#endif
+
+#if defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(__APPLE__)
+bool IsStillLoadingPersistentData()
+{
+    return false;
+}
+#endif

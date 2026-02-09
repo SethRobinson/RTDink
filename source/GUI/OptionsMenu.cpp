@@ -2,7 +2,7 @@
 #include "OptionsMenu.h"
 #include "Entity/EntityUtils.h"
 #include "App.h"
-#include "../dink/Dink.h"
+#include "../dink/dink.h"
 #include "Entity/SliderComponent.h"
 #include "MainMenu.h"
 #include "PauseMenu.h"
@@ -457,7 +457,7 @@ void OptionsMenuAddScrollContent(Entity *pParent)
 	if (GetEmulatedPlatformID() == PLATFORM_ID_IOS)
 	{
 		bool bUse60Beat = GetApp()->GetVar("check_60beat")->GetUINT32() != 0;
-		pEnt = CreateCheckbox(pBG, "check_60beat", "Use 60beat® GamePad", startX, y, bUse60Beat, FONT_SMALL, 1.0f);
+		pEnt = CreateCheckbox(pBG, "check_60beat", "Use 60beatÂ® GamePad", startX, y, bUse60Beat, FONT_SMALL, 1.0f);
 		pEnt->GetFunction("OnButtonSelected")->sig_function.connect(&OptionsMenuOnSelect);
 
 		//add the image to the right
