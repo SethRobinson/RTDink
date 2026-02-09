@@ -37,8 +37,7 @@ void EmulatedPointerComponent::OnAdd(Entity* pEnt)
 	
 	//set an image for our pointer
 	string pointerImage;
-	//pointerImage = "interface/center_ball.rttex";
-	pointerImage = "interface/emulatedPointer.rttex";
+	pointerImage = "interface/center_ball.rttex";
 	
 	m_pPointerOverlay = CreateOverlayEntity(GetParent(), "EmPointer", pointerImage, 0, 0, true);
 	SetAlignmentEntity(m_pPointerOverlay, ALIGNMENT_UPPER_LEFT);

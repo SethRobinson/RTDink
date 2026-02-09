@@ -58,7 +58,7 @@ proton/
 ```sh
 sudo apt update
 sudo apt install build-essential cmake libgl1-mesa-dev libx11-dev \
-  libpng-dev libjpeg-dev zlib1g-dev libbz2-dev libcurl4-openssl-dev libsdl2-dev
+  libpng-dev zlib1g-dev libbz2-dev libcurl4-openssl-dev libsdl2-dev
 ```
 
 - **FMOD Studio API** (proprietary, not included — see below)
@@ -86,12 +86,17 @@ git clone https://github.com/SethRobinson/proton.git
 # 2. Fix case-sensitivity issue (Linux only — Proton has a capital 'Addons' include)
 ln -s addons proton/shared/Addons
 
-# 3. Configure and build
+# 3. Apply patches to Proton SDK
+cd proton
+git apply ../patches/proton-rttex-png-fallback.patch
+cd ..
+
+# 4. Configure and build
 mkdir build && cd build
 cmake ..
 make -j$(nproc)
 
-# 4. Run
+# 5. Run
 export LD_LIBRARY_PATH=../fmodstudio/api/core/lib/x86_64:$LD_LIBRARY_PATH
 ./RTDinkApp
 ```

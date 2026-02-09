@@ -103,6 +103,10 @@ set(PROTON_SOURCES
     ${CMAKE_SOURCE_DIR}/proton/RTSimpleApp/source/Component/ParticleTestComponent.cpp
 )
 
+# Bundled libjpeg 6b sources (must use bundled version - headers expect v62, system libjpeg is v80)
+file(GLOB PROTON_JPEGLIB_SOURCES ${PROTON}/Irrlicht/source/Irrlicht/jpeglib/*.c)
+list(APPEND PROTON_SOURCES ${PROTON_JPEGLIB_SOURCES})
+
 # Proton linearparticle sources (needed by ParticleTestComponent)
 file(GLOB PROTON_LINEARPARTICLE_SOURCES ${PROTON}/Renderer/linearparticle/sources/*.cpp)
 list(APPEND PROTON_SOURCES ${PROTON_LINEARPARTICLE_SOURCES})
@@ -118,10 +122,19 @@ add_executable(RTDinkApp ${RTDINK_SOURCES} ${PROTON_SOURCES})
 # Libraries
 find_package(OpenGL REQUIRED)
 find_package(PNG REQUIRED)
-find_package(JPEG REQUIRED)
 find_package(ZLIB REQUIRED)
 
 find_package(BZip2 REQUIRED)
-set(EXTRA_LIBS pthread X11 ${OPENGL_LIBRARIES} ${PNG_LIBRARIES} ${JPEG_LIBRARIES} ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} curl SDL2)
+set(EXTRA_LIBS pthread X11 ${OPENGL_LIBRARIES} ${PNG_LIBRARIES} ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} curl SDL2)
 
 target_link_libraries(RTDinkApp ${EXTRA_LIBS} ${FMOD_LIB_DIR}/libfmod.so)
+
+# Create symlinks so the binary can find resources when run from build/
+add_custom_command(TARGET RTDinkApp POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E create_symlink
+        ${CMAKE_SOURCE_DIR}/media/interface
+        ${CMAKE_BINARY_DIR}/interface
+    COMMAND ${CMAKE_COMMAND} -E create_symlink
+        ${CMAKE_SOURCE_DIR}/media/audio
+        ${CMAKE_BINARY_DIR}/audio
+)

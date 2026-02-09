@@ -1,0 +1,32 @@
+diff --git a/shared/Renderer/Surface.cpp b/shared/Renderer/Surface.cpp
+index 162685b..c25be4d 100644
+--- a/shared/Renderer/Surface.cpp
++++ b/shared/Renderer/Surface.cpp
+@@ -614,12 +614,25 @@ bool Surface::LoadFile( string fName, bool bAddBasePath )
+ 	m_bAddBasePath = bAddBasePath;
+ 	
+ 	FileInstance f(fName, m_bAddBasePath);
+-	if (!f.IsLoaded()) 
++	if (!f.IsLoaded())
+ 	{
++		// Fallback: try .png if .rttex was not found
++		string ext = fName.substr(fName.find_last_of('.') + 1);
++		if (ext == "rttex")
++		{
++			string pngName = fName.substr(0, fName.find_last_of('.')) + ".png";
++			FileInstance fPng(pngName, m_bAddBasePath);
++			if (fPng.IsLoaded())
++			{
++				m_textureLoaded = pngName;
++				m_textureCreationMethod = TEXTURE_CREATION_FILE;
++				return LoadFileFromMemory(fPng.GetAsBytes(), fPng.GetSize());
++			}
++		}
+ 		LogMsg("Couldn't load surface %s", fName.c_str());
+ 		return false;
+ 	}
+-	
++
+ 	m_textureLoaded = fName;
+ 	m_textureCreationMethod = TEXTURE_CREATION_FILE;
+ 	return LoadFileFromMemory(f.GetAsBytes(), f.GetSize());
