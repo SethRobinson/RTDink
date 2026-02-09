@@ -1,11 +1,8 @@
-cmake_minimum_required(VERSION 3.10)
-project(RTDinkApp)
+# Set FMOD root (adjust path as needed)
+set(FMOD_ROOT_DIR "${CMAKE_SOURCE_DIR}/fmodstudioapi20312linux/api/core")
 
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# Add platform defines
-add_definitions(-DPLATFORM_LINUX -DRT_ENABLE_FMOD -DRT_USE_LIBCURL -DRT_PNG_SUPPORT -DRT_JPG_SUPPORT)
+include_directories(${FMOD_ROOT_DIR}/inc)
+link_directories(${FMOD_ROOT_DIR}/lib)
 
 # Source files
 file(GLOB_RECURSE RTDINK_SOURCES
@@ -25,15 +22,10 @@ include_directories(
 add_executable(RTDinkApp ${RTDINK_SOURCES})
 
 # Libraries
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(FMOD REQUIRED fmod)
-pkg_check_modules(CURL REQUIRED libcurl)
-
 find_package(OpenGL REQUIRED)
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
 
-# Link libraries
-set(EXTRA_LIBS pthread X11 ${OPENGL_LIBRARIES} ${PNG_LIBRARIES} ${JPEG_LIBRARIES} ${CURL_LIBRARIES} ${FMOD_LIBRARIES} z)
+set(EXTRA_LIBS pthread X11 ${OPENGL_LIBRARIES} ${PNG_LIBRARIES} ${JPEG_LIBRARIES} curl z)
 
-target_link_libraries(RTDinkApp ${EXTRA_LIBS})
+target_link_libraries(RTDinkApp ${EXTRA_LIBS} ${FMOD_ROOT_DIR}/lib/libfmod.so)

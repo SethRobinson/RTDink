@@ -12,15 +12,16 @@
   - zlib (`zlib1g-dev`)
   - pthreads (usually included)
   - libcurl (`libcurl4-openssl-dev`)
-  - FMOD Studio API (see below)
+  - **FMOD Studio API** (see below)
 
 ### FMOD Notes
 
-- **FMOD is a proprietary audio library.**
+- **FMOD is a proprietary audio library and is NOT included in this repository.**
 - Download the FMOD Studio API for Linux from [FMOD Downloads](https://www.fmod.com/download).
-- Extract the archive (e.g., to `~/fmodstudioapi20312linux`).
+- Extract the archive (e.g., to `../fmodstudioapi20312linux` relative to your project root).
 - You will need the `inc/` (headers) and `lib/` (libraries) directories from the FMOD package.
-- If you install FMOD somewhere non-standard, set `PKG_CONFIG_PATH` and/or `LD_LIBRARY_PATH` as needed.
+- You do **not** need to set up pkg-config for FMOD; the build system will use the paths directly.
+- If you install FMOD somewhere non-standard, you may need to set `LD_LIBRARY_PATH` at runtime.
 
 ## Build Steps
 
@@ -35,7 +36,7 @@
    ```sh
    mkdir build
    cd build
-   cmake .. -DFMOD_ROOT_DIR=/path/to/fmodstudioapi20312linux/api/core
+   cmake ..
    ```
 
 3. **Build:**
@@ -45,17 +46,18 @@
 
 4. **Run:**
    ```sh
+   # If you get a 'libfmod.so not found' error, set LD_LIBRARY_PATH:
+   export LD_LIBRARY_PATH=../fmodstudioapi20312linux/api/core/lib/x86_64:$LD_LIBRARY_PATH
    ./RTDinkApp
    ```
 
 ## Troubleshooting
 
 - **FMOD not found:**  
-  Make sure `libfmod.so` is in your library path and `pkg-config` can find it.  
+  Make sure `libfmod.so` is in your library path.  
   You may need to set:
   ```sh
-  export PKG_CONFIG_PATH=/path/to/fmodstudioapi20312linux/api/core/lib/pkgconfig:$PKG_CONFIG_PATH
-  export LD_LIBRARY_PATH=/path/to/fmodstudioapi20312linux/api/core/lib/x86_64:$LD_LIBRARY_PATH
+  export LD_LIBRARY_PATH=../fmodstudioapi20312linux/api/core/lib/x86_64:$LD_LIBRARY_PATH
   ```
 
 - **Missing dependencies:**  
