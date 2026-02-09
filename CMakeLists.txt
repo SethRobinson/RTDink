@@ -10,7 +10,7 @@ file(GLOB_RECURSE RTDINK_SOURCES
 )
 
 # Exclude platform-specific files (Android/iOS/Win)
-list(FILTER RTDINK_SOURCES EXCLUDE REGEX ".*Android.*|.*android.*|.*iOS.*|.*ios.*|.*Win.*|.*win.*|.*StackWalker.*")
+list(FILTER RTDINK_SOURCES EXCLUDE REGEX ".*Android.*|.*android.*|.*iOS.*|.*ios.*|.*Win.*|.*win.*")
 
 # Includes
 include_directories(
