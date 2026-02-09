@@ -9,6 +9,7 @@
 #include "Renderer/SoftSurface.h"
 #include "FileSystem/StreamingInstance.h"
 #include <time.h>
+#include "PlatformPrecomp.h
 
 const int C_DINK_MAX_ITEMS = 16;
 const int C_DINK_MAX_MAGICS = 8;
@@ -18194,6 +18195,15 @@ void DinkUnloadGraphicsCache()
 	
 	DinkUnloadUnusedGraphicsByUsageTime(100); //unload anything not used in the last second
 
+#ifdef _WIN32
+	if (GetKeyboard(18))
+	{
+		for (int i=1; i < C_MAX_SEQUENCES; i++)
+		{
+			FreeSequence(i);
+		}
+	}
+#endif
 
 	// Linux: No special keyboard handling needed here.
 }
