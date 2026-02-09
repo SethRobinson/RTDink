@@ -39,6 +39,7 @@ extern int g_winVideoScreenY;
 extern bool g_bUseBorderlessFullscreenOnWindows;
 void AddText(const char *tex, const char *filename);
 
+#if defined(_WIN32)
 #include "StackWalker/StackUtils.h"
 extern bool g_bIsFullScreen;
 #endif

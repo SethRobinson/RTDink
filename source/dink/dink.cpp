@@ -410,7 +410,7 @@ void clear_talk(void)
 #if !defined PLATFORM_LINUX && !defined PLATFORM_HTML5
 /* Case insensitive strncmp. Non-ISO, deprecated. */
 
-int strnicmp(const char *pStr1, const char *pStr2, size_t Count)
+int strncasecmp(const char *pStr1, const char *pStr2, size_t Count)
 {
 	char c1, c2;
 	int v;
@@ -438,7 +438,7 @@ bool compare(char *orig, char *comp)
 		return(false);
 	}
 	
-	if (strnicmp(orig,comp,len) == 0)
+	if (strncasecmp(orig,comp,len) == 0)
 	{
 		return(true);
 	}
@@ -3824,7 +3824,7 @@ bool locate_goto(char proc[50], int script)
 	{
 		strip_beginning_spaces(line);
 
-		if (strnicmp(line, proc, procLen) == 0)
+		if (strncasecmp(line, proc, procLen) == 0)
 		{
 			//if (debug_mode) LogMsg("Found goto : Line is %s, word is %s.", line, ev[1]);
 
@@ -18194,17 +18194,8 @@ void DinkUnloadGraphicsCache()
 	
 	DinkUnloadUnusedGraphicsByUsageTime(100); //unload anything not used in the last second
 
-#ifdef _WIN32
-	/*
-	if (GetKeyboard(18))
-	{
-		for (int i=1; i < C_MAX_SEQUENCES; i++)
-		{
-			FreeSequence(i);
-		}
-	}
-	*/
-#endif
+
+	// Linux: No special keyboard handling needed here.
 }
 
 

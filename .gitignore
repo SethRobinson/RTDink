@@ -23,6 +23,18 @@ windows_vs2017/x64/
 
 #copied from Seth's gitignore, sorry it's so messy
 
+# Refact AI files
+.refact/
+.refact*/*
+
+# CMake build files
+CMakeLists.txt.user
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+build/
+
 bin/Unused
 LegacyFiles
 MediaPack
