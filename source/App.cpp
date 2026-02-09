@@ -96,10 +96,12 @@ GamepadManager * GetGamepadManager() {return &g_gamepadManager;}
 
 #else
 
-#if defined RT_WEBOS || defined RTLINUX
+#if defined RT_WEBOS
 #include "Audio/AudioManagerSDL.h"
-  AudioManagerSDL g_audioManager; //sound in windows and WebOS
-  //AudioManager g_audioManager; //to disable sound
+  AudioManagerSDL g_audioManager; //sound in WebOS
+#elif defined RTLINUX
+#include "Audio/AudioManagerFMODStudio.h"
+  AudioManagerFMOD g_audioManager;
 #elif defined ANDROID_NDK
 //#include "Audio/AudioManagerAndroid.h"
 //  AudioManagerAndroid g_audioManager; //sound for android
