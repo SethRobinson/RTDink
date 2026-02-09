@@ -101,6 +101,28 @@ export LD_LIBRARY_PATH=../fmodstudio/api/core/lib/x86_64:$LD_LIBRARY_PATH
 ./RTDinkApp
 ```
 
+### Game Data
+
+RTDink requires the original **Dink Smallwood** game data to run. Place it in a `dink/` directory at the project root:
+
+```
+RTDink/
+  dink/           ← game data goes here
+    dink.ini
+    map.dat
+    dink.dat
+    hard.dat
+    story/
+    tiles/
+    graphics/
+    sound/
+  build/
+  source/
+  ...
+```
+
+You can obtain the game data from the free [Dink Smallwood HD](https://www.rtsoft.com/pages/dink.php) release. CMake will automatically symlink `dink/` into the build directory.
+
 ### Troubleshooting
 
 - **FMOD not found at runtime:**

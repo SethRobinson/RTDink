@@ -138,3 +138,12 @@ add_custom_command(TARGET RTDinkApp POST_BUILD
         ${CMAKE_SOURCE_DIR}/media/audio
         ${CMAKE_BINARY_DIR}/audio
 )
+
+# Symlink dink/ game data if it exists in the project root
+if(EXISTS ${CMAKE_SOURCE_DIR}/dink)
+    add_custom_command(TARGET RTDinkApp POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E create_symlink
+            ${CMAKE_SOURCE_DIR}/dink
+            ${CMAKE_BINARY_DIR}/dink
+    )
+endif()
