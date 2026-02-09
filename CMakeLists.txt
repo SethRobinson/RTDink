@@ -4,6 +4,11 @@ set(FMOD_ROOT_DIR "${CMAKE_SOURCE_DIR}/fmodstudioapi20312linux/api/core")
 include_directories(${FMOD_ROOT_DIR}/inc)
 link_directories(${FMOD_ROOT_DIR}/lib)
 
+# Platform defines for Proton SDK
+if(UNIX AND NOT APPLE)
+  add_definitions(-DRTLINUX -DPLATFORM_LINUX)
+endif()
+
 # Source files
 file(GLOB_RECURSE RTDINK_SOURCES
     source/*.cpp
