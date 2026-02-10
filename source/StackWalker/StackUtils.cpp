@@ -1,3 +1,4 @@
+#if defined(_WIN32)
 #include "StackUtils.h"
 
 #include <tchar.h>
@@ -125,3 +126,4 @@ void InitUnhandledExceptionFilter()
 		s_bUnhandledExeptionFilterSet = TRUE;
 	}
 }
+#endif // _WIN32
