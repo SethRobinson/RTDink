@@ -13,16 +13,27 @@ cd ..
 
 cd script
 
-:setup for VS 2017
-call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\"vcvars32.bat
+:setup for VS 2026 (v18)
+call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\"vcvars32.bat
 
 set C_TARGET_EXE=..\bin\dink.exe
 
 REM erase it so we know it got built right
-del %C_TARGET_EXE% > NUL
+del %C_TARGET_EXE% > NUL 2>NUL
 
 copy "..\bin\winRTDink_Release GL.exe" %C_TARGET_EXE%
 
+if not exist %C_TARGET_EXE% (
+    echo.
+    echo ****************************************************
+    echo ERROR: Failed to create %C_TARGET_EXE%
+    echo Make sure you have built "Release GL" x64 first!
+    echo Expected source: ..\bin\winRTDink_Release GL.exe
+    echo ****************************************************
+    echo.
+    pause
+    exit /b 1
+)
 
 set CL=/DRT_SCRIPT_BUILD
 :This would need to be "Release GL|x64" for the 64 bit build.  But I don't think we really need to do one yet
@@ -35,9 +46,6 @@ set CL=/DRT_SCRIPT_BUILD
 
 :for no rebuild
 :devenv ..\windows_vs2017\iphoneRTDink.sln /build "Release GL|Win32" 
-
-REM Make sure the file compiled ok
-if not exist %C_TARGET_EXE% %RT_PROTON_UTIL%\beeper.exe /p
 
 :Sign it with the RTsoft cert (optional)
 
