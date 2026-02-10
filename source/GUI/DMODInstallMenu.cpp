@@ -205,6 +205,8 @@ void DMODInstallSetProgressBar(float progress)
 
 void OnDMODUnpackStatusUpdate(VariantList *pVList)
 {
+	
+
 	int curBytes = pVList->Get(1).GetUINT32();
 	int totalBytes = pVList->Get(2).GetUINT32();
 
@@ -266,20 +268,30 @@ void OnDMODInstallHTTPFinish(VariantList *pVList)
 
 void OnDMODInstallStatusUpdate(VariantList *pVList)
 {
-	int curBytes = pVList->Get(1).GetUINT32();
-	int totalBytes = pVList->Get(2).GetUINT32();
 
-	if (totalBytes == 0)
+	static int _updateTimerMS = 0;
+
+	if (_updateTimerMS < GetTick())
 	{
-		DMODInstallUpdateStatus(NULL, "Network active, getting file data...");
-	} else
-	{
-		DMODInstallUpdateStatus(NULL, ""+toString(curBytes/1024)+"K/"+toString(totalBytes/1024)+"K");
+		_updateTimerMS = GetTick() + 150;
+
+		int curBytes = pVList->Get(1).GetUINT32();
+		int totalBytes = pVList->Get(2).GetUINT32();
+
+		if (totalBytes == 0)
+		{
+			DMODInstallUpdateStatus(NULL, "Network active, getting file data...");
+		}
+		else
+		{
+			DMODInstallUpdateStatus(NULL, "" + toString(curBytes / 1024) + "K/" + toString(totalBytes / 1024) + "K");
+		}
+
+		//also update the progress bar thingie
+		if (totalBytes == 0) totalBytes = 1; //avoid /1 error
+		DMODInstallSetProgressBar(float(curBytes) / float(totalBytes));
 	}
 
-	//also update the progress bar thingie
-	if (totalBytes == 0) totalBytes = 1; //avoid /1 error
-	DMODInstallSetProgressBar(float(curBytes)/float(totalBytes));
 }
 
 void InitNetStuff(VariantList *pVList)

@@ -341,6 +341,10 @@ void IDirectDrawSurface::UpdateShadowSurface()
 			{
 				LogMsg("Don't know how to deal with surface type %d", m_pSurf->GetSurfaceType());
 			}
+
+#ifdef _DEBUG
+			//LogMsg("Updating surface rect of %d, %d", m_pSurf->GetWidth(), m_pSurf->GetHeight());
+#endif
 			//m_pSurf->FillColor(glColorBytes(0,0,0,0));
 			if (m_pSurf->GetPixelData())
 			{

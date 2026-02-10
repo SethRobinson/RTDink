@@ -39,12 +39,12 @@ DinkGlobalsStatic g_dglos; //static data, made to write/read from disk
 int32 g_spriteRank[C_MAX_SPRITES_AT_ONCE];
 string g_lastSaveSlotFileSaved;
 
-int32 C_DINK_MEM_MAX_ALLOWED = (1024*1024*20);
-int32 C_DINK_TEX_MEM_MAX_ALLOWED = (1024*1024*60);
+int32 C_DINK_MEM_MAX_ALLOWED = (1024*1024*180);
+int32 C_DINK_TEX_MEM_MAX_ALLOWED = (1024*1024*180);
 
 //avoid texture thrashing with this
-int32 C_DINK_MEM_CACHE_MAX_ALLOWED_AFTER_A_DUMP = (1024*1024*8);
-int32 C_DINK_TEX_MEM_MAX_ALLOWED_AFTER_A_DUMP = (1024*1024*16);
+int32 C_DINK_MEM_CACHE_MAX_ALLOWED_AFTER_A_DUMP = (1024*1024*50);
+int32 C_DINK_TEX_MEM_MAX_ALLOWED_AFTER_A_DUMP = (1024*1024*50);
 uint32 g_DebugKeyTimer = 0;
 
 #ifdef _WIN32
@@ -283,24 +283,9 @@ void OneTimeDinkInit()
 		g_customSpriteMap[i] = NULL;
 	}
 
-	//defaults for memory class 1 device
-	C_DINK_MEM_MAX_ALLOWED = (1024*1024*10);
-	C_DINK_TEX_MEM_MAX_ALLOWED = (1024*1024*30);
-
-	//avoid texture thrashing with this
-	C_DINK_MEM_CACHE_MAX_ALLOWED_AFTER_A_DUMP = (1024*1024*8);
-	C_DINK_TEX_MEM_MAX_ALLOWED_AFTER_A_DUMP = (1024*1024*16);
-
+	/*
 	
-	if (GetDeviceMemoryClass() >= C_DEVICE_MEMORY_CLASS_2)
-	{
-		C_DINK_MEM_MAX_ALLOWED = (1024*1024*20);
-		C_DINK_TEX_MEM_MAX_ALLOWED = (1024*1024*60);
-
-		//avoid texture thrashing with this
-		C_DINK_MEM_CACHE_MAX_ALLOWED_AFTER_A_DUMP = (1024*1024*16);
-		C_DINK_TEX_MEM_MAX_ALLOWED_AFTER_A_DUMP = (1024*1024*32);
-	}
+	//No longer targeting weak devices.  May need something for the PSP though?
 
 	if (GetDeviceMemoryClass() >= C_DEVICE_MEMORY_CLASS_3)
 	{
@@ -312,17 +297,7 @@ void OneTimeDinkInit()
 		C_DINK_TEX_MEM_MAX_ALLOWED_AFTER_A_DUMP = (1024*1024*64);
 	}
 
-	if (GetDeviceMemoryClass() >= C_DEVICE_MEMORY_CLASS_4)
-	{
-		C_DINK_MEM_MAX_ALLOWED = (1024*1024*600);
-		C_DINK_TEX_MEM_MAX_ALLOWED = (1024*1024*1000);
-
-		//avoid texture thrashing with this
-		C_DINK_MEM_CACHE_MAX_ALLOWED_AFTER_A_DUMP = (1024*1024*128);
-		C_DINK_TEX_MEM_MAX_ALLOWED_AFTER_A_DUMP = (1024*1024*256);
-	}
-
-
+	*/
 	static bool bInitted = false;
 	g_dglos.g_DinkUpdateTimerMS = 0;
 	if (bInitted) return;
@@ -18317,7 +18292,8 @@ void ProcessGraphicGarbageCollection()
 	DinkUnloadUnusedGraphicsByUsageTime(1000*120);
 
 	*/
-	if (GetBaseApp()->GetMemUsed() > C_DINK_MEM_MAX_ALLOWED || GetBaseApp()->GetTexMemUsed() > C_DINK_TEX_MEM_MAX_ALLOWED)
+
+   if (GetBaseApp()->GetMemUsed() > C_DINK_MEM_MAX_ALLOWED || GetBaseApp()->GetTexMemUsed() > C_DINK_TEX_MEM_MAX_ALLOWED)
 	{
 		DinkUnloadUnusedGraphicsByUsageTime(1000*5);
 		GetAudioManager()->KillCachedSounds(false, true, 5000, 1,false);

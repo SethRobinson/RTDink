@@ -91,11 +91,6 @@
 		5D8483E30F923D51007338A2 /* Component.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D8483DD0F923D51007338A2 /* Component.cpp */; };
 		5D8483E40F923D51007338A2 /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D8483DF0F923D51007338A2 /* Entity.cpp */; };
 		5D8483E50F923D51007338A2 /* OverlayRenderComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D8483E10F923D51007338A2 /* OverlayRenderComponent.cpp */; };
-		5D8486DA0F92409B007338A2 /* connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D8486D50F92409B007338A2 /* connection.cpp */; };
-		5D8486DB0F92409B007338A2 /* named_slot_map.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D8486D60F92409B007338A2 /* named_slot_map.cpp */; };
-		5D8486DC0F92409B007338A2 /* signal_base.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D8486D70F92409B007338A2 /* signal_base.cpp */; };
-		5D8486DD0F92409B007338A2 /* slot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D8486D80F92409B007338A2 /* slot.cpp */; };
-		5D8486DE0F92409B007338A2 /* trackable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D8486D90F92409B007338A2 /* trackable.cpp */; };
 		5D8DC8DC0FBD667D0064BEF4 /* MathUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D8DC8DA0FBD667D0064BEF4 /* MathUtils.cpp */; };
 		5D8DC8EE0FBD713C0064BEF4 /* GameMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D8DC8EC0FBD713C0064BEF4 /* GameMenu.cpp */; };
 		5D96CD272813550600C7EFEB /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D96CD26281353DE00C7EFEB /* libz.tbd */; };
@@ -192,7 +187,6 @@
 		5D9F6EDD28A8EC6500D3F15D /* LoadMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6ECB28A8EC6500D3F15D /* LoadMenu.cpp */; };
 		5D9F6EDE28A8EC6500D3F15D /* LogMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6ECC28A8EC6500D3F15D /* LogMenu.cpp */; };
 		5D9F6EDF28A8EC6500D3F15D /* ExpiredMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6ECD28A8EC6500D3F15D /* ExpiredMenu.cpp */; };
-		5D9F6EE028A8EC6500D3F15D /* ParticleTestMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6ECF28A8EC6500D3F15D /* ParticleTestMenu.cpp */; };
 		5D9F6EF628A8ECD000D3F15D /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D9F6EE228A8ECCF00D3F15D /* Icon-72.png */; };
 		5D9F6EF728A8ECD000D3F15D /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D9F6EE328A8ECCF00D3F15D /* Icon-72@2x.png */; };
 		5D9F6EF828A8ECD000D3F15D /* Icon-Small-40@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D9F6EE428A8ECCF00D3F15D /* Icon-Small-40@3x.png */; };
@@ -218,47 +212,6 @@
 		5D9F6F1928A8ED4700D3F15D /* misc_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F1128A8ED4600D3F15D /* misc_util.cpp */; };
 		5D9F6F1A28A8ED4700D3F15D /* FFReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F1228A8ED4600D3F15D /* FFReader.cpp */; };
 		5D9F6F1B28A8ED4700D3F15D /* dink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F1428A8ED4600D3F15D /* dink.cpp */; };
-		5D9F6F2B28A8ED6000D3F15D /* CursorComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F1D28A8ED5E00D3F15D /* CursorComponent.cpp */; };
-		5D9F6F2C28A8ED6000D3F15D /* EmulatedPointerComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F2028A8ED5F00D3F15D /* EmulatedPointerComponent.cpp */; };
-		5D9F6F2D28A8ED6000D3F15D /* ParticleTestComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F2228A8ED5F00D3F15D /* ParticleTestComponent.cpp */; };
-		5D9F6F2E28A8ED6000D3F15D /* ActionButtonComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F2428A8ED5F00D3F15D /* ActionButtonComponent.cpp */; };
-		5D9F6F2F28A8ED6000D3F15D /* InventoryComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F2528A8ED5F00D3F15D /* InventoryComponent.cpp */; };
-		5D9F6F3028A8ED6000D3F15D /* DragControlComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F2728A8ED5F00D3F15D /* DragControlComponent.cpp */; };
-		5D9F6F3128A8ED6000D3F15D /* FPSControlComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F2A28A8ED6000D3F15D /* FPSControlComponent.cpp */; };
-		5D9F6F6C28A8EE2500D3F15D /* InputTextRenderComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F3228A8EE2000D3F15D /* InputTextRenderComponent.cpp */; };
-		5D9F6F6D28A8EE2500D3F15D /* TouchStripComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F3628A8EE2000D3F15D /* TouchStripComponent.cpp */; };
-		5D9F6F6E28A8EE2500D3F15D /* CustomInputComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F3828A8EE2000D3F15D /* CustomInputComponent.cpp */; };
-		5D9F6F6F28A8EE2500D3F15D /* TextBoxRenderComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F3A28A8EE2100D3F15D /* TextBoxRenderComponent.cpp */; };
-		5D9F6F7028A8EE2500D3F15D /* UnderlineRenderComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F3F28A8EE2100D3F15D /* UnderlineRenderComponent.cpp */; };
-		5D9F6F7128A8EE2500D3F15D /* FocusInputComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F4128A8EE2100D3F15D /* FocusInputComponent.cpp */; };
-		5D9F6F7228A8EE2500D3F15D /* FocusRenderComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F4228A8EE2100D3F15D /* FocusRenderComponent.cpp */; };
-		5D9F6F7328A8EE2500D3F15D /* SelectButtonWithCustomInputComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F4328A8EE2200D3F15D /* SelectButtonWithCustomInputComponent.cpp */; };
-		5D9F6F7428A8EE2500D3F15D /* ArcadeInputComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F4428A8EE2200D3F15D /* ArcadeInputComponent.cpp */; };
-		5D9F6F7528A8EE2500D3F15D /* OverlayRenderComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F4528A8EE2200D3F15D /* OverlayRenderComponent.cpp */; };
-		5D9F6F7628A8EE2500D3F15D /* TyperComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F4628A8EE2200D3F15D /* TyperComponent.cpp */; };
-		5D9F6F7728A8EE2500D3F15D /* SliderComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F4828A8EE2200D3F15D /* SliderComponent.cpp */; };
-		5D9F6F7828A8EE2500D3F15D /* EmitVirtualKeyComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F4928A8EE2200D3F15D /* EmitVirtualKeyComponent.cpp */; };
-		5D9F6F7928A8EE2500D3F15D /* UnpackArchiveComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F4C28A8EE2200D3F15D /* UnpackArchiveComponent.cpp */; };
-		5D9F6F7A28A8EE2500D3F15D /* RectRenderComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F4D28A8EE2300D3F15D /* RectRenderComponent.cpp */; };
-		5D9F6F7B28A8EE2600D3F15D /* TapSequenceDetectComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F4E28A8EE2300D3F15D /* TapSequenceDetectComponent.cpp */; };
-		5D9F6F7C28A8EE2600D3F15D /* Button2DComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F4F28A8EE2300D3F15D /* Button2DComponent.cpp */; };
-		5D9F6F7D28A8EE2600D3F15D /* InterpolateComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F5028A8EE2300D3F15D /* InterpolateComponent.cpp */; };
-		5D9F6F7E28A8EE2600D3F15D /* TouchHandlerComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F5328A8EE2300D3F15D /* TouchHandlerComponent.cpp */; };
-		5D9F6F7F28A8EE2600D3F15D /* FilterInputComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F5528A8EE2300D3F15D /* FilterInputComponent.cpp */; };
-		5D9F6F8028A8EE2600D3F15D /* ScrollBarRenderComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F5628A8EE2300D3F15D /* ScrollBarRenderComponent.cpp */; };
-		5D9F6F8128A8EE2600D3F15D /* RenderScissorComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F5728A8EE2300D3F15D /* RenderScissorComponent.cpp */; };
-		5D9F6F8228A8EE2600D3F15D /* HTTPComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F5C28A8EE2400D3F15D /* HTTPComponent.cpp */; };
-		5D9F6F8328A8EE2600D3F15D /* ProgressBarComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F6128A8EE2400D3F15D /* ProgressBarComponent.cpp */; };
-		5D9F6F8428A8EE2600D3F15D /* ScrollComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F6228A8EE2400D3F15D /* ScrollComponent.cpp */; };
-		5D9F6F8528A8EE2600D3F15D /* FocusUpdateComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F6428A8EE2500D3F15D /* FocusUpdateComponent.cpp */; };
-		5D9F6F8628A8EE2600D3F15D /* TextRenderComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F6728A8EE2500D3F15D /* TextRenderComponent.cpp */; };
-		5D9F6F8728A8EE2600D3F15D /* RenderClipComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F6A28A8EE2500D3F15D /* RenderClipComponent.cpp */; };
-		5D9F6F8828A8EE2600D3F15D /* TrailRenderComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F6B28A8EE2500D3F15D /* TrailRenderComponent.cpp */; };
-		5D9F6F9328A8EE3B00D3F15D /* MessageManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F8A28A8EE3A00D3F15D /* MessageManager.cpp */; };
-		5D9F6F9428A8EE3B00D3F15D /* GameTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F8B28A8EE3A00D3F15D /* GameTimer.cpp */; };
-		5D9F6F9528A8EE3B00D3F15D /* VariantDB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F8E28A8EE3A00D3F15D /* VariantDB.cpp */; };
-		5D9F6F9628A8EE3B00D3F15D /* Console.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F9028A8EE3A00D3F15D /* Console.cpp */; };
-		5D9F6F9728A8EE3B00D3F15D /* ResourceManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F9128A8EE3B00D3F15D /* ResourceManager.cpp */; };
 		5D9F6F9C28A8EE9D00D3F15D /* FileSystemZip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F9928A8EE9D00D3F15D /* FileSystemZip.cpp */; };
 		5D9F6F9D28A8EE9D00D3F15D /* StreamingInstanceZip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F9B28A8EE9D00D3F15D /* StreamingInstanceZip.cpp */; };
 		5D9F6FA628A8EEE900D3F15D /* blocksort.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6F9F28A8EEE800D3F15D /* blocksort.c */; };
@@ -292,6 +245,22 @@
 		5DE84C090FB9469A00DDAE64 /* angle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DE84C060FB9469A00DDAE64 /* angle.cpp */; };
 		5DE84C0A0FB9469A00DDAE64 /* vec2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DE84C070FB9469A00DDAE64 /* vec2.cpp */; };
 		5DE84C0B0FB9469A00DDAE64 /* vec3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DE84C080FB9469A00DDAE64 /* vec3.cpp */; };
+		5DF0F6A12D79B81F007C025C /* ActionButtonComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF0F6962D79B81F007C025C /* ActionButtonComponent.cpp */; };
+		5DF0F6A22D79B81F007C025C /* FPSControlComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF0F69E2D79B81F007C025C /* FPSControlComponent.cpp */; };
+		5DF0F6A32D79B81F007C025C /* DragControlComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF0F69A2D79B81F007C025C /* DragControlComponent.cpp */; };
+		5DF0F6A42D79B81F007C025C /* EmulatedPointerComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF0F69C2D79B81F007C025C /* EmulatedPointerComponent.cpp */; };
+		5DF0F6A52D79B81F007C025C /* InventoryComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF0F6A02D79B81F007C025C /* InventoryComponent.cpp */; };
+		5DF0F6A62D79B81F007C025C /* CursorComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF0F6982D79B81F007C025C /* CursorComponent.cpp */; };
+		5DF0F6BF2D79BF88007C025C /* LogDisplayComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF0F6AE2D79BF88007C025C /* LogDisplayComponent.cpp */; };
+		5DF0F6C02D79BF88007C025C /* TouchStripComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF0F6BA2D79BF88007C025C /* TouchStripComponent.cpp */; };
+		5DF0F6C12D79BF88007C025C /* TouchDragComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF0F6B22D79BF88007C025C /* TouchDragComponent.cpp */; };
+		5DF0F6C22D79BF88007C025C /* TrailRenderComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF0F6BC2D79BF88007C025C /* TrailRenderComponent.cpp */; };
+		5DF0F6C32D79BF88007C025C /* TouchDragMoveComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF0F6B62D79BF88007C025C /* TouchDragMoveComponent.cpp */; };
+		5DF0F6C42D79BF88007C025C /* TouchDragMarkupComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF0F6B42D79BF88007C025C /* TouchDragMarkupComponent.cpp */; };
+		5DF0F6C52D79BF88007C025C /* UnpackArchiveComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF0F6BE2D79BF88007C025C /* UnpackArchiveComponent.cpp */; };
+		5DF0F6C62D79BF88007C025C /* RenderClipComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF0F6B02D79BF88007C025C /* RenderClipComponent.cpp */; };
+		5DF0F6C72D79BF88007C025C /* TouchHandlerArcadeComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF0F6B82D79BF88007C025C /* TouchHandlerArcadeComponent.cpp */; };
+		5DF0F6CA2D79C03B007C025C /* ArcadeInputComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF0F6C92D79C03B007C025C /* ArcadeInputComponent.cpp */; };
 		5DF341501155BBEE00D6202B /* PlatformSetup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF3414F1155BBEE00D6202B /* PlatformSetup.cpp */; };
 		5DF341841155C1DD00D6202B /* SoftSurface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF341831155C1DD00D6202B /* SoftSurface.cpp */; };
 		5DFCCFC3115A54B700757A9A /* PlatformPrecomp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCCFC1115A54B700757A9A /* PlatformPrecomp.cpp */; };
@@ -478,11 +447,6 @@
 		5D8483E00F923D51007338A2 /* Entity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Entity.h; path = Entity/Entity.h; sourceTree = "<group>"; };
 		5D8483E10F923D51007338A2 /* OverlayRenderComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OverlayRenderComponent.cpp; path = Entity/OverlayRenderComponent.cpp; sourceTree = "<group>"; };
 		5D8483E20F923D51007338A2 /* OverlayRenderComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OverlayRenderComponent.h; path = Entity/OverlayRenderComponent.h; sourceTree = "<group>"; };
-		5D8486D50F92409B007338A2 /* connection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = connection.cpp; path = util/boost/libs/signals/src/connection.cpp; sourceTree = "<group>"; };
-		5D8486D60F92409B007338A2 /* named_slot_map.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = named_slot_map.cpp; path = util/boost/libs/signals/src/named_slot_map.cpp; sourceTree = "<group>"; };
-		5D8486D70F92409B007338A2 /* signal_base.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = signal_base.cpp; path = util/boost/libs/signals/src/signal_base.cpp; sourceTree = "<group>"; };
-		5D8486D80F92409B007338A2 /* slot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = slot.cpp; path = util/boost/libs/signals/src/slot.cpp; sourceTree = "<group>"; };
-		5D8486D90F92409B007338A2 /* trackable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = trackable.cpp; path = util/boost/libs/signals/src/trackable.cpp; sourceTree = "<group>"; };
 		5D8DC8DA0FBD667D0064BEF4 /* MathUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MathUtils.cpp; path = util/MathUtils.cpp; sourceTree = "<group>"; };
 		5D8DC8DB0FBD667D0064BEF4 /* MathUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MathUtils.h; path = util/MathUtils.h; sourceTree = "<group>"; };
 		5D8DC8EC0FBD713C0064BEF4 /* GameMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GameMenu.cpp; path = source/GUI/GameMenu.cpp; sourceTree = "<group>"; };
@@ -592,7 +556,6 @@
 		5D9F6EBC28A8EC6300D3F15D /* PopUpMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PopUpMenu.h; path = source/GUI/PopUpMenu.h; sourceTree = "<group>"; };
 		5D9F6EBD28A8EC6400D3F15D /* ReadTextMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ReadTextMenu.cpp; path = source/GUI/ReadTextMenu.cpp; sourceTree = "<group>"; };
 		5D9F6EBE28A8EC6400D3F15D /* GameMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameMenu.h; path = source/GUI/GameMenu.h; sourceTree = "<group>"; };
-		5D9F6EBF28A8EC6400D3F15D /* ParticleTestMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParticleTestMenu.h; path = source/GUI/ParticleTestMenu.h; sourceTree = "<group>"; };
 		5D9F6EC028A8EC6400D3F15D /* QuickTipMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QuickTipMenu.h; path = source/GUI/QuickTipMenu.h; sourceTree = "<group>"; };
 		5D9F6EC128A8EC6400D3F15D /* EnterURLMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EnterURLMenu.cpp; path = source/GUI/EnterURLMenu.cpp; sourceTree = "<group>"; };
 		5D9F6EC228A8EC6400D3F15D /* MainMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MainMenu.cpp; path = source/GUI/MainMenu.cpp; sourceTree = "<group>"; };
@@ -608,7 +571,6 @@
 		5D9F6ECC28A8EC6500D3F15D /* LogMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LogMenu.cpp; path = source/GUI/LogMenu.cpp; sourceTree = "<group>"; };
 		5D9F6ECD28A8EC6500D3F15D /* ExpiredMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ExpiredMenu.cpp; path = source/GUI/ExpiredMenu.cpp; sourceTree = "<group>"; };
 		5D9F6ECE28A8EC6500D3F15D /* DebugMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebugMenu.h; path = source/GUI/DebugMenu.h; sourceTree = "<group>"; };
-		5D9F6ECF28A8EC6500D3F15D /* ParticleTestMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ParticleTestMenu.cpp; path = source/GUI/ParticleTestMenu.cpp; sourceTree = "<group>"; };
 		5D9F6EE228A8ECCF00D3F15D /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "iOSIcons/Icon-72.png"; sourceTree = "<group>"; };
 		5D9F6EE328A8ECCF00D3F15D /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "iOSIcons/Icon-72@2x.png"; sourceTree = "<group>"; };
 		5D9F6EE428A8ECCF00D3F15D /* Icon-Small-40@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-40@3x.png"; path = "iOSIcons/Icon-Small-40@3x.png"; sourceTree = "<group>"; };
@@ -641,88 +603,6 @@
 		5D9F6F1428A8ED4600D3F15D /* dink.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = dink.cpp; path = source/dink/dink.cpp; sourceTree = "<group>"; };
 		5D9F6F1528A8ED4600D3F15D /* misc_util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = misc_util.h; path = source/dink/misc_util.h; sourceTree = "<group>"; };
 		5D9F6F1628A8ED4600D3F15D /* dink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dink.h; path = source/dink/dink.h; sourceTree = "<group>"; };
-		5D9F6F1D28A8ED5E00D3F15D /* CursorComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CursorComponent.cpp; path = source/Component/CursorComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F1E28A8ED5F00D3F15D /* InventoryComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InventoryComponent.h; path = source/Component/InventoryComponent.h; sourceTree = "<group>"; };
-		5D9F6F1F28A8ED5F00D3F15D /* DragControlComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DragControlComponent.h; path = source/Component/DragControlComponent.h; sourceTree = "<group>"; };
-		5D9F6F2028A8ED5F00D3F15D /* EmulatedPointerComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EmulatedPointerComponent.cpp; path = source/Component/EmulatedPointerComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F2128A8ED5F00D3F15D /* ParticleTestComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParticleTestComponent.h; path = source/Component/ParticleTestComponent.h; sourceTree = "<group>"; };
-		5D9F6F2228A8ED5F00D3F15D /* ParticleTestComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ParticleTestComponent.cpp; path = source/Component/ParticleTestComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F2328A8ED5F00D3F15D /* EmulatedPointerComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EmulatedPointerComponent.h; path = source/Component/EmulatedPointerComponent.h; sourceTree = "<group>"; };
-		5D9F6F2428A8ED5F00D3F15D /* ActionButtonComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ActionButtonComponent.cpp; path = source/Component/ActionButtonComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F2528A8ED5F00D3F15D /* InventoryComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = InventoryComponent.cpp; path = source/Component/InventoryComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F2628A8ED5F00D3F15D /* ActionButtonComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ActionButtonComponent.h; path = source/Component/ActionButtonComponent.h; sourceTree = "<group>"; };
-		5D9F6F2728A8ED5F00D3F15D /* DragControlComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DragControlComponent.cpp; path = source/Component/DragControlComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F2828A8ED5F00D3F15D /* FPSControlComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FPSControlComponent.h; path = source/Component/FPSControlComponent.h; sourceTree = "<group>"; };
-		5D9F6F2928A8ED6000D3F15D /* CursorComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CursorComponent.h; path = source/Component/CursorComponent.h; sourceTree = "<group>"; };
-		5D9F6F2A28A8ED6000D3F15D /* FPSControlComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FPSControlComponent.cpp; path = source/Component/FPSControlComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F3228A8EE2000D3F15D /* InputTextRenderComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = InputTextRenderComponent.cpp; path = ../shared/Entity/InputTextRenderComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F3328A8EE2000D3F15D /* SelectButtonWithCustomInputComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SelectButtonWithCustomInputComponent.h; path = ../shared/Entity/SelectButtonWithCustomInputComponent.h; sourceTree = "<group>"; };
-		5D9F6F3428A8EE2000D3F15D /* InputTextRenderComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InputTextRenderComponent.h; path = ../shared/Entity/InputTextRenderComponent.h; sourceTree = "<group>"; };
-		5D9F6F3528A8EE2000D3F15D /* SliderComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SliderComponent.h; path = ../shared/Entity/SliderComponent.h; sourceTree = "<group>"; };
-		5D9F6F3628A8EE2000D3F15D /* TouchStripComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TouchStripComponent.cpp; path = ../shared/Entity/TouchStripComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F3728A8EE2000D3F15D /* TyperComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TyperComponent.h; path = ../shared/Entity/TyperComponent.h; sourceTree = "<group>"; };
-		5D9F6F3828A8EE2000D3F15D /* CustomInputComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CustomInputComponent.cpp; path = ../shared/Entity/CustomInputComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F3928A8EE2000D3F15D /* FocusInputComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FocusInputComponent.h; path = ../shared/Entity/FocusInputComponent.h; sourceTree = "<group>"; };
-		5D9F6F3A28A8EE2100D3F15D /* TextBoxRenderComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TextBoxRenderComponent.cpp; path = ../shared/Entity/TextBoxRenderComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F3B28A8EE2100D3F15D /* TextRenderComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextRenderComponent.h; path = ../shared/Entity/TextRenderComponent.h; sourceTree = "<group>"; };
-		5D9F6F3C28A8EE2100D3F15D /* InterpolateComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InterpolateComponent.h; path = ../shared/Entity/InterpolateComponent.h; sourceTree = "<group>"; };
-		5D9F6F3D28A8EE2100D3F15D /* EmitVirtualKeyComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EmitVirtualKeyComponent.h; path = ../shared/Entity/EmitVirtualKeyComponent.h; sourceTree = "<group>"; };
-		5D9F6F3E28A8EE2100D3F15D /* Button2DComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Button2DComponent.h; path = ../shared/Entity/Button2DComponent.h; sourceTree = "<group>"; };
-		5D9F6F3F28A8EE2100D3F15D /* UnderlineRenderComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UnderlineRenderComponent.cpp; path = ../shared/Entity/UnderlineRenderComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F4028A8EE2100D3F15D /* UnderlineRenderComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnderlineRenderComponent.h; path = ../shared/Entity/UnderlineRenderComponent.h; sourceTree = "<group>"; };
-		5D9F6F4128A8EE2100D3F15D /* FocusInputComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FocusInputComponent.cpp; path = ../shared/Entity/FocusInputComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F4228A8EE2100D3F15D /* FocusRenderComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FocusRenderComponent.cpp; path = ../shared/Entity/FocusRenderComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F4328A8EE2200D3F15D /* SelectButtonWithCustomInputComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SelectButtonWithCustomInputComponent.cpp; path = ../shared/Entity/SelectButtonWithCustomInputComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F4428A8EE2200D3F15D /* ArcadeInputComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ArcadeInputComponent.cpp; path = ../shared/Entity/ArcadeInputComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F4528A8EE2200D3F15D /* OverlayRenderComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OverlayRenderComponent.cpp; path = ../shared/Entity/OverlayRenderComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F4628A8EE2200D3F15D /* TyperComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TyperComponent.cpp; path = ../shared/Entity/TyperComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F4728A8EE2200D3F15D /* ProgressBarComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProgressBarComponent.h; path = ../shared/Entity/ProgressBarComponent.h; sourceTree = "<group>"; };
-		5D9F6F4828A8EE2200D3F15D /* SliderComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SliderComponent.cpp; path = ../shared/Entity/SliderComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F4928A8EE2200D3F15D /* EmitVirtualKeyComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EmitVirtualKeyComponent.cpp; path = ../shared/Entity/EmitVirtualKeyComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F4A28A8EE2200D3F15D /* ScrollBarRenderComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScrollBarRenderComponent.h; path = ../shared/Entity/ScrollBarRenderComponent.h; sourceTree = "<group>"; };
-		5D9F6F4B28A8EE2200D3F15D /* TouchHandlerComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TouchHandlerComponent.h; path = ../shared/Entity/TouchHandlerComponent.h; sourceTree = "<group>"; };
-		5D9F6F4C28A8EE2200D3F15D /* UnpackArchiveComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UnpackArchiveComponent.cpp; path = ../shared/Entity/UnpackArchiveComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F4D28A8EE2300D3F15D /* RectRenderComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RectRenderComponent.cpp; path = ../shared/Entity/RectRenderComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F4E28A8EE2300D3F15D /* TapSequenceDetectComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TapSequenceDetectComponent.cpp; path = ../shared/Entity/TapSequenceDetectComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F4F28A8EE2300D3F15D /* Button2DComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Button2DComponent.cpp; path = ../shared/Entity/Button2DComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F5028A8EE2300D3F15D /* InterpolateComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = InterpolateComponent.cpp; path = ../shared/Entity/InterpolateComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F5128A8EE2300D3F15D /* RenderClipComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderClipComponent.h; path = ../shared/Entity/RenderClipComponent.h; sourceTree = "<group>"; };
-		5D9F6F5228A8EE2300D3F15D /* ArcadeInputComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ArcadeInputComponent.h; path = ../shared/Entity/ArcadeInputComponent.h; sourceTree = "<group>"; };
-		5D9F6F5328A8EE2300D3F15D /* TouchHandlerComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TouchHandlerComponent.cpp; path = ../shared/Entity/TouchHandlerComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F5428A8EE2300D3F15D /* TrailRenderComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TrailRenderComponent.h; path = ../shared/Entity/TrailRenderComponent.h; sourceTree = "<group>"; };
-		5D9F6F5528A8EE2300D3F15D /* FilterInputComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FilterInputComponent.cpp; path = ../shared/Entity/FilterInputComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F5628A8EE2300D3F15D /* ScrollBarRenderComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ScrollBarRenderComponent.cpp; path = ../shared/Entity/ScrollBarRenderComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F5728A8EE2300D3F15D /* RenderScissorComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderScissorComponent.cpp; path = ../shared/Entity/RenderScissorComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F5828A8EE2400D3F15D /* ScrollComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScrollComponent.h; path = ../shared/Entity/ScrollComponent.h; sourceTree = "<group>"; };
-		5D9F6F5928A8EE2400D3F15D /* RenderScissorComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderScissorComponent.h; path = ../shared/Entity/RenderScissorComponent.h; sourceTree = "<group>"; };
-		5D9F6F5A28A8EE2400D3F15D /* RectRenderComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RectRenderComponent.h; path = ../shared/Entity/RectRenderComponent.h; sourceTree = "<group>"; };
-		5D9F6F5B28A8EE2400D3F15D /* HTTPComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HTTPComponent.h; path = ../shared/Entity/HTTPComponent.h; sourceTree = "<group>"; };
-		5D9F6F5C28A8EE2400D3F15D /* HTTPComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HTTPComponent.cpp; path = ../shared/Entity/HTTPComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F5D28A8EE2400D3F15D /* TapSequenceDetectComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TapSequenceDetectComponent.h; path = ../shared/Entity/TapSequenceDetectComponent.h; sourceTree = "<group>"; };
-		5D9F6F5E28A8EE2400D3F15D /* FocusRenderComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FocusRenderComponent.h; path = ../shared/Entity/FocusRenderComponent.h; sourceTree = "<group>"; };
-		5D9F6F5F28A8EE2400D3F15D /* TouchStripComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TouchStripComponent.h; path = ../shared/Entity/TouchStripComponent.h; sourceTree = "<group>"; };
-		5D9F6F6028A8EE2400D3F15D /* TextBoxRenderComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextBoxRenderComponent.h; path = ../shared/Entity/TextBoxRenderComponent.h; sourceTree = "<group>"; };
-		5D9F6F6128A8EE2400D3F15D /* ProgressBarComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ProgressBarComponent.cpp; path = ../shared/Entity/ProgressBarComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F6228A8EE2400D3F15D /* ScrollComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ScrollComponent.cpp; path = ../shared/Entity/ScrollComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F6328A8EE2500D3F15D /* CustomInputComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CustomInputComponent.h; path = ../shared/Entity/CustomInputComponent.h; sourceTree = "<group>"; };
-		5D9F6F6428A8EE2500D3F15D /* FocusUpdateComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FocusUpdateComponent.cpp; path = ../shared/Entity/FocusUpdateComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F6528A8EE2500D3F15D /* OverlayRenderComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OverlayRenderComponent.h; path = ../shared/Entity/OverlayRenderComponent.h; sourceTree = "<group>"; };
-		5D9F6F6628A8EE2500D3F15D /* UnpackArchiveComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnpackArchiveComponent.h; path = ../shared/Entity/UnpackArchiveComponent.h; sourceTree = "<group>"; };
-		5D9F6F6728A8EE2500D3F15D /* TextRenderComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TextRenderComponent.cpp; path = ../shared/Entity/TextRenderComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F6828A8EE2500D3F15D /* FocusUpdateComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FocusUpdateComponent.h; path = ../shared/Entity/FocusUpdateComponent.h; sourceTree = "<group>"; };
-		5D9F6F6928A8EE2500D3F15D /* FilterInputComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterInputComponent.h; path = ../shared/Entity/FilterInputComponent.h; sourceTree = "<group>"; };
-		5D9F6F6A28A8EE2500D3F15D /* RenderClipComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderClipComponent.cpp; path = ../shared/Entity/RenderClipComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F6B28A8EE2500D3F15D /* TrailRenderComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TrailRenderComponent.cpp; path = ../shared/Entity/TrailRenderComponent.cpp; sourceTree = "<group>"; };
-		5D9F6F8928A8EE3A00D3F15D /* VariantDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VariantDB.h; path = ../shared/Manager/VariantDB.h; sourceTree = "<group>"; };
-		5D9F6F8A28A8EE3A00D3F15D /* MessageManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MessageManager.cpp; path = ../shared/Manager/MessageManager.cpp; sourceTree = "<group>"; };
-		5D9F6F8B28A8EE3A00D3F15D /* GameTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GameTimer.cpp; path = ../shared/Manager/GameTimer.cpp; sourceTree = "<group>"; };
-		5D9F6F8C28A8EE3A00D3F15D /* GameTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameTimer.h; path = ../shared/Manager/GameTimer.h; sourceTree = "<group>"; };
-		5D9F6F8D28A8EE3A00D3F15D /* MessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageManager.h; path = ../shared/Manager/MessageManager.h; sourceTree = "<group>"; };
-		5D9F6F8E28A8EE3A00D3F15D /* VariantDB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VariantDB.cpp; path = ../shared/Manager/VariantDB.cpp; sourceTree = "<group>"; };
-		5D9F6F8F28A8EE3A00D3F15D /* Console.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Console.h; path = ../shared/Manager/Console.h; sourceTree = "<group>"; };
-		5D9F6F9028A8EE3A00D3F15D /* Console.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Console.cpp; path = ../shared/Manager/Console.cpp; sourceTree = "<group>"; };
-		5D9F6F9128A8EE3B00D3F15D /* ResourceManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ResourceManager.cpp; path = ../shared/Manager/ResourceManager.cpp; sourceTree = "<group>"; };
-		5D9F6F9228A8EE3B00D3F15D /* ResourceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResourceManager.h; path = ../shared/Manager/ResourceManager.h; sourceTree = "<group>"; };
 		5D9F6F9828A8EE9C00D3F15D /* FileSystemZip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileSystemZip.h; path = FileSystem/FileSystemZip.h; sourceTree = "<group>"; };
 		5D9F6F9928A8EE9D00D3F15D /* FileSystemZip.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FileSystemZip.cpp; path = FileSystem/FileSystemZip.cpp; sourceTree = "<group>"; };
 		5D9F6F9A28A8EE9D00D3F15D /* StreamingInstanceZip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StreamingInstanceZip.h; path = FileSystem/StreamingInstanceZip.h; sourceTree = "<group>"; };
@@ -776,6 +656,38 @@
 		5DE84C060FB9469A00DDAE64 /* angle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = angle.cpp; path = "ClanLib-2.0/Sources/Core/Math/angle.cpp"; sourceTree = "<group>"; };
 		5DE84C070FB9469A00DDAE64 /* vec2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vec2.cpp; path = "ClanLib-2.0/Sources/Core/Math/vec2.cpp"; sourceTree = "<group>"; };
 		5DE84C080FB9469A00DDAE64 /* vec3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vec3.cpp; path = "ClanLib-2.0/Sources/Core/Math/vec3.cpp"; sourceTree = "<group>"; };
+		5DF0F6952D79B81F007C025C /* ActionButtonComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ActionButtonComponent.h; path = source/Component/ActionButtonComponent.h; sourceTree = "<group>"; };
+		5DF0F6962D79B81F007C025C /* ActionButtonComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ActionButtonComponent.cpp; path = source/Component/ActionButtonComponent.cpp; sourceTree = "<group>"; };
+		5DF0F6972D79B81F007C025C /* CursorComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CursorComponent.h; path = source/Component/CursorComponent.h; sourceTree = "<group>"; };
+		5DF0F6982D79B81F007C025C /* CursorComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CursorComponent.cpp; path = source/Component/CursorComponent.cpp; sourceTree = "<group>"; };
+		5DF0F6992D79B81F007C025C /* DragControlComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DragControlComponent.h; path = source/Component/DragControlComponent.h; sourceTree = "<group>"; };
+		5DF0F69A2D79B81F007C025C /* DragControlComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DragControlComponent.cpp; path = source/Component/DragControlComponent.cpp; sourceTree = "<group>"; };
+		5DF0F69B2D79B81F007C025C /* EmulatedPointerComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EmulatedPointerComponent.h; path = source/Component/EmulatedPointerComponent.h; sourceTree = "<group>"; };
+		5DF0F69C2D79B81F007C025C /* EmulatedPointerComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = EmulatedPointerComponent.cpp; path = source/Component/EmulatedPointerComponent.cpp; sourceTree = "<group>"; };
+		5DF0F69D2D79B81F007C025C /* FPSControlComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FPSControlComponent.h; path = source/Component/FPSControlComponent.h; sourceTree = "<group>"; };
+		5DF0F69E2D79B81F007C025C /* FPSControlComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FPSControlComponent.cpp; path = source/Component/FPSControlComponent.cpp; sourceTree = "<group>"; };
+		5DF0F69F2D79B81F007C025C /* InventoryComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InventoryComponent.h; path = source/Component/InventoryComponent.h; sourceTree = "<group>"; };
+		5DF0F6A02D79B81F007C025C /* InventoryComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InventoryComponent.cpp; path = source/Component/InventoryComponent.cpp; sourceTree = "<group>"; };
+		5DF0F6AD2D79BF88007C025C /* LogDisplayComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LogDisplayComponent.h; path = Entity/LogDisplayComponent.h; sourceTree = "<group>"; };
+		5DF0F6AE2D79BF88007C025C /* LogDisplayComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = LogDisplayComponent.cpp; path = Entity/LogDisplayComponent.cpp; sourceTree = "<group>"; };
+		5DF0F6AF2D79BF88007C025C /* RenderClipComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RenderClipComponent.h; path = Entity/RenderClipComponent.h; sourceTree = "<group>"; };
+		5DF0F6B02D79BF88007C025C /* RenderClipComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RenderClipComponent.cpp; path = Entity/RenderClipComponent.cpp; sourceTree = "<group>"; };
+		5DF0F6B12D79BF88007C025C /* TouchDragComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TouchDragComponent.h; path = Entity/TouchDragComponent.h; sourceTree = "<group>"; };
+		5DF0F6B22D79BF88007C025C /* TouchDragComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TouchDragComponent.cpp; path = Entity/TouchDragComponent.cpp; sourceTree = "<group>"; };
+		5DF0F6B32D79BF88007C025C /* TouchDragMarkupComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TouchDragMarkupComponent.h; path = Entity/TouchDragMarkupComponent.h; sourceTree = "<group>"; };
+		5DF0F6B42D79BF88007C025C /* TouchDragMarkupComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TouchDragMarkupComponent.cpp; path = Entity/TouchDragMarkupComponent.cpp; sourceTree = "<group>"; };
+		5DF0F6B52D79BF88007C025C /* TouchDragMoveComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TouchDragMoveComponent.h; path = Entity/TouchDragMoveComponent.h; sourceTree = "<group>"; };
+		5DF0F6B62D79BF88007C025C /* TouchDragMoveComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TouchDragMoveComponent.cpp; path = Entity/TouchDragMoveComponent.cpp; sourceTree = "<group>"; };
+		5DF0F6B72D79BF88007C025C /* TouchHandlerArcadeComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TouchHandlerArcadeComponent.h; path = Entity/TouchHandlerArcadeComponent.h; sourceTree = "<group>"; };
+		5DF0F6B82D79BF88007C025C /* TouchHandlerArcadeComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TouchHandlerArcadeComponent.cpp; path = Entity/TouchHandlerArcadeComponent.cpp; sourceTree = "<group>"; };
+		5DF0F6B92D79BF88007C025C /* TouchStripComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TouchStripComponent.h; path = Entity/TouchStripComponent.h; sourceTree = "<group>"; };
+		5DF0F6BA2D79BF88007C025C /* TouchStripComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TouchStripComponent.cpp; path = Entity/TouchStripComponent.cpp; sourceTree = "<group>"; };
+		5DF0F6BB2D79BF88007C025C /* TrailRenderComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TrailRenderComponent.h; path = Entity/TrailRenderComponent.h; sourceTree = "<group>"; };
+		5DF0F6BC2D79BF88007C025C /* TrailRenderComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TrailRenderComponent.cpp; path = Entity/TrailRenderComponent.cpp; sourceTree = "<group>"; };
+		5DF0F6BD2D79BF88007C025C /* UnpackArchiveComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UnpackArchiveComponent.h; path = Entity/UnpackArchiveComponent.h; sourceTree = "<group>"; };
+		5DF0F6BE2D79BF88007C025C /* UnpackArchiveComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = UnpackArchiveComponent.cpp; path = Entity/UnpackArchiveComponent.cpp; sourceTree = "<group>"; };
+		5DF0F6C82D79C03B007C025C /* ArcadeInputComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ArcadeInputComponent.h; path = Entity/ArcadeInputComponent.h; sourceTree = "<group>"; };
+		5DF0F6C92D79C03B007C025C /* ArcadeInputComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ArcadeInputComponent.cpp; path = Entity/ArcadeInputComponent.cpp; sourceTree = "<group>"; };
 		5DF3414F1155BBEE00D6202B /* PlatformSetup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PlatformSetup.cpp; path = ../shared/PlatformSetup.cpp; sourceTree = SOURCE_ROOT; };
 		5DF341831155C1DD00D6202B /* SoftSurface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SoftSurface.cpp; path = ../shared/Renderer/SoftSurface.cpp; sourceTree = SOURCE_ROOT; };
 		5DFCCFC1115A54B700757A9A /* PlatformPrecomp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlatformPrecomp.cpp; sourceTree = "<group>"; };
@@ -844,7 +756,6 @@
 			children = (
 				5D9F6F1C28A8ED5200D3F15D /* Component */,
 				5D9F6F0A28A8ED2A00D3F15D /* Dink */,
-				5DBB89370FCBE78900BD5EFD /* Managers */,
 				5D8DC8F20FBD71500064BEF4 /* Entity */,
 				5D4760860FBB1D04008400E3 /* GUI */,
 				5DC692B10E94852F00E5AC44 /* App.cpp */,
@@ -970,8 +881,6 @@
 				5D9F6EC728A8EC6400D3F15D /* MainMenu.h */,
 				5D9F6EB828A8EC6300D3F15D /* OptionsMenu.cpp */,
 				5D9F6EC528A8EC6400D3F15D /* OptionsMenu.h */,
-				5D9F6ECF28A8EC6500D3F15D /* ParticleTestMenu.cpp */,
-				5D9F6EBF28A8EC6400D3F15D /* ParticleTestMenu.h */,
 				5D9F6EBB28A8EC6300D3F15D /* PauseMenu.cpp */,
 				5D9F6EC428A8EC6400D3F15D /* PauseMenu.h */,
 				5D9F6EC828A8EC6500D3F15D /* PopUpMenu.cpp */,
@@ -1077,26 +986,6 @@
 				5D8483E00F923D51007338A2 /* Entity.h */,
 			);
 			name = Entity;
-			sourceTree = "<group>";
-		};
-		5D8486DF0F9240A3007338A2 /* Boost */ = {
-			isa = PBXGroup;
-			children = (
-				5D8486E00F9240AF007338A2 /* Signals */,
-			);
-			name = Boost;
-			sourceTree = "<group>";
-		};
-		5D8486E00F9240AF007338A2 /* Signals */ = {
-			isa = PBXGroup;
-			children = (
-				5D8486D50F92409B007338A2 /* connection.cpp */,
-				5D8486D60F92409B007338A2 /* named_slot_map.cpp */,
-				5D8486D70F92409B007338A2 /* signal_base.cpp */,
-				5D8486D80F92409B007338A2 /* slot.cpp */,
-				5D8486D90F92409B007338A2 /* trackable.cpp */,
-			);
-			name = Signals;
 			sourceTree = "<group>";
 		};
 		5D8DC8F20FBD71500064BEF4 /* Entity */ = {
@@ -1269,78 +1158,18 @@
 		5D9F6F1C28A8ED5200D3F15D /* Component */ = {
 			isa = PBXGroup;
 			children = (
-				5D9F6F4428A8EE2200D3F15D /* ArcadeInputComponent.cpp */,
-				5D9F6F5228A8EE2300D3F15D /* ArcadeInputComponent.h */,
-				5D9F6F4F28A8EE2300D3F15D /* Button2DComponent.cpp */,
-				5D9F6F3E28A8EE2100D3F15D /* Button2DComponent.h */,
-				5D9F6F3828A8EE2000D3F15D /* CustomInputComponent.cpp */,
-				5D9F6F6328A8EE2500D3F15D /* CustomInputComponent.h */,
-				5D9F6F4928A8EE2200D3F15D /* EmitVirtualKeyComponent.cpp */,
-				5D9F6F3D28A8EE2100D3F15D /* EmitVirtualKeyComponent.h */,
-				5D9F6F5528A8EE2300D3F15D /* FilterInputComponent.cpp */,
-				5D9F6F6928A8EE2500D3F15D /* FilterInputComponent.h */,
-				5D9F6F4128A8EE2100D3F15D /* FocusInputComponent.cpp */,
-				5D9F6F3928A8EE2000D3F15D /* FocusInputComponent.h */,
-				5D9F6F4228A8EE2100D3F15D /* FocusRenderComponent.cpp */,
-				5D9F6F5E28A8EE2400D3F15D /* FocusRenderComponent.h */,
-				5D9F6F6428A8EE2500D3F15D /* FocusUpdateComponent.cpp */,
-				5D9F6F6828A8EE2500D3F15D /* FocusUpdateComponent.h */,
-				5D9F6F5C28A8EE2400D3F15D /* HTTPComponent.cpp */,
-				5D9F6F5B28A8EE2400D3F15D /* HTTPComponent.h */,
-				5D9F6F3228A8EE2000D3F15D /* InputTextRenderComponent.cpp */,
-				5D9F6F3428A8EE2000D3F15D /* InputTextRenderComponent.h */,
-				5D9F6F5028A8EE2300D3F15D /* InterpolateComponent.cpp */,
-				5D9F6F3C28A8EE2100D3F15D /* InterpolateComponent.h */,
-				5D9F6F4528A8EE2200D3F15D /* OverlayRenderComponent.cpp */,
-				5D9F6F6528A8EE2500D3F15D /* OverlayRenderComponent.h */,
-				5D9F6F6128A8EE2400D3F15D /* ProgressBarComponent.cpp */,
-				5D9F6F4728A8EE2200D3F15D /* ProgressBarComponent.h */,
-				5D9F6F4D28A8EE2300D3F15D /* RectRenderComponent.cpp */,
-				5D9F6F5A28A8EE2400D3F15D /* RectRenderComponent.h */,
-				5D9F6F6A28A8EE2500D3F15D /* RenderClipComponent.cpp */,
-				5D9F6F5128A8EE2300D3F15D /* RenderClipComponent.h */,
-				5D9F6F5728A8EE2300D3F15D /* RenderScissorComponent.cpp */,
-				5D9F6F5928A8EE2400D3F15D /* RenderScissorComponent.h */,
-				5D9F6F5628A8EE2300D3F15D /* ScrollBarRenderComponent.cpp */,
-				5D9F6F4A28A8EE2200D3F15D /* ScrollBarRenderComponent.h */,
-				5D9F6F6228A8EE2400D3F15D /* ScrollComponent.cpp */,
-				5D9F6F5828A8EE2400D3F15D /* ScrollComponent.h */,
-				5D9F6F4328A8EE2200D3F15D /* SelectButtonWithCustomInputComponent.cpp */,
-				5D9F6F3328A8EE2000D3F15D /* SelectButtonWithCustomInputComponent.h */,
-				5D9F6F4828A8EE2200D3F15D /* SliderComponent.cpp */,
-				5D9F6F3528A8EE2000D3F15D /* SliderComponent.h */,
-				5D9F6F4E28A8EE2300D3F15D /* TapSequenceDetectComponent.cpp */,
-				5D9F6F5D28A8EE2400D3F15D /* TapSequenceDetectComponent.h */,
-				5D9F6F3A28A8EE2100D3F15D /* TextBoxRenderComponent.cpp */,
-				5D9F6F6028A8EE2400D3F15D /* TextBoxRenderComponent.h */,
-				5D9F6F6728A8EE2500D3F15D /* TextRenderComponent.cpp */,
-				5D9F6F3B28A8EE2100D3F15D /* TextRenderComponent.h */,
-				5D9F6F5328A8EE2300D3F15D /* TouchHandlerComponent.cpp */,
-				5D9F6F4B28A8EE2200D3F15D /* TouchHandlerComponent.h */,
-				5D9F6F3628A8EE2000D3F15D /* TouchStripComponent.cpp */,
-				5D9F6F5F28A8EE2400D3F15D /* TouchStripComponent.h */,
-				5D9F6F6B28A8EE2500D3F15D /* TrailRenderComponent.cpp */,
-				5D9F6F5428A8EE2300D3F15D /* TrailRenderComponent.h */,
-				5D9F6F4628A8EE2200D3F15D /* TyperComponent.cpp */,
-				5D9F6F3728A8EE2000D3F15D /* TyperComponent.h */,
-				5D9F6F3F28A8EE2100D3F15D /* UnderlineRenderComponent.cpp */,
-				5D9F6F4028A8EE2100D3F15D /* UnderlineRenderComponent.h */,
-				5D9F6F4C28A8EE2200D3F15D /* UnpackArchiveComponent.cpp */,
-				5D9F6F6628A8EE2500D3F15D /* UnpackArchiveComponent.h */,
-				5D9F6F2428A8ED5F00D3F15D /* ActionButtonComponent.cpp */,
-				5D9F6F2628A8ED5F00D3F15D /* ActionButtonComponent.h */,
-				5D9F6F1D28A8ED5E00D3F15D /* CursorComponent.cpp */,
-				5D9F6F2928A8ED6000D3F15D /* CursorComponent.h */,
-				5D9F6F2728A8ED5F00D3F15D /* DragControlComponent.cpp */,
-				5D9F6F1F28A8ED5F00D3F15D /* DragControlComponent.h */,
-				5D9F6F2028A8ED5F00D3F15D /* EmulatedPointerComponent.cpp */,
-				5D9F6F2328A8ED5F00D3F15D /* EmulatedPointerComponent.h */,
-				5D9F6F2A28A8ED6000D3F15D /* FPSControlComponent.cpp */,
-				5D9F6F2828A8ED5F00D3F15D /* FPSControlComponent.h */,
-				5D9F6F2528A8ED5F00D3F15D /* InventoryComponent.cpp */,
-				5D9F6F1E28A8ED5F00D3F15D /* InventoryComponent.h */,
-				5D9F6F2228A8ED5F00D3F15D /* ParticleTestComponent.cpp */,
-				5D9F6F2128A8ED5F00D3F15D /* ParticleTestComponent.h */,
+				5DF0F6952D79B81F007C025C /* ActionButtonComponent.h */,
+				5DF0F6962D79B81F007C025C /* ActionButtonComponent.cpp */,
+				5DF0F6972D79B81F007C025C /* CursorComponent.h */,
+				5DF0F6982D79B81F007C025C /* CursorComponent.cpp */,
+				5DF0F6992D79B81F007C025C /* DragControlComponent.h */,
+				5DF0F69A2D79B81F007C025C /* DragControlComponent.cpp */,
+				5DF0F69B2D79B81F007C025C /* EmulatedPointerComponent.h */,
+				5DF0F69C2D79B81F007C025C /* EmulatedPointerComponent.cpp */,
+				5DF0F69D2D79B81F007C025C /* FPSControlComponent.h */,
+				5DF0F69E2D79B81F007C025C /* FPSControlComponent.cpp */,
+				5DF0F69F2D79B81F007C025C /* InventoryComponent.h */,
+				5DF0F6A02D79B81F007C025C /* InventoryComponent.cpp */,
 			);
 			name = Component;
 			sourceTree = "<group>";
@@ -1404,7 +1233,6 @@
 				5D8DC8DB0FBD667D0064BEF4 /* MathUtils.h */,
 				5D7C5EA10F930CB900D81AC8 /* Variant.cpp */,
 				5D7C5EA20F930CB900D81AC8 /* Variant.h */,
-				5D8486DF0F9240A3007338A2 /* Boost */,
 				5D0CC93E0F79E0E1004D9AE9 /* GLESUtils.cpp */,
 				5D0CC93F0F79E0E1004D9AE9 /* GLESUtils.h */,
 				5D0CC9400F79E0E1004D9AE9 /* ResourceUtils.cpp */,
@@ -1445,23 +1273,6 @@
 			name = Audio;
 			sourceTree = "<group>";
 		};
-		5DBB89370FCBE78900BD5EFD /* Managers */ = {
-			isa = PBXGroup;
-			children = (
-				5D9F6F9028A8EE3A00D3F15D /* Console.cpp */,
-				5D9F6F8F28A8EE3A00D3F15D /* Console.h */,
-				5D9F6F8B28A8EE3A00D3F15D /* GameTimer.cpp */,
-				5D9F6F8C28A8EE3A00D3F15D /* GameTimer.h */,
-				5D9F6F8A28A8EE3A00D3F15D /* MessageManager.cpp */,
-				5D9F6F8D28A8EE3A00D3F15D /* MessageManager.h */,
-				5D9F6F9128A8EE3B00D3F15D /* ResourceManager.cpp */,
-				5D9F6F9228A8EE3B00D3F15D /* ResourceManager.h */,
-				5D9F6F8E28A8EE3A00D3F15D /* VariantDB.cpp */,
-				5D9F6F8928A8EE3A00D3F15D /* VariantDB.h */,
-			);
-			name = Managers;
-			sourceTree = "<group>";
-		};
 		5DC692580E947EBD00E5AC44 /* shared */ = {
 			isa = PBXGroup;
 			children = (
@@ -1492,6 +1303,26 @@
 		5DCF79AC0FD68C5500AD1BCC /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				5DF0F6C82D79C03B007C025C /* ArcadeInputComponent.h */,
+				5DF0F6C92D79C03B007C025C /* ArcadeInputComponent.cpp */,
+				5DF0F6AD2D79BF88007C025C /* LogDisplayComponent.h */,
+				5DF0F6AE2D79BF88007C025C /* LogDisplayComponent.cpp */,
+				5DF0F6AF2D79BF88007C025C /* RenderClipComponent.h */,
+				5DF0F6B02D79BF88007C025C /* RenderClipComponent.cpp */,
+				5DF0F6B12D79BF88007C025C /* TouchDragComponent.h */,
+				5DF0F6B22D79BF88007C025C /* TouchDragComponent.cpp */,
+				5DF0F6B32D79BF88007C025C /* TouchDragMarkupComponent.h */,
+				5DF0F6B42D79BF88007C025C /* TouchDragMarkupComponent.cpp */,
+				5DF0F6B52D79BF88007C025C /* TouchDragMoveComponent.h */,
+				5DF0F6B62D79BF88007C025C /* TouchDragMoveComponent.cpp */,
+				5DF0F6B72D79BF88007C025C /* TouchHandlerArcadeComponent.h */,
+				5DF0F6B82D79BF88007C025C /* TouchHandlerArcadeComponent.cpp */,
+				5DF0F6B92D79BF88007C025C /* TouchStripComponent.h */,
+				5DF0F6BA2D79BF88007C025C /* TouchStripComponent.cpp */,
+				5DF0F6BB2D79BF88007C025C /* TrailRenderComponent.h */,
+				5DF0F6BC2D79BF88007C025C /* TrailRenderComponent.cpp */,
+				5DF0F6BD2D79BF88007C025C /* UnpackArchiveComponent.h */,
+				5DF0F6BE2D79BF88007C025C /* UnpackArchiveComponent.cpp */,
 				5D5D2AA01DC9A147002FFF23 /* EmitVirtualKeyComponent.cpp */,
 				5D5D2AA11DC9A147002FFF23 /* EmitVirtualKeyComponent.h */,
 				5D5D2AA21DC9A147002FFF23 /* SliderComponent.cpp */,
@@ -1680,26 +1511,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5D9F6F6C28A8EE2500D3F15D /* InputTextRenderComponent.cpp in Sources */,
-				5D9F6F8028A8EE2600D3F15D /* ScrollBarRenderComponent.cpp in Sources */,
 				5D5D2A871DC99FF4002FFF23 /* CRandom.cpp in Sources */,
-				5D9F6F2D28A8ED6000D3F15D /* ParticleTestComponent.cpp in Sources */,
 				5D5D2A9F1DC9A11F002FFF23 /* StreamingInstanceFile.cpp in Sources */,
 				5DC692B20E94852F00E5AC44 /* App.cpp in Sources */,
 				5DFE105B0F60EB790065956E /* MiscUtils.cpp in Sources */,
+				5DF0F6CA2D79C03B007C025C /* ArcadeInputComponent.cpp in Sources */,
 				5D9F6FDF28A8EFB900D3F15D /* Gamepad.cpp in Sources */,
 				5D9F6E3528A8EB1700D3F15D /* pngpread.c in Sources */,
 				5D9F6E3028A8EB1700D3F15D /* pngerror.c in Sources */,
-				5D9F6F9628A8EE3B00D3F15D /* Console.cpp in Sources */,
 				5D9F6E7228A8EB4900D3F15D /* jdcolor.c in Sources */,
 				5DFE105C0F60EB790065956E /* RenderUtils.cpp in Sources */,
 				5DFE10650F60EBB80065956E /* BaseApp.cpp in Sources */,
 				5D9F6E9028A8EB4A00D3F15D /* jcinit.c in Sources */,
 				5D9F6E8828A8EB4A00D3F15D /* jcprepct.c in Sources */,
 				5D9F6EDF28A8EC6500D3F15D /* ExpiredMenu.cpp in Sources */,
-				5D9F6F9528A8EE3B00D3F15D /* VariantDB.cpp in Sources */,
 				5D9F6FA628A8EEE900D3F15D /* blocksort.c in Sources */,
-				5D9F6F9428A8EE3B00D3F15D /* GameTimer.cpp in Sources */,
 				5D9F6EDE28A8EC6500D3F15D /* LogMenu.cpp in Sources */,
 				5D0CC93A0F79E0D1004D9AE9 /* Console.cpp in Sources */,
 				5D0CC93C0F79E0D1004D9AE9 /* GameTimer.cpp in Sources */,
@@ -1712,11 +1538,8 @@
 				5D0CC94E0F79E181004D9AE9 /* Surface.cpp in Sources */,
 				5D282DD01F3FDDAC00E71E49 /* Reachability.m in Sources */,
 				5D9F6E9228A8EB4A00D3F15D /* jcapistd.c in Sources */,
-				5D9F6F7928A8EE2500D3F15D /* UnpackArchiveComponent.cpp in Sources */,
 				5D9F6ED928A8EC6500D3F15D /* ReadTextMenu.cpp in Sources */,
-				5D9F6F7128A8EE2500D3F15D /* FocusInputComponent.cpp in Sources */,
 				5D5D2A7C1DC99EB2002FFF23 /* EAGLView.mm in Sources */,
-				5D9F6F7228A8EE2500D3F15D /* FocusRenderComponent.cpp in Sources */,
 				5D9831DD0F7B626400D94D9B /* rtRect.cpp in Sources */,
 				5D9F6E8228A8EB4A00D3F15D /* jmemnobs.c in Sources */,
 				5D9831F20F7BD64B00D94D9B /* RTFont.cpp in Sources */,
@@ -1725,35 +1548,23 @@
 				5D5D2A7E1DC99EB2002FFF23 /* MyAppDelegate.mm in Sources */,
 				5D8483E30F923D51007338A2 /* Component.cpp in Sources */,
 				5D5D2A901DC9A030002FFF23 /* CustomInputComponent.cpp in Sources */,
-				5D9F6F2E28A8ED6000D3F15D /* ActionButtonComponent.cpp in Sources */,
 				5D8483E40F923D51007338A2 /* Entity.cpp in Sources */,
-				5D9F6F7A28A8EE2500D3F15D /* RectRenderComponent.cpp in Sources */,
 				5D9F6E3128A8EB1700D3F15D /* pngrtran.c in Sources */,
 				5D9F6ED128A8EC6500D3F15D /* AboutMenu.cpp in Sources */,
 				5D8483E50F923D51007338A2 /* OverlayRenderComponent.cpp in Sources */,
 				5D9F6E6F28A8EB4900D3F15D /* jutils.c in Sources */,
-				5D9F6F8128A8EE2600D3F15D /* RenderScissorComponent.cpp in Sources */,
 				5D9F6ED528A8EC6500D3F15D /* OptionsMenu.cpp in Sources */,
 				5D5D2AA41DC9A147002FFF23 /* EmitVirtualKeyComponent.cpp in Sources */,
 				5D9F6F1828A8ED4700D3F15D /* video_gl.cpp in Sources */,
-				5D9F6F7528A8EE2500D3F15D /* OverlayRenderComponent.cpp in Sources */,
 				5D9F6FDD28A8EFB800D3F15D /* GamepadProviderIOSNative.mm in Sources */,
 				5D9F6E3728A8EB1700D3F15D /* pngrio.c in Sources */,
-				5D9F6F3028A8ED6000D3F15D /* DragControlComponent.cpp in Sources */,
-				5D8486DA0F92409B007338A2 /* connection.cpp in Sources */,
 				5D9F6EA328A8EB8F00D3F15D /* PrimeSearch.cpp in Sources */,
 				5D9F6E7E28A8EB4A00D3F15D /* jquant2.c in Sources */,
 				5D9F6E9528A8EB4A00D3F15D /* jidctint.c in Sources */,
-				5D9F6F9328A8EE3B00D3F15D /* MessageManager.cpp in Sources */,
-				5D9F6F2C28A8ED6000D3F15D /* EmulatedPointerComponent.cpp in Sources */,
 				5D9F6F1A28A8ED4700D3F15D /* FFReader.cpp in Sources */,
 				5D9F6E9F28A8EB6400D3F15D /* SoftSurface.cpp in Sources */,
-				5D8486DB0F92409B007338A2 /* named_slot_map.cpp in Sources */,
-				5D8486DC0F92409B007338A2 /* signal_base.cpp in Sources */,
 				5D9F6E8E28A8EB4A00D3F15D /* jfdctfst.c in Sources */,
-				5D8486DD0F92409B007338A2 /* slot.cpp in Sources */,
 				5D9F6E8928A8EB4A00D3F15D /* jfdctint.c in Sources */,
-				5D8486DE0F92409B007338A2 /* trackable.cpp in Sources */,
 				5D9F6E7128A8EB4900D3F15D /* jfdctflt.c in Sources */,
 				5D9F6E9128A8EB4A00D3F15D /* jdcoefct.c in Sources */,
 				5D9F6ED828A8EC6500D3F15D /* PauseMenu.cpp in Sources */,
@@ -1768,14 +1579,11 @@
 				5D9F6FAA28A8EEE900D3F15D /* randtable.c in Sources */,
 				5D9F6E7028A8EB4900D3F15D /* jcomapi.c in Sources */,
 				5D9F6E7928A8EB4A00D3F15D /* jdmaster.c in Sources */,
-				5D9F6F7F28A8EE2600D3F15D /* FilterInputComponent.cpp in Sources */,
 				5D4760560FBA98B3008400E3 /* Button2DComponent.cpp in Sources */,
 				5D5D2A991DC9A08C002FFF23 /* FileManager.cpp in Sources */,
 				5D4760580FBA98B3008400E3 /* TouchHandlerComponent.cpp in Sources */,
-				5D9F6F8228A8EE2600D3F15D /* HTTPComponent.cpp in Sources */,
 				5D9F6E8328A8EB4A00D3F15D /* jccolor.c in Sources */,
 				5D5D2A9E1DC9A11F002FFF23 /* StreamingInstance.cpp in Sources */,
-				5D9F6F7028A8EE2500D3F15D /* UnderlineRenderComponent.cpp in Sources */,
 				5D72616428A8E9160072D583 /* AudioManagerFMODStudio.cpp in Sources */,
 				5D9F6E8C28A8EB4A00D3F15D /* jcdctmgr.c in Sources */,
 				5D9F6E9A28A8EB4A00D3F15D /* jdphuff.c in Sources */,
@@ -1794,7 +1602,6 @@
 				5D17BA5C0FBD5DD8009D74BC /* FocusUpdateComponent.cpp in Sources */,
 				5D5D2A7D1DC99EB2002FFF23 /* main.mm in Sources */,
 				5D8DC8DC0FBD667D0064BEF4 /* MathUtils.cpp in Sources */,
-				5D9F6F7428A8EE2500D3F15D /* ArcadeInputComponent.cpp in Sources */,
 				5D8DC8EE0FBD713C0064BEF4 /* GameMenu.cpp in Sources */,
 				5D427BD70FC131B00015817A /* mat3.cpp in Sources */,
 				5D427BD80FC131B00015817A /* mat4.cpp in Sources */,
@@ -1811,13 +1618,11 @@
 				5D9F6FE128A8EFB900D3F15D /* GamepadIOS.mm in Sources */,
 				5D9F6E7628A8EB4900D3F15D /* jdapistd.c in Sources */,
 				5D5D2A921DC9A030002FFF23 /* RenderScissorComponent.cpp in Sources */,
-				5D9F6F7828A8EE2500D3F15D /* EmitVirtualKeyComponent.cpp in Sources */,
 				5D9F6E7A28A8EB4A00D3F15D /* jidctfst.c in Sources */,
 				5DBB89450FCCCAD300BD5EFD /* VariantDB.cpp in Sources */,
 				5D79DBB10FCE7B300048DD55 /* AboutMenu.cpp in Sources */,
 				5D9F6ED028A8EC6500D3F15D /* DMODInstallMenu.cpp in Sources */,
 				5D79DBB30FCE7B300048DD55 /* OptionsMenu.cpp in Sources */,
-				5D9F6F8528A8EE2600D3F15D /* FocusUpdateComponent.cpp in Sources */,
 				5D9F6F1928A8ED4700D3F15D /* misc_util.cpp in Sources */,
 				5D9A119F0FD2B19C005001E0 /* ProgressBarComponent.cpp in Sources */,
 				5D9F6EA028A8EB6400D3F15D /* JPGSurfaceLoader.cpp in Sources */,
@@ -1825,17 +1630,18 @@
 				5D9F6EDA28A8EC6500D3F15D /* EnterURLMenu.cpp in Sources */,
 				5DCF79AB0FD68C3E00AD1BCC /* TapSequenceDetectComponent.cpp in Sources */,
 				5D0036DF0FDA1E0600A082F0 /* NetSocket.cpp in Sources */,
-				5D9F6F8428A8EE2600D3F15D /* ScrollComponent.cpp in Sources */,
-				5D9F6F2B28A8ED6000D3F15D /* CursorComponent.cpp in Sources */,
 				5D9F6E8028A8EB4A00D3F15D /* jdapimin.c in Sources */,
 				5D00371A0FDA4E1B00A082F0 /* HTTPComponent.cpp in Sources */,
+				5DF0F6A12D79B81F007C025C /* ActionButtonComponent.cpp in Sources */,
+				5DF0F6A22D79B81F007C025C /* FPSControlComponent.cpp in Sources */,
+				5DF0F6A32D79B81F007C025C /* DragControlComponent.cpp in Sources */,
+				5DF0F6A42D79B81F007C025C /* EmulatedPointerComponent.cpp in Sources */,
+				5DF0F6A52D79B81F007C025C /* InventoryComponent.cpp in Sources */,
+				5DF0F6A62D79B81F007C025C /* CursorComponent.cpp in Sources */,
 				5D9F6E3E28A8EB1700D3F15D /* pngtrans.c in Sources */,
 				5D0037250FDA53A000A082F0 /* NetUtils.cpp in Sources */,
-				5D9F6F8728A8EE2600D3F15D /* RenderClipComponent.cpp in Sources */,
 				5D81664E0FDE3BB7007AE31B /* TextScanner.cpp in Sources */,
-				5D9F6EE028A8EC6500D3F15D /* ParticleTestMenu.cpp in Sources */,
 				5D9F6E3C28A8EB1700D3F15D /* pngset.c in Sources */,
-				5D9F6F8328A8EE2600D3F15D /* ProgressBarComponent.cpp in Sources */,
 				5D9F6E9628A8EB4A00D3F15D /* jdmerge.c in Sources */,
 				5D51077E0FDF98DC0059E991 /* TyperComponent.cpp in Sources */,
 				5D9F6FE428A8EFB900D3F15D /* GamepadProvideriCade.cpp in Sources */,
@@ -1843,8 +1649,6 @@
 				5D667014101F00F500AC3407 /* ResourceManager.cpp in Sources */,
 				5D9F6FAC28A8EEE900D3F15D /* crctable.c in Sources */,
 				5D9F6F1B28A8ED4700D3F15D /* dink.cpp in Sources */,
-				5D9F6F8628A8EE2600D3F15D /* TextRenderComponent.cpp in Sources */,
-				5D9F6F7B28A8EE2600D3F15D /* TapSequenceDetectComponent.cpp in Sources */,
 				5D9F6FE228A8EFB900D3F15D /* GamepadManager.cpp in Sources */,
 				5D9F6ED328A8EC6500D3F15D /* QuickTipMenu.cpp in Sources */,
 				5D9F6E7828A8EB4A00D3F15D /* jdinput.c in Sources */,
@@ -1853,10 +1657,8 @@
 				5D667017101F010700AC3407 /* SurfaceAnim.cpp in Sources */,
 				5D9F6EAD28A8EC0F00D3F15D /* AdProvider.cpp in Sources */,
 				5D667022101F012A00AC3407 /* InputTextRenderComponent.cpp in Sources */,
-				5D9F6F6F28A8EE2500D3F15D /* TextBoxRenderComponent.cpp in Sources */,
 				5D5D2A7F1DC99EB2002FFF23 /* MyViewController.mm in Sources */,
 				5D667023101F012A00AC3407 /* RectRenderComponent.cpp in Sources */,
-				5D9F6F7628A8EE2500D3F15D /* TyperComponent.cpp in Sources */,
 				5D667024101F012A00AC3407 /* ScrollBarRenderComponent.cpp in Sources */,
 				5D9F6E7728A8EB4A00D3F15D /* jccoefct.c in Sources */,
 				5D9F6E7F28A8EB4A00D3F15D /* jcsample.c in Sources */,
@@ -1868,13 +1670,19 @@
 				5D667026101F012A00AC3407 /* TextBoxRenderComponent.cpp in Sources */,
 				5D9F6ED628A8EC6500D3F15D /* DMODMenu.cpp in Sources */,
 				5D2FB9201022839B0097A436 /* FilterInputComponent.cpp in Sources */,
-				5D9F6F7E28A8EE2600D3F15D /* TouchHandlerComponent.cpp in Sources */,
+				5DF0F6BF2D79BF88007C025C /* LogDisplayComponent.cpp in Sources */,
+				5DF0F6C02D79BF88007C025C /* TouchStripComponent.cpp in Sources */,
+				5DF0F6C12D79BF88007C025C /* TouchDragComponent.cpp in Sources */,
+				5DF0F6C22D79BF88007C025C /* TrailRenderComponent.cpp in Sources */,
+				5DF0F6C32D79BF88007C025C /* TouchDragMoveComponent.cpp in Sources */,
+				5DF0F6C42D79BF88007C025C /* TouchDragMarkupComponent.cpp in Sources */,
+				5DF0F6C52D79BF88007C025C /* UnpackArchiveComponent.cpp in Sources */,
+				5DF0F6C62D79BF88007C025C /* RenderClipComponent.cpp in Sources */,
+				5DF0F6C72D79BF88007C025C /* TouchHandlerArcadeComponent.cpp in Sources */,
 				5D5D2AA51DC9A147002FFF23 /* SliderComponent.cpp in Sources */,
 				5D78FAE01095593700DF1986 /* L_Defination.cpp in Sources */,
 				5D9F6E9728A8EB4A00D3F15D /* jquant1.c in Sources */,
 				5D9F6E3428A8EB1700D3F15D /* pngget.c in Sources */,
-				5D9F6F7C28A8EE2600D3F15D /* Button2DComponent.cpp in Sources */,
-				5D9F6F7D28A8EE2600D3F15D /* InterpolateComponent.cpp in Sources */,
 				5D78FAE11095593700DF1986 /* L_DroppingEffect.cpp in Sources */,
 				5D78FAE21095593700DF1986 /* L_EffectEmitter.cpp in Sources */,
 				5D9F6E6E28A8EB4900D3F15D /* jmemmgr.c in Sources */,
@@ -1896,10 +1704,7 @@
 				5D9F6E9828A8EB4A00D3F15D /* jdmarker.c in Sources */,
 				5D78FAEB1095593700DF1986 /* RenderBatcher.cpp in Sources */,
 				5D9F6ED728A8EC6500D3F15D /* BrowseMenu.cpp in Sources */,
-				5D9F6F6E28A8EE2500D3F15D /* CustomInputComponent.cpp in Sources */,
-				5D9F6F3128A8ED6000D3F15D /* FPSControlComponent.cpp in Sources */,
 				5D5D2A911DC9A030002FFF23 /* FilterComponent.cpp in Sources */,
-				5D9F6F7728A8EE2500D3F15D /* SliderComponent.cpp in Sources */,
 				5D72616528A8E9160072D583 /* LoopingSound.cpp in Sources */,
 				5D9F6EDC28A8EC6500D3F15D /* PopUpMenu.cpp in Sources */,
 				5D9F6EA728A8EBAB00D3F15D /* TarHandler.cpp in Sources */,
@@ -1910,16 +1715,11 @@
 				5D9F6E3828A8EB1700D3F15D /* png.c in Sources */,
 				5D9F6E3628A8EB1700D3F15D /* pngwio.c in Sources */,
 				5DF341501155BBEE00D6202B /* PlatformSetup.cpp in Sources */,
-				5D9F6F7328A8EE2500D3F15D /* SelectButtonWithCustomInputComponent.cpp in Sources */,
-				5D9F6F6D28A8EE2500D3F15D /* TouchStripComponent.cpp in Sources */,
-				5D9F6F9728A8EE3B00D3F15D /* ResourceManager.cpp in Sources */,
 				5D9F6FB328A8EF1000D3F15D /* unzip.c in Sources */,
 				5D9F6E7B28A8EB4A00D3F15D /* jdhuff.c in Sources */,
 				5D5D2A741DC99E96002FFF23 /* iOSUtils.mm in Sources */,
-				5D9F6F8828A8EE2600D3F15D /* TrailRenderComponent.cpp in Sources */,
 				5DF341841155C1DD00D6202B /* SoftSurface.cpp in Sources */,
 				5D9F6FA728A8EEE900D3F15D /* compress.c in Sources */,
-				5D9F6F2F28A8ED6000D3F15D /* InventoryComponent.cpp in Sources */,
 				5D9F6E8128A8EB4A00D3F15D /* jdsample.c in Sources */,
 				5D9F6E7C28A8EB4A00D3F15D /* jidctred.c in Sources */,
 				5DFCCFC3115A54B700757A9A /* PlatformPrecomp.cpp in Sources */,

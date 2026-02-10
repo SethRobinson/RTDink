@@ -796,9 +796,6 @@
     <ClCompile Include="..\..\shared\Irrlicht\source\Irrlicht\libpng\pngtrans.c">
       <Filter>shared\Renderer\libpng</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\shared\Irrlicht\source\Irrlicht\libpng\pngvcrd.c">
-      <Filter>shared\Renderer\libpng</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\shared\Irrlicht\source\Irrlicht\libpng\pngwio.c">
       <Filter>shared\Renderer\libpng</Filter>
     </ClCompile>

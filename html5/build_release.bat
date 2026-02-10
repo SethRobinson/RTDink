@@ -85,8 +85,8 @@ REM **************************************** ZLIB SOURCE CODE FILES
 set ZLIB_SRC=%ZLIBPATH%/deflate.c %ZLIBPATH%/gzio.c %ZLIBPATH%/infback.c %ZLIBPATH%/inffast.c %ZLIBPATH%/inflate.c %ZLIBPATH%/inftrees.c %ZLIBPATH%/trees.c %ZLIBPATH%/uncompr.c %ZLIBPATH%/zutil.c %ZLIBPATH%/adler32.c %ZLIBPATH%/compress.c %ZLIBPATH%/crc32.c
 
 REM ****************************** PNG SUPPORT 
-SET PNG_SRC=%PNGSRC%/png.c %PNGSRC%/pngerror.c %PNGSRC%/pnggccrd.c %PNGSRC%/pngget.c %PNGSRC%/pngmem.c %PNGSRC%/pngpread.c %PNGSRC%/pngread.c ^
-%PNGSRC%/pngrio.c %PNGSRC%/pngrtran.c %PNGSRC%/pngrutil.c %PNGSRC%/pngset.c %PNGSRC%/pngtrans.c %PNGSRC%/pngvcrd.c %PNGSRC%/pngwio.c %PNGSRC%/pngwtran.c
+SET PNG_SRC=%PNGSRC%/png.c %PNGSRC%/pngerror.c %PNGSRC%/pngget.c %PNGSRC%/pngmem.c %PNGSRC%/pngpread.c %PNGSRC%/pngread.c ^
+%PNGSRC%/pngrio.c %PNGSRC%/pngrtran.c %PNGSRC%/pngrutil.c %PNGSRC%/pngset.c %PNGSRC%/pngtrans.c %PNGSRC%/pngwio.c %PNGSRC%/pngwtran.c
 
 
 REM **************************************** PARTICLE SYSTEM SOURCE CODE FILES
