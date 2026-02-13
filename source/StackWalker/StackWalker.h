@@ -35,6 +35,7 @@
 // #pragma once is supported starting with _MCS_VER 1000, 
 // so we need not to check the version (because we only support _MSC_VER >= 1100)!
 #pragma once
+#if defined(_WIN32)
 
 #include <windows.h>
 
@@ -217,3 +218,4 @@ protected:
     RtlCaptureContext(&c); \
 } while(0);
 #endif
+#endif // _WIN32

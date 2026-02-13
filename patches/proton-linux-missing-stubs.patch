@@ -1,0 +1,17 @@
+diff --git a/shared/linux/LinuxUtils.cpp b/shared/linux/LinuxUtils.cpp
+index bf3ce54..5533002 100644
+--- a/shared/linux/LinuxUtils.cpp
++++ b/shared/linux/LinuxUtils.cpp
+@@ -493,3 +493,12 @@ string GetNetworkType()
+ {
+ 	return "none"; // not supported for this OS
+ }
++
++void SyncPersistentData()
++{
++}
++
++bool IsStillLoadingPersistentData()
++{
++	return false;
++}

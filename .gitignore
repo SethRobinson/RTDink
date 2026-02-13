@@ -193,3 +193,8 @@ media/android_dink_audio/sword1.ogg
 media/android_dink_audio/sword2_item.ogg
 media/android_dink_audio/sword2.ogg
 media/android_dink_audio/wscream.ogg
+
+# Linux build artifacts
+build/
+proton/
+

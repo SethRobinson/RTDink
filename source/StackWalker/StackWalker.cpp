@@ -79,6 +79,7 @@
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  **********************************************************************/
+#if defined(_WIN32)
 #include <windows.h>
 #include <tchar.h>
 #include <stdio.h>
@@ -1363,3 +1364,4 @@ void StackWalker::OnOutput(LPCSTR buffer)
 {
   OutputDebugStringA(buffer);
 }
+#endif // _WIN32

@@ -2,7 +2,7 @@
 #include "OptionsMenu.h"
 #include "Entity/EntityUtils.h"
 #include "App.h"
-#include "../dink/Dink.h"
+#include "../dink/dink.h"
 #include "Entity/SliderComponent.h"
 #include "MainMenu.h"
 #include "PauseMenu.h"
