@@ -119,7 +119,9 @@
 		5D9F6E3C28A8EB1700D3F15D /* pngset.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6E2C28A8EB1600D3F15D /* pngset.c */; };
 		5D9F6E3D28A8EB1700D3F15D /* pngread.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6E2D28A8EB1700D3F15D /* pngread.c */; };
 		5D9F6E3E28A8EB1700D3F15D /* pngtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6E2E28A8EB1700D3F15D /* pngtrans.c */; };
-		5D9F6E3F28A8EB1700D3F15D /* pngvcrd.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6E2F28A8EB1700D3F15D /* pngvcrd.c */; };
+		5DAE00042DA5F00100AE0004 /* arm_init.c in Sources */ = {isa = PBXBuildFile; fileRef = 5DAE00012DA5F00100AE0001 /* arm_init.c */; };
+		5DAE00052DA5F00100AE0005 /* filter_neon_intrinsics.c in Sources */ = {isa = PBXBuildFile; fileRef = 5DAE00022DA5F00100AE0002 /* filter_neon_intrinsics.c */; };
+		5DAE00062DA5F00100AE0006 /* palette_neon_intrinsics.c in Sources */ = {isa = PBXBuildFile; fileRef = 5DAE00032DA5F00100AE0003 /* palette_neon_intrinsics.c */; };
 		5D9F6E6E28A8EB4900D3F15D /* jmemmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6E4128A8EB4600D3F15D /* jmemmgr.c */; };
 		5D9F6E6F28A8EB4900D3F15D /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6E4228A8EB4600D3F15D /* jutils.c */; };
 		5D9F6E7028A8EB4900D3F15D /* jcomapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6E4328A8EB4600D3F15D /* jcomapi.c */; };
@@ -482,7 +484,9 @@
 		5D9F6E2C28A8EB1600D3F15D /* pngset.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngset.c; path = ../shared/Irrlicht/source/Irrlicht/libpng/pngset.c; sourceTree = "<group>"; };
 		5D9F6E2D28A8EB1700D3F15D /* pngread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngread.c; path = ../shared/Irrlicht/source/Irrlicht/libpng/pngread.c; sourceTree = "<group>"; };
 		5D9F6E2E28A8EB1700D3F15D /* pngtrans.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngtrans.c; path = ../shared/Irrlicht/source/Irrlicht/libpng/pngtrans.c; sourceTree = "<group>"; };
-		5D9F6E2F28A8EB1700D3F15D /* pngvcrd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngvcrd.c; path = ../shared/Irrlicht/source/Irrlicht/libpng/pngvcrd.c; sourceTree = "<group>"; };
+		5DAE00012DA5F00100AE0001 /* arm_init.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = arm_init.c; path = ../shared/Irrlicht/source/Irrlicht/libpng/arm/arm_init.c; sourceTree = "<group>"; };
+		5DAE00022DA5F00100AE0002 /* filter_neon_intrinsics.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = filter_neon_intrinsics.c; path = ../shared/Irrlicht/source/Irrlicht/libpng/arm/filter_neon_intrinsics.c; sourceTree = "<group>"; };
+		5DAE00032DA5F00100AE0003 /* palette_neon_intrinsics.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_neon_intrinsics.c; path = ../shared/Irrlicht/source/Irrlicht/libpng/arm/palette_neon_intrinsics.c; sourceTree = "<group>"; };
 		5D9F6E4128A8EB4600D3F15D /* jmemmgr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jmemmgr.c; path = ../shared/Irrlicht/source/Irrlicht/jpeglib/jmemmgr.c; sourceTree = "<group>"; };
 		5D9F6E4228A8EB4600D3F15D /* jutils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jutils.c; path = ../shared/Irrlicht/source/Irrlicht/jpeglib/jutils.c; sourceTree = "<group>"; };
 		5D9F6E4328A8EB4600D3F15D /* jcomapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jcomapi.c; path = ../shared/Irrlicht/source/Irrlicht/jpeglib/jcomapi.c; sourceTree = "<group>"; };
@@ -1029,11 +1033,13 @@
 				5D9F6E2028A8EB1600D3F15D /* pngrutil.c */,
 				5D9F6E2C28A8EB1600D3F15D /* pngset.c */,
 				5D9F6E2E28A8EB1700D3F15D /* pngtrans.c */,
-				5D9F6E2F28A8EB1700D3F15D /* pngvcrd.c */,
 				5D9F6E2528A8EB1600D3F15D /* pngwio.c */,
 				5D9F6E2828A8EB1600D3F15D /* pngwrite.c */,
 				5D9F6E2B28A8EB1600D3F15D /* pngwtran.c */,
 				5D9F6E2A28A8EB1600D3F15D /* pngwutil.c */,
+				5DAE00012DA5F00100AE0001 /* arm_init.c */,
+				5DAE00022DA5F00100AE0002 /* filter_neon_intrinsics.c */,
+				5DAE00032DA5F00100AE0003 /* palette_neon_intrinsics.c */,
 			);
 			name = libpng;
 			sourceTree = "<group>";
@@ -1543,7 +1549,6 @@
 				5D9831DD0F7B626400D94D9B /* rtRect.cpp in Sources */,
 				5D9F6E8228A8EB4A00D3F15D /* jmemnobs.c in Sources */,
 				5D9831F20F7BD64B00D94D9B /* RTFont.cpp in Sources */,
-				5D9F6E3F28A8EB1700D3F15D /* pngvcrd.c in Sources */,
 				5D9F6E8B28A8EB4A00D3F15D /* jcparam.c in Sources */,
 				5D5D2A7E1DC99EB2002FFF23 /* MyAppDelegate.mm in Sources */,
 				5D8483E30F923D51007338A2 /* Component.cpp in Sources */,
@@ -1713,6 +1718,9 @@
 				5D9F6E8728A8EB4A00D3F15D /* jcapimin.c in Sources */,
 				5D9F6EAC28A8EC0F00D3F15D /* AdManager.cpp in Sources */,
 				5D9F6E3828A8EB1700D3F15D /* png.c in Sources */,
+				5DAE00042DA5F00100AE0004 /* arm_init.c in Sources */,
+				5DAE00052DA5F00100AE0005 /* filter_neon_intrinsics.c in Sources */,
+				5DAE00062DA5F00100AE0006 /* palette_neon_intrinsics.c in Sources */,
 				5D9F6E3628A8EB1700D3F15D /* pngwio.c in Sources */,
 				5DF341501155BBEE00D6202B /* PlatformSetup.cpp in Sources */,
 				5D9F6FB328A8EF1000D3F15D /* unzip.c in Sources */,
