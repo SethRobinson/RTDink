@@ -298,6 +298,16 @@ void BrowseMenuAddScrollContent(Entity *pParent, TextScanner *t)
 
 	if (g_dmodData.empty())
 	{
+		if (!t)
+		{
+			// No cached data and no new data to parse, nothing to show
+			VariantList vList(pParent->GetParent());
+			ResizeScrollBounds(&vList);
+			DisableHorizontalScrolling(pParent->GetParent());
+			UpdateBrowseControlButtons(pParent->GetParent()->GetParent());
+			return;
+		}
+
 		string msg = t->GetMultipleLineStrings("msg", "|");
 		vector<string> p = StringTokenize(msg, "|");
 
@@ -346,7 +356,7 @@ void BrowseMenuAddScrollContent(Entity *pParent, TextScanner *t)
 			StringReplace("V", "", s.m_version);
 			StringReplace("v", "", s.m_version);
 
-			s.m_thumb = p[8].c_str();
+			s.m_thumb = (p.size() > 8) ? p[8].c_str() : "";
 
 
 			g_dmodData.push_back(s);

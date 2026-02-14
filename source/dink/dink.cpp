@@ -17833,7 +17833,7 @@ string GetDMODRootPath(string *pDMODNameOutOrNull)
 	return dmodpath;
 #endif
 
-	if (GetPlatformID() == PLATFORM_ID_WEBOS)
+	if (GetPlatformID() == PLATFORM_ID_WEBOS || GetPlatformID() == PLATFORM_ID_LINUX)
 	{
 		return "dmods/";
 	}
