@@ -202,6 +202,35 @@ SDL_Window* GetSDLWindow() {
     return window;
 }
 
+// Temporary hack to get the window handle for the app
+void UpdateViewport(int width, int height) {
+    // Update viewport of OpenGL
+    glViewport(0, 0, width, height);
+
+	// Calculate the proportion to escalonate the game
+    float gameAspect = 1024.0f / 768.0f;  // Original proportion of the game
+    float windowAspect = (float)width / (float)height;
+
+	// Ajust the matrix of projection to mantain the proportion
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    if (windowAspect > gameAspect) {
+		// More large window than the game: add horizontal margins
+        float scaledHeight = width / gameAspect;
+        float offsetY = (scaledHeight - height) / 2.0f;
+        glOrtho(0, width, height + offsetY, -offsetY, -1.0, 1.0);  // glOrtho(left, right, bottom, top, near, far)
+    } else {
+		// More high window than the game: add vertical margins
+        float scaledWidth = height * gameAspect;
+        float offsetX = (scaledWidth - width) / 2.0f;
+        glOrtho(-offsetX, width + offsetX, height, 0, -1.0, 1.0);  // glOrtho(left, right, bottom, top, near, far)
+    }
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
 // Temporary hack to toggle fullscreen mode (cross-platform using SDL2)
 void OnFullscreenToggleRequestMultiplatform() {
     SDL_Window* window = GetSDLWindow();
@@ -218,6 +247,11 @@ void OnFullscreenToggleRequestMultiplatform() {
 
     g_bIsFullScreen = !isFullscreen;
     GetApp()->GetVar("fullscreen")->Set(uint32(g_bIsFullScreen));
+
+	// Update the viewport to match the new window size after toggling fullscreen
+    int width, height;
+    SDL_GetWindowSize(window, &width, &height);
+    UpdateViewport(width, height);
 }
 
 App::App()
@@ -844,6 +878,21 @@ void App::AddDroidKeyboardKeys()
 
 void App::Update()
 {
+	// Handle resize SDL envent
+	SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_WINDOWEVENT:
+                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                    int newWidth = event.window.data1;
+                    int newHeight = event.window.data2;
+                    UpdateViewport(newWidth, newHeight);  // Update the viewport
+                }
+                break;
+            // Do not handle mouse events here (let the engine handle them).
+        }
+    }
+
 	BaseApp::Update();
 	m_adManager.Update();
 	g_gamepadManager.Update();
@@ -1382,11 +1431,9 @@ void LogMsg(const char* traceStr, ...)
 
 }
 
-
 #endif
 
 #ifdef PLATFORM_OSX
-
 
 //our custom LogMsg that isn't slow as shit
 void LogMsg(const char* traceStr, ...)
@@ -1412,6 +1459,34 @@ void LogMsg(const char* traceStr, ...)
     
 }
 
+#endif
+
+#ifdef defined(PLATFORM_LINUX)
+
+// our custom LogMsg (Linux)
+void LogMsg(const char* traceStr, ...)
+{
+    va_list argsVA;
+    const int logSize = 1024 * 10;
+    char buffer[logSize];
+    memset((void*)buffer, 0, logSize);
+
+    va_start(argsVA, traceStr);
+    vsnprintf(buffer, logSize, traceStr, argsVA);
+    va_end(argsVA);
+
+    // Saída no terminal (Linux)
+    printf("%s\n", buffer);
+    fflush(stdout);
+
+    // Garante que o save funcione (chama AddTextToLog)
+    if (IsBaseAppInitted())
+    {
+        GetBaseApp()->GetConsole()->AddLine(buffer);
+        strcat(buffer, "\r\n");
+        GetApp()->AddTextToLog(buffer, (GetSavePath() + "log.txt").c_str());
+    }
+}
 
 #endif
 
