@@ -135,7 +135,8 @@ The original **Dink Smallwood** (1997) was created by **Seth A. Robinson**, **Ju
 ### Source contributors
 
 * **drone1400** -- division-by-zero fix, pixel-perfect rendering, and build improvements
-* **Dan Walma** (yeoldetoast) -- DinkC bug reports and fixes
+* **Dan Walma** Headed up the 1.08 release and has done a million other things
+* **yeoldtoast** Editors and a bunch of other Dink stuff
 * **RobJ** -- DinkC command fixes and compatibility improvements
 * **SimonK** -- DMOD stress testing and limit increase requests
 * **Mateus Sales Bentes** -- Linux port work
@@ -147,5 +148,6 @@ Special thanks to the entire [dinknetwork.com](https://www.dinknetwork.com/) com
 ## Other notes
 
 * **Have a bugfix or patch?** Please submit it as a pull request! Any submission (code, media, translations, etc) must be 100% compatible with the license as listed in the source.
+
 
 * See `script/win_installer/readme.txt` for version history.
