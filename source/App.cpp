@@ -294,6 +294,17 @@ bool App::DoesCommandLineParmExist(string parm)
 	return false;
 }
 
+void App::OnFullscreenToggleRequestMultiplatform()
+{
+    // Toggle fullscreen mode
+    if (GetPrimaryGLX() != 0)
+    {
+        SetVideoMode(GetPrimaryGLX(), GetPrimaryGLY(), !g_bIsFullScreen, 0);
+        g_bIsFullScreen = !g_bIsFullScreen;
+        GetApp()->GetVar("fullscreen")->Set(uint32(g_bIsFullScreen));
+    }
+}
+
 bool App::Init()
 {
 
@@ -490,6 +501,8 @@ bool App::Init()
 	switch (GetPlatformID())
 	{
 	case PLATFORM_ID_WINDOWS:
+	case PLATFORM_ID_OSX:
+	case PLATFORM_ID_LINUX:
 	case PLATFORM_ID_BBX:
 	case PLATFORM_ID_WEBOS:
 	case PLATFORM_ID_HTML5:
@@ -632,28 +645,47 @@ bool App::Init()
 	//when screen size changes we'll unload surfaces
 	GetBaseApp()->m_sig_unloadSurfaces.connect(1, boost::bind(&App::OnUnloadSurfaces, this));
 	
-#ifdef WINAPI
+	//crossplatform video settings
 	int videox = GetApp()->GetVarWithDefault("video_x", uint32(640))->GetUINT32();
 	int videoy = GetApp()->GetVarWithDefault("video_y", uint32(480))->GetUINT32();
 	int fullscreen = GetApp()->GetVarWithDefault("fullscreen", uint32(1))->GetUINT32();
-	bool borderlessfullscreen = GetApp()->GetVarWithDefault("fullscreen", uint32(0))->GetUINT32();
-		
 
-		if (DoesCommandLineParmExist("/?")|| DoesCommandLineParmExist("?") || DoesCommandLineParmExist("--help"))
+		// Parameters handling (cross-platform)
+		if (DoesCommandLineParmExist("/?") || DoesCommandLineParmExist("?") || DoesCommandLineParmExist("--help"))
 		{
-			std::string s;
-			s = std::string("-game <dmod directory> (Example:  dink.exe -game c:\\dmods\\island) (this also sets - dmodpath automatically to the dmods parent directory)\n\n") +
-				std::string("-dmodpath or --refdir <dir containing DMOD dirs> (Example:  dink.exe - game c:\\dmods)\n\n") +
-				std::string("-debug (turns on extra debug mode options for dmod authors, available from Dink HD menu as well)\n\n") +
-				std::string("-window (Forces windowed mode)\n\n") +
-				std::string("-skip (skips latest version check)\n\n") +
-				std::string("If a.dmod file is put in the Dink HD directory(where the.exe is) it will be automatically installed and then deleted\n");
-			    std::string("dink.exe <dmod url> will install a dmod directly from the net.\n");
+    		std::string executableName;
+    		std::string pathSeparator;
+    		std::string examplePath;
 
-			MessageBox(GetForegroundWindow(), s.c_str(), "Command line options", MB_ICONSTOP);
+			// Define the executable name and path separator based on the platform
+    		#ifdef _WIN32
+        		executableName = "dink.exe";
+        		pathSeparator = "\\";
+        		examplePath = "C:" + pathSeparator + "dmods" + pathSeparator + "island";
+    		#else
+        		executableName = "dink";
+        		pathSeparator = "/";
+        		examplePath = "/home/user/dmods/island";
+    		#endif
 
+    		std::string s;
+    		s = std::string("-game <dmod directory> (Example: " + executableName + " -game " + examplePath + ") (this also sets -dmodpath automatically to the dmods parent directory)\n\n") +
+        		std::string("-dmodpath or --refdir <dir containing DMOD dirs> (Example: " + executableName + " --refdir /home/user/dmods)\n\n") +
+        		std::string("-debug (turns on extra debug mode options for dmod authors, available from Dink HD menu as well)\n\n") +
+        		std::string("-window (Forces windowed mode)\n\n") +
+        		std::string("-skip (skips latest version check)\n\n") +
+        		std::string("If a.dmod file is put in the Dink HD directory (where the " + executableName + " is) it will be automatically installed and then deleted\n") +
+        		std::string(executableName + " <dmod url> will install a dmod directly from the net.\n");
+
+			// Show help in the console (Linux/macOS) or in the log (Windows)
+    		#ifdef _WIN32
+        		OutputDebugString(s.c_str());  // Windows: show on OutputDebugString
+    		#else
+        		printf("%s", s.c_str());       // Linux/macOS: show in the console
+    		#endif
+    		LogMsg("%s", s.c_str());  // Save in log.txt(every platforms)
+    		AddTextToLog(s.c_str(), (GetSavePath() + "log.txt").c_str());
 		}
-
 
 	if (DoesCommandLineParmExist("-window") || DoesCommandLineParmExist("-windowed"))
 	{
@@ -672,13 +704,17 @@ bool App::Init()
 		g_script_debug_mode = true;
 	}
 
-	
-	if (fullscreen && g_bUseBorderlessFullscreenOnWindows)
+	// Fullscreen logic to change the screen resolution (now works on Linux)
+	if (fullscreen)
 	{
 		LogMsg("Setting fullscreen...");
 		//GetMessageManager()->SendGUI(MESSAGE_TYPE_GUI_TOGGLE_FULLSCREEN, 0, 0);  //lParam holds a lot of random data about the press, look it up if
 		g_bIsFullScreen = false; //because we're using toggle..
-		OnFullscreenToggleRequest();
+    #ifdef _WIN32
+        OnFullscreenToggleRequest();
+    #else
+        OnFullscreenToggleRequestMultiplatform();
+    #endif
 	}
 	else
 	{
@@ -691,11 +727,8 @@ bool App::Init()
 		*/
 	}
 	
-#endif
-	
 	return true;
 }
-
 
 void App::OnGamepadConnected(Gamepad* pPad)
 {
@@ -1303,52 +1336,31 @@ void App::AddTextToLog(const char *tex, const char *filename)
 		
 	}
 
-#ifdef WINAPI
-//our custom LogMsg that isn't slow as shit
-void LogMsg(const char* traceStr, ...)
-{
-	va_list argsVA;
-	const int logSize = 1024 * 10;
-	char buffer[logSize];
-	memset((void*)buffer, 0, logSize);
-
-	va_start(argsVA, traceStr);
-	vsnprintf_s(buffer, logSize, logSize, traceStr, argsVA);
-	va_end(argsVA);
-
-
-	OutputDebugString(buffer);
-	OutputDebugString("\n");
-
-	if (IsBaseAppInitted())
-	{
-		GetBaseApp()->GetConsole()->AddLine(buffer);
-		strcat(buffer, "\r\n");
-		//OutputDebugString( (string("writing to ")+GetSavePath()+"log.txt\n").c_str());
-		//this is the slow part.  Or was...
-		GetApp()->AddTextToLog(buffer, (GetSavePath() + "log.txt").c_str());
-	}
-
-}
-
-#endif
-
-#ifdef PLATFORM_OSX
-
-
-//our custom LogMsg that isn't slow as shit
+// our custom LogMsg that isn't slow as shit (cross-platform)
 void LogMsg(const char* traceStr, ...)
 {
     va_list argsVA;
     const int logSize = 1024 * 10;
     char buffer[logSize];
     memset((void*)buffer, 0, logSize);
-    
+
     va_start(argsVA, traceStr);
-    vsnprintf(buffer, logSize, traceStr, argsVA);
+    #ifdef WINAPI
+        vsnprintf_s(buffer, logSize, logSize, traceStr, argsVA);  // Windows
+    #else
+        vsnprintf(buffer, logSize, traceStr, argsVA);            // Linux/macOS
+    #endif
     va_end(argsVA);
-    
-    
+
+    // Debug output (platform-specific)
+    #ifdef WINAPI
+        OutputDebugString(buffer);
+        OutputDebugString("\n");
+    #else
+        fprintf(stderr, "%s\n", buffer);  // Linux/macOS: print to terminal
+    #endif
+
+    // Common logging (all platforms)
     if (IsBaseAppInitted())
     {
         GetBaseApp()->GetConsole()->AddLine(buffer);

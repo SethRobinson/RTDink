@@ -222,7 +222,41 @@ if (IsDesktop())
 	"\n`wQuick save/load:`` In addition to the full auto state save whenever you exit the game, and the normal save system, you can use `wQuick Save/Load`` from the pause menu.  It's very useful to beat a tough boss.  Each add-on you install will also remember its own unique save states as well.\n"\
 	"\n`wTo use an existing DMOD directory:`` Start the game with a command line parm of `w-dmodpath <dmod dir path>`` to use it instead of the default dmod directory.  `w-game <dmod path>`` is also supported to jump right into a dmod.\n"\
 "";
-	
+
+} else if (GetEmulatedPlatformID() == PLATFORM_ID_OSX)
+{
+	//macOS
+    msg += \
+        "Esc ``-`8 Bring up the game menu/pause``\n"\
+        "Arrow keys ``-`8 Movement/menu selections``\n"\
+        "Ctrl ``- `8Attack\n``"\
+        "Shift ``- `8Magic\n``"\
+        "Enter ``- `8Inventory screen/Inventory select\n``"\
+        "M ``- `8Show map\n\n``"\
+        "TAB ``- `8Speed up game (hold it down)\n``"\
+        "F5 ``- `8Quick state save\n``"\
+    	"F9 ``- `8Quick state load\n``"\
+        "F1 ``- `8Dink HD Menu\n``"\
+        "Cmd+Enter ``- `8Toggle fullscreen (macOS)\n``"\
+        "Drag window corners ``- `8Changes screensize. Hold Shift to allow any aspect ratio\n``"
+		;
+} else if (GetEmulatedPlatformID() == PLATFORM_ID_LINUX)
+{
+	//linux
+    msg += \
+        "Esc ``-`8 Bring up the game menu/pause``\n"\
+        "Arrow keys ``-`8 Movement/menu selections``\n"\
+        "Ctrl ``- `8Attack\n``"\
+        "Shift ``- `8Magic\n``"\
+        "Enter ``- `8Inventory screen/Inventory select\n``"\
+        "M ``- `8Show map\n\n``"\
+        "TAB ``- `8Speed up game (hold it down)\n``"\
+        "F5 ``- `8Quick state save\n``"\
+        "F9 ``- `8Quick state load\n``"\
+        "F1 ``- `8Dink HD Menu\n``"\
+        "F11 ``- `8Toggle fullscreen (Linux)\n``"\
+        "Drag window corners ``- `8Changes screensize. Hold Shift to allow any aspect ratio\n``"
+		;
 } else if (GetEmulatedPlatformID() == PLATFORM_ID_ANDROID)
 {
 
