@@ -882,6 +882,21 @@ void App::AddDroidKeyboardKeys()
 
 void App::Update()
 {
+	// Handle resize SDL event
+	SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_WINDOWEVENT:
+                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                    int newWidth = event.window.data1;
+                    int newHeight = event.window.data2;
+                    UpdateViewport(newWidth, newHeight);  // Update the viewport
+                }
+                break;
+            // Do not handle mouse events here (let the engine handle them).
+        }
+    }
+
 	BaseApp::Update();
 	m_adManager.Update();
 	g_gamepadManager.Update();
