@@ -392,6 +392,7 @@ void BrowseMenuAddScrollContent(Entity *pParent, TextScanner *t)
 void OnDownloadError(VariantList *pVList)
 {
 	NetHTTP::eError e = (NetHTTP::eError)pVList->m_variant[1].GetUINT32();
+	LogMsg("Network error downloading DMOD list: error code %d", (int)e);
 
 	string msg = "`4Unable to connect.  Try later. ("+toString(e)+")";
 	if (e == NetHTTP::ERROR_COMMUNICATION_TIMEOUT)

@@ -33,6 +33,7 @@ void ReloadMainMenu(VariantList *pVList)
 void OnVersionDownloadError(VariantList *pVList)
 {
 	NetHTTP::eError e = (NetHTTP::eError)pVList->m_variant[1].GetUINT32();
+	LogMsg("Network error checking for updates: error code %d", (int)e);
 
 	string msg = "`4Unable to check for updates. (" + toString(e) + ")";
 	if (e == NetHTTP::ERROR_COMMUNICATION_TIMEOUT)

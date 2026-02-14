@@ -157,6 +157,7 @@ void DMODSetTitleLabel(Entity *pMenu, string myMsg)
 void DMODInstallOnError(VariantList *pVList)
 {
 	NetHTTP::eError e = (NetHTTP::eError)pVList->m_variant[1].GetUINT32();
+	LogMsg("Network error downloading DMOD: error code %d", (int)e);
 
 	string msg = "`4Unable to connect to the\nnetwork.``\nPlease try again later.";
 	

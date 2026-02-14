@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 # Platform defines for Proton SDK
 if(UNIX AND NOT APPLE)
-  add_definitions(-DRTLINUX -DPLATFORM_LINUX -DC_GL_MODE -DRT_USE_SDL -DRT_USE_SDL_AUDIO -DRT_PNG_SUPPORT -DRT_JPG_SUPPORT)
+  add_definitions(-DRTLINUX -DPLATFORM_LINUX -DC_GL_MODE -DRT_USE_SDL -DRT_USE_SDL_AUDIO -DRT_PNG_SUPPORT -DRT_JPG_SUPPORT -DRT_USE_LIBCURL -DRT_RUNS_IN_BACKGROUND -DRT_IPV6)
 elseif(APPLE)
   add_definitions(-DPLATFORM_OSX -DC_GL_MODE)
 elseif(WIN32)
@@ -68,6 +68,7 @@ set(PROTON_SOURCES
     ${PROTON}/Entity/Component.cpp
     ${PROTON}/Entity/EntityUtils.cpp
     ${PROTON}/Network/NetHTTP.cpp
+    ${PROTON}/Network/NetHTTP_libCURL.cpp
     ${PROTON}/Network/NetSocket.cpp
     ${PROTON}/Network/NetUtils.cpp
     ${PROTON}/Manager/AdManager.cpp

@@ -593,7 +593,7 @@ bool App::Init()
 	//g_script_debug_mode = true;
 #endif
 	
-	if (GetEmulatedPlatformID() == PLATFORM_ID_WINDOWS || GetEmulatedPlatformID() == PLATFORM_ID_OSX || GetEmulatedPlatformID() == PLATFORM_ID_HTML5)
+	if (GetEmulatedPlatformID() == PLATFORM_ID_WINDOWS || GetEmulatedPlatformID() == PLATFORM_ID_OSX || GetEmulatedPlatformID() == PLATFORM_ID_LINUX || GetEmulatedPlatformID() == PLATFORM_ID_HTML5)
 	{
 		//should we draw that onscreen GUI stuff for Dink?	
 		m_bUsingTouchScreen = false;
