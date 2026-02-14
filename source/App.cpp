@@ -244,6 +244,10 @@ void OnFullscreenToggleRequestMultiplatform() {
     } else {
         SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);  //Fullscreen mode
     }
+    
+    // Ensure mouse is visible and working
+    SDL_ShowCursor(SDL_ENABLE);
+    SDL_SetRelativeMouseMode(SDL_FALSE);
 
     g_bIsFullScreen = !isFullscreen;
     GetApp()->GetVar("fullscreen")->Set(uint32(g_bIsFullScreen));
@@ -878,21 +882,6 @@ void App::AddDroidKeyboardKeys()
 
 void App::Update()
 {
-	// Handle resize SDL envent
-	SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-            case SDL_WINDOWEVENT:
-                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                    int newWidth = event.window.data1;
-                    int newHeight = event.window.data2;
-                    UpdateViewport(newWidth, newHeight);  // Update the viewport
-                }
-                break;
-            // Do not handle mouse events here (let the engine handle them).
-        }
-    }
-
 	BaseApp::Update();
 	m_adManager.Update();
 	g_gamepadManager.Update();
