@@ -35,7 +35,7 @@ The fastest way to get up and running on Linux (Ubuntu/Debian):
 curl -sL https://raw.githubusercontent.com/SethRobinson/RTDink/master/linux_setup.sh | bash
 ```
 
-That's it -- the script clones the repo, installs dependencies, builds RTDink, and downloads the game data. By default it installs to `~/DinkSmallwoodHD`.
+That's it -- the script clones the repo, installs dependencies, builds RTDink, and downloads the game data. By default it installs to `~/RTDink`.
 
 You can also run it manually if you've already cloned the repo:
 

@@ -7,7 +7,8 @@
 #   2. Install required dependencies (apt-based distros)
 #   3. Clone the Proton SDK
 #   4. Build RTDink
-#   5. Optionally download and extract the Dink Smallwood game data
+#   5. Download game data and compiled assets from the Windows release
+#   6. Assemble everything into bin/ ready to play
 #
 # One-liner install:
 #   curl -sL https://raw.githubusercontent.com/SethRobinson/RTDink/master/linux_setup.sh | bash
@@ -33,7 +34,7 @@ error() { echo -e "${RED}[ERROR]${NC} $1"; }
 # Parse arguments
 # ---------------------------------------------------------------------------
 SKIP_DATA=false
-INSTALL_DIR="$HOME/DinkSmallwoodHD"
+INSTALL_DIR="$HOME/RTDink"
 for arg in "$@"; do
     case $arg in
         --no-data) SKIP_DATA=true ;;
@@ -41,7 +42,7 @@ for arg in "$@"; do
         --help|-h)
             echo "Usage: $0 [--no-data] [--dir=PATH]"
             echo "  --no-data    Skip downloading game data (build only)"
-            echo "  --dir=PATH   Install directory (default: ~/DinkSmallwoodHD)"
+            echo "  --dir=PATH   Install directory (default: ~/RTDink)"
             echo ""
             echo "One-liner install:"
             echo "  curl -sL https://raw.githubusercontent.com/SethRobinson/RTDink/master/linux_setup.sh | bash"
@@ -78,6 +79,8 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
+
+BIN_DIR="$SCRIPT_DIR/bin"
 
 # ---------------------------------------------------------------------------
 # Step 1: Install dependencies
@@ -137,25 +140,35 @@ cmake ..
 make -j$(nproc)
 cd ..
 
-info "Build complete! Binary is at build/RTDinkApp"
+info "Build complete!"
 
 # ---------------------------------------------------------------------------
-# Step 4: Game data
+# Step 4: Assemble bin/ directory
+# ---------------------------------------------------------------------------
+info "Step 4: Setting up bin/ directory..."
+
+mkdir -p "$BIN_DIR"
+
+# Copy the binary
+cp build/RTDinkApp "$BIN_DIR/"
+
+# ---------------------------------------------------------------------------
+# Step 5: Download game data and compiled assets
 # ---------------------------------------------------------------------------
 if [ "$SKIP_DATA" = true ]; then
     info "Skipping game data download (--no-data flag)."
     echo ""
-    info "To play, you need to place the Dink Smallwood game data in the 'dink/' directory."
-    info "You can get it from: https://www.rtsoft.com/pages/dink.php"
+    info "To play, you need the dink/, interface/, and audio/ directories in: $BIN_DIR/"
+    info "You can extract them from the Windows installer at: https://www.rtsoft.com/pages/dink.php"
     echo ""
-    info "Then run:  cd build && ./RTDinkApp"
+    info "Then run:  cd $BIN_DIR && ./RTDinkApp"
     exit 0
 fi
 
-if [ -d "dink" ] && [ -f "dink/dink.dat" ]; then
-    info "Game data already present in dink/ directory."
+if [ -d "$BIN_DIR/dink" ] && [ -f "$BIN_DIR/dink/dink.dat" ]; then
+    info "Game data already present in bin/dink/ directory."
 else
-    info "Step 4: Downloading Dink Smallwood HD game data..."
+    info "Step 5: Downloading Dink Smallwood HD game data and compiled assets..."
 
     INSTALLER_URL="https://www.rtsoft.com/dink/DinkSmallwoodHDInstaller.exe"
     TEMP_DIR=$(mktemp -d)
@@ -171,43 +184,49 @@ else
 
     info "Downloading from $INSTALLER_URL ..."
     if $DOWNLOAD_CMD "$TEMP_DIR/dink_installer.exe" "$INSTALLER_URL"; then
-        info "Extracting game data..."
+        info "Extracting installer..."
         cd "$TEMP_DIR"
-        7z x -y dink_installer.exe -odink_extracted >/dev/null 2>&1 || true
+        7z x -y dink_installer.exe -oextracted >/dev/null 2>&1 || true
         cd "$SCRIPT_DIR"
 
-        # Look for the dink/ game data directory in the extracted content
-        DINK_DATA=""
-        if [ -d "$TEMP_DIR/dink_extracted/dink" ]; then
-            DINK_DATA="$TEMP_DIR/dink_extracted/dink"
-        elif [ -d "$TEMP_DIR/dink_extracted/\$INSTDIR/dink" ]; then
-            DINK_DATA="$TEMP_DIR/dink_extracted/\$INSTDIR/dink"
+        # Find the extracted root (NSIS extracts to $INSTDIR or directly)
+        EXTRACT_ROOT=""
+        if [ -d "$TEMP_DIR/extracted/dink" ]; then
+            EXTRACT_ROOT="$TEMP_DIR/extracted"
+        elif [ -d "$TEMP_DIR/extracted/\$INSTDIR/dink" ]; then
+            EXTRACT_ROOT="$TEMP_DIR/extracted/\$INSTDIR"
         else
-            # Search for dink.dat anywhere in the extracted tree
-            DINK_DAT=$(find "$TEMP_DIR/dink_extracted" -name "dink.dat" -type f 2>/dev/null | head -1)
+            # Search for dink.dat to find the root
+            DINK_DAT=$(find "$TEMP_DIR/extracted" -name "dink.dat" -type f 2>/dev/null | head -1)
             if [ -n "$DINK_DAT" ]; then
-                DINK_DATA=$(dirname "$DINK_DAT")
+                EXTRACT_ROOT=$(dirname "$(dirname "$DINK_DAT")")
             fi
         fi
 
-        if [ -n "$DINK_DATA" ] && [ -d "$DINK_DATA" ]; then
-            info "Found game data, copying to dink/ ..."
-            cp -r "$DINK_DATA" "$SCRIPT_DIR/dink"
-            info "Game data installed successfully!"
+        if [ -n "$EXTRACT_ROOT" ] && [ -d "$EXTRACT_ROOT/dink" ]; then
+            # Copy game data and compiled assets directly into bin/
+            for dir in dink interface audio; do
+                if [ -d "$EXTRACT_ROOT/$dir" ]; then
+                    info "Copying $dir/ to bin/..."
+                    rm -rf "$BIN_DIR/$dir"
+                    cp -r "$EXTRACT_ROOT/$dir" "$BIN_DIR/$dir"
+                fi
+            done
+            info "Game data and assets installed successfully!"
         else
             warn "Could not locate game data in the downloaded installer."
-            warn "You may need to manually extract it. The installer was saved to: $TEMP_DIR/dink_installer.exe"
-            warn "Extract the 'dink/' folder and place it in: $SCRIPT_DIR/dink/"
+            warn "The installer was saved to: $TEMP_DIR/dink_installer.exe"
+            warn "Extract the dink/, interface/, and audio/ folders into: $BIN_DIR/"
         fi
 
         # Clean up temp files (but not if we failed to find data)
-        if [ -d "$SCRIPT_DIR/dink" ] && [ -f "$SCRIPT_DIR/dink/dink.dat" ]; then
+        if [ -d "$BIN_DIR/dink" ] && [ -f "$BIN_DIR/dink/dink.dat" ]; then
             rm -rf "$TEMP_DIR"
         fi
     else
         warn "Download failed. You can manually download the game data from:"
         warn "  https://www.rtsoft.com/pages/dink.php"
-        warn "Extract the 'dink/' folder and place it in: $SCRIPT_DIR/dink/"
+        warn "Extract the dink/, interface/, and audio/ folders into: $BIN_DIR/"
         rm -rf "$TEMP_DIR"
     fi
 fi
@@ -216,14 +235,14 @@ fi
 # Done!
 # ---------------------------------------------------------------------------
 echo ""
-if [ -d "dink" ] && [ -f "dink/dink.dat" ]; then
+if [ -d "$BIN_DIR/dink" ] && [ -f "$BIN_DIR/dink/dink.dat" ]; then
     info "Setup complete! Dink Smallwood HD is ready to play."
     echo ""
-    echo "    cd $SCRIPT_DIR/build && ./RTDinkApp"
+    echo "    cd $BIN_DIR && ./RTDinkApp"
     echo ""
 else
     info "Build complete, but game data is missing."
     info "Download from https://www.rtsoft.com/pages/dink.php"
-    info "Extract the 'dink/' folder to: $SCRIPT_DIR/dink/"
-    info "Then run:  cd $SCRIPT_DIR/build && ./RTDinkApp"
+    info "Extract the dink/, interface/, and audio/ folders into: $BIN_DIR/"
+    info "Then run:  cd $BIN_DIR && ./RTDinkApp"
 fi
