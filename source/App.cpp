@@ -40,8 +40,9 @@ extern bool g_bUseBorderlessFullscreenOnWindows;
 void AddText(const char *tex, const char *filename);
 
 #include "StackWalker/StackUtils.h"
-extern bool g_bIsFullScreen;
 #endif
+
+extern bool g_bIsFullScreen;
 
 extern bool g_script_debug_mode;
 extern Surface g_transitionSurf;
@@ -191,6 +192,34 @@ const char * GetAppName()
 	return "Dink Smallwood HD";
 };
 
+// Temporary hack to get the window handle for the app
+SDL_Window* GetSDLWindow() {
+	// If the game is already initialized, we can use the window handle from the SDL2 context
+    SDL_Window* window = SDL_GL_GetCurrentWindow();
+    if (!window) {
+        LogMsg("Failed to get SDL window: %s", SDL_GetError());
+    }
+    return window;
+}
+
+// Temporary hack to toggle fullscreen mode (cross-platform using SDL2)
+void OnFullscreenToggleRequestMultiplatform() {
+    SDL_Window* window = GetSDLWindow();
+    if (!window) return;  // Failed to get window, can't toggle fullscreen
+
+    Uint32 flags = SDL_GetWindowFlags(window);
+    bool isFullscreen = (flags & SDL_WINDOW_FULLSCREEN) != 0;
+
+    if (isFullscreen) {
+        SDL_SetWindowFullscreen(window, 0);  // Windowed mode
+    } else {
+        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);  //Fullscreen mode
+    }
+
+    g_bIsFullScreen = !isFullscreen;
+    GetApp()->GetVar("fullscreen")->Set(uint32(g_bIsFullScreen));
+}
+
 App::App()
 {
 	m_logFileHandle = NULL;
@@ -292,17 +321,6 @@ bool App::DoesCommandLineParmExist(string parm)
 		if (ToLowerCaseString(parms[i]) == parm) return true;
 	}
 	return false;
-}
-
-void App::OnFullscreenToggleRequestMultiplatform()
-{
-    // Toggle fullscreen mode
-    if (GetPrimaryGLX() != 0)
-    {
-        SetVideoMode(GetPrimaryGLX(), GetPrimaryGLY(), !g_bIsFullScreen, 0);
-        g_bIsFullScreen = !g_bIsFullScreen;
-        GetApp()->GetVar("fullscreen")->Set(uint32(g_bIsFullScreen));
-    }
 }
 
 bool App::Init()
@@ -713,7 +731,7 @@ bool App::Init()
     #ifdef _WIN32
         OnFullscreenToggleRequest();
     #else
-        OnFullscreenToggleRequestMultiplatform();
+        OnFullscreenToggleRequestMultiplatform(); // hack to get fullscreen working on linux and mac, but this should be tested more
     #endif
 	}
 	else
@@ -1336,31 +1354,53 @@ void App::AddTextToLog(const char *tex, const char *filename)
 		
 	}
 
-// our custom LogMsg that isn't slow as shit (cross-platform)
+#ifdef WINAPI
+//our custom LogMsg that isn't slow as shit
+void LogMsg(const char* traceStr, ...)
+{
+	va_list argsVA;
+	const int logSize = 1024 * 10;
+	char buffer[logSize];
+	memset((void*)buffer, 0, logSize);
+
+	va_start(argsVA, traceStr);
+	vsnprintf_s(buffer, logSize, logSize, traceStr, argsVA);
+	va_end(argsVA);
+
+
+	OutputDebugString(buffer);
+	OutputDebugString("\n");
+
+	if (IsBaseAppInitted())
+	{
+		GetBaseApp()->GetConsole()->AddLine(buffer);
+		strcat(buffer, "\r\n");
+		//OutputDebugString( (string("writing to ")+GetSavePath()+"log.txt\n").c_str());
+		//this is the slow part.  Or was...
+		GetApp()->AddTextToLog(buffer, (GetSavePath() + "log.txt").c_str());
+	}
+
+}
+
+
+#endif
+
+#ifdef PLATFORM_OSX
+
+
+//our custom LogMsg that isn't slow as shit
 void LogMsg(const char* traceStr, ...)
 {
     va_list argsVA;
     const int logSize = 1024 * 10;
     char buffer[logSize];
     memset((void*)buffer, 0, logSize);
-
+    
     va_start(argsVA, traceStr);
-    #ifdef WINAPI
-        vsnprintf_s(buffer, logSize, logSize, traceStr, argsVA);  // Windows
-    #else
-        vsnprintf(buffer, logSize, traceStr, argsVA);            // Linux/macOS
-    #endif
+    vsnprintf(buffer, logSize, traceStr, argsVA);
     va_end(argsVA);
-
-    // Debug output (platform-specific)
-    #ifdef WINAPI
-        OutputDebugString(buffer);
-        OutputDebugString("\n");
-    #else
-        fprintf(stderr, "%s\n", buffer);  // Linux/macOS: print to terminal
-    #endif
-
-    // Common logging (all platforms)
+    
+    
     if (IsBaseAppInitted())
     {
         GetBaseApp()->GetConsole()->AddLine(buffer);
