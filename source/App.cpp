@@ -234,27 +234,29 @@ void UpdateViewport(int width, int height) {
 // Temporary hack to toggle fullscreen mode (cross-platform using SDL2)
 void OnFullscreenToggleRequestMultiplatform() {
     SDL_Window* window = GetSDLWindow();
-    if (!window) return;  // Failed to get window, can't toggle fullscreen
+    if (!window) return;
 
     Uint32 flags = SDL_GetWindowFlags(window);
-    bool isFullscreen = (flags & SDL_WINDOW_FULLSCREEN) != 0;
+    bool isFullscreen = (flags & (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_FULLSCREEN_DESKTOP)) != 0;
 
     if (isFullscreen) {
-        SDL_SetWindowFullscreen(window, 0);  // Windowed mode
+        SDL_SetWindowFullscreen(window, 0);
     } else {
-        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);  //Fullscreen mode
+        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
     }
-    
-    // Ensure mouse is visible and working
+
     SDL_ShowCursor(SDL_ENABLE);
     SDL_SetRelativeMouseMode(SDL_FALSE);
 
     g_bIsFullScreen = !isFullscreen;
     GetApp()->GetVar("fullscreen")->Set(uint32(g_bIsFullScreen));
 
-	// Update the viewport to match the new window size after toggling fullscreen
     int width, height;
     SDL_GetWindowSize(window, &width, &height);
+
+    SetPrimaryScreenSize(width, height);
+    SetupScreenInfo(width, height, ORIENTATION_PORTRAIT);
+    SetupFakePrimaryScreenSize(1024, 768);
     UpdateViewport(width, height);
 }
 
@@ -882,21 +884,6 @@ void App::AddDroidKeyboardKeys()
 
 void App::Update()
 {
-	// Handle resize SDL event
-	SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-            case SDL_WINDOWEVENT:
-                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                    int newWidth = event.window.data1;
-                    int newHeight = event.window.data2;
-                    UpdateViewport(newWidth, newHeight);  // Update the viewport
-                }
-                break;
-            // Do not handle mouse events here (let the engine handle them).
-        }
-    }
-
 	BaseApp::Update();
 	m_adManager.Update();
 	g_gamepadManager.Update();
@@ -1010,6 +997,7 @@ void App::OnScreenSizeChange()
 	BaseApp::OnScreenSizeChange();
 	if (GetPrimaryGLX() != 0)
 	{
+		UpdateViewport(GetPrimaryGLX(), GetPrimaryGLY());
 		SetupOrtho();
 		DinkOnForeground(); //rebuild lost surfaces
 		g_dglo.m_bForceControlsRebuild = true;
@@ -1025,7 +1013,6 @@ void App::OnScreenSizeChange()
 	GetApp()->GetVar("fullscreen")->Set(uint32(g_bIsFullScreen));
 	GetApp()->GetVar("videox")->Set(uint32(GetPrimaryGLX()));
 	GetApp()->GetVar("videoy")->Set(uint32(GetPrimaryGLY()));
-	//GetApp()->GetVarWithDefault("borderless_fullscreen", uint32(g_bUseBorderlessFullscreenOnWindows))->Set(uint32(0));
 #ifdef _DEBUG
 	LogMsg("Got OnScreenSizeChange:  Setting to %d, %d", uint32(GetPrimaryGLX()), uint32(GetPrimaryGLY()));
 #endif

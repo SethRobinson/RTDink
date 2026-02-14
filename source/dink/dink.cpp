@@ -10,6 +10,11 @@
 #include "FileSystem/StreamingInstance.h"
 #include <time.h>
 
+#if defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(PLATFORM_OSX)
+#include <SDL2/SDL.h>
+void OnFullscreenToggleRequestMultiplatform();
+#endif
+
 const int C_DINK_MAX_ITEMS = 16;
 const int C_DINK_MAX_MAGICS = 8;
 
@@ -11956,7 +11961,6 @@ extern bool g_bAppFinished;
 void CheckForHotkeys()
 {
 #ifdef C_DINK_KEYBOARD_INPUT
-    
     // Alt+Q to quit (Windows only)
     #ifdef WINAPI
     if ((GetKeyboard('Q')) && (GetKeyboard(18)))
@@ -11968,7 +11972,7 @@ void CheckForHotkeys()
             g_bAppFinished = true;
         }
     }
-    
+
     // Alt+D to toggle debug mode
     if ((GetKeyboard(68)) && (GetKeyboard(18)))
     {
@@ -11987,7 +11991,7 @@ void CheckForHotkeys()
             }
         }
     }
-    
+
     // Alt+Enter to toggle fullscreen (Windows)
     if (GetBaseApp()->GetKeyState(VIRTUAL_KEY_RETURN) && GetBaseApp()->GetKeyState(VIRTUAL_KEY_MENU))
     {
@@ -11998,34 +12002,39 @@ void CheckForHotkeys()
         }
     }
     #endif // WINAPI
-    
+#endif // C_DINK_KEYBOARD_INPUT
+
     // F11 to toggle fullscreen (Linux/Mac/cross-platform)
     #if defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(PLATFORM_OSX)
-    if (GetBaseApp()->GetKeyState(VIRTUAL_KEY_F11))
     {
-        static uint32 lastF11Press = 0;
-        if (lastF11Press < GetApp()->GetTick())
+        const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+        if (keystate[SDL_SCANCODE_F11])
         {
-            lastF11Press = GetApp()->GetTick() + 500;
-            OnFullscreenToggleRequestMultiplatform();
+            static uint32 lastF11Press = 0;
+            if (lastF11Press < GetApp()->GetTick())
+            {
+                lastF11Press = GetApp()->GetTick() + 500;
+                OnFullscreenToggleRequestMultiplatform();
+            }
         }
     }
     #endif
-    
+
     // Cmd+Enter to toggle fullscreen (Mac)
     #ifdef PLATFORM_OSX
-    if (GetBaseApp()->GetKeyState(VIRTUAL_KEY_RETURN) && GetBaseApp()->GetKeyState(VIRTUAL_KEY_COMMAND))
     {
-        static uint32 lastCmdEnterPress = 0;
-        if (lastCmdEnterPress < GetApp()->GetTick())
+        const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+        if (keystate[SDL_SCANCODE_RETURN] && keystate[SDL_SCANCODE_LGUI])
         {
-            lastCmdEnterPress = GetApp()->GetTick() + 500;
-            OnFullscreenToggleRequestMultiplatform();
+            static uint32 lastCmdEnterPress = 0;
+            if (lastCmdEnterPress < GetApp()->GetTick())
+            {
+                lastCmdEnterPress = GetApp()->GetTick() + 500;
+                OnFullscreenToggleRequestMultiplatform();
+            }
         }
     }
     #endif
-    
-#endif // C_DINK_KEYBOARD_INPUT
 }
 
 
