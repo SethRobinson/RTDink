@@ -11955,45 +11955,77 @@ extern bool g_bAppFinished;
 #endif
 void CheckForHotkeys()
 {
-
-
 #ifdef C_DINK_KEYBOARD_INPUT
-#ifdef WINAPI
-	if ((GetKeyboard('Q')) && (GetKeyboard(18)))
-	{
-		if (g_DebugKeyTimer < GetApp()->GetTick())
-		{
-			g_DebugKeyTimer = GetApp()->GetTick() + 500;
-
-			LogMsg("Pressed Alt-Q, shutting down");
-
-			g_bAppFinished = true;
-		}
-	}
-
-
-	if ((GetKeyboard(68)) && (GetKeyboard(18)))
-	{
-		if (g_DebugKeyTimer < GetApp()->GetTick())
-		{
-			g_DebugKeyTimer = GetApp()->GetTick() + 500;
-
-			if (g_script_debug_mode)
-			{
-				g_script_debug_mode = false;
-				ShowQuickMessage("Script debug/extra logging off");
-			}
-			else
-			{
-				g_script_debug_mode = true;
-				ShowQuickMessage("Script debug/extra logging on");
-			}
-
-		}
-	}
-
-#endif
-#endif
+    
+    // Alt+Q to quit (Windows only)
+    #ifdef WINAPI
+    if ((GetKeyboard('Q')) && (GetKeyboard(18)))
+    {
+        if (g_DebugKeyTimer < GetApp()->GetTick())
+        {
+            g_DebugKeyTimer = GetApp()->GetTick() + 500;
+            LogMsg("Pressed Alt-Q, shutting down");
+            g_bAppFinished = true;
+        }
+    }
+    
+    // Alt+D to toggle debug mode
+    if ((GetKeyboard(68)) && (GetKeyboard(18)))
+    {
+        if (g_DebugKeyTimer < GetApp()->GetTick())
+        {
+            g_DebugKeyTimer = GetApp()->GetTick() + 500;
+            if (g_script_debug_mode)
+            {
+                g_script_debug_mode = false;
+                ShowQuickMessage("Script debug/extra logging off");
+            }
+            else
+            {
+                g_script_debug_mode = true;
+                ShowQuickMessage("Script debug/extra logging on");
+            }
+        }
+    }
+    
+    // Alt+Enter to toggle fullscreen (Windows)
+    if (GetBaseApp()->GetKeyState(VIRTUAL_KEY_RETURN) && GetBaseApp()->GetKeyState(VIRTUAL_KEY_MENU))
+    {
+        if (g_DebugKeyTimer < GetApp()->GetTick())
+        {
+            g_DebugKeyTimer = GetApp()->GetTick() + 500;
+            OnFullscreenToggleRequest();
+        }
+    }
+    #endif // WINAPI
+    
+    // F11 to toggle fullscreen (Linux/Mac/cross-platform)
+    #if defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(PLATFORM_OSX)
+    if (GetBaseApp()->GetKeyState(VIRTUAL_KEY_F11))
+    {
+        static uint32 lastF11Press = 0;
+        if (lastF11Press < GetApp()->GetTick())
+        {
+            lastF11Press = GetApp()->GetTick() + 500;
+            OnFullscreenToggleRequestMultiplatform();
+        }
+    }
+    #endif
+    
+    // Cmd+Enter to toggle fullscreen (Mac)
+    #ifdef PLATFORM_OSX
+    if (GetBaseApp()->GetKeyState(VIRTUAL_KEY_RETURN) && GetBaseApp()->GetKeyState(VIRTUAL_KEY_COMMAND))
+    {
+        static uint32 lastCmdEnterPress = 0;
+        if (lastCmdEnterPress < GetApp()->GetTick())
+        {
+            lastCmdEnterPress = GetApp()->GetTick() + 500;
+            OnFullscreenToggleRequestMultiplatform();
+        }
+    }
+    #endif
+    
+#endif // C_DINK_KEYBOARD_INPUT
 }
 
 

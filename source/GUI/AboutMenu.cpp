@@ -544,7 +544,16 @@ Entity * AboutMenuCreate( Entity *pParentEnt)
 	EntityComponent *pScrollBarComp = pScroll->AddComponent(new ScrollBarRenderComponent); 	//also let's add a visual way to see the scroller position
 	//pScroll->GetVar("color")->Set(MAKE_RGBA(61,155, 193, 255)); 
 	Entity *pScrollChild = pScroll->AddEntity(new Entity("scroll_child"));
-	pScrollComp->GetVar("fingerTracking")->Set(uint32(1));
+	// Enable finger tracking for touch devices, but also enable mouse wheel for desktop
+	if (IsDesktop() || !GetApp()->GetUsingTouchScreen())
+	{
+    	pScrollComp->GetVar("fingerTracking")->Set(uint32(0)); // Disable drag scrolling
+    	pScrollComp->GetVar("progressInc")->Set(0.1f); // Enable scroll wheel increment
+	}
+	else
+	{
+    	pScrollComp->GetVar("fingerTracking")->Set(uint32(1)); // Keep drag scrolling for mobile
+	}
 
 	/*
 	//too slow/broken on Android, we'll do it another way
