@@ -107,6 +107,13 @@ file(GLOB PROTON_COMPONENT_SOURCES ${PROTON}/Entity/*Component.cpp)
 list(FILTER PROTON_COMPONENT_SOURCES EXCLUDE REGEX ".*LibVlc.*|.*Irrlicht.*|.*Template.*|.*SpriteAnimation.*")
 list(APPEND PROTON_SOURCES ${PROTON_COMPONENT_SOURCES})
 
+# Fix build with GCC 14+ (Fedora, Arch) which treats pointer type mismatches as errors
+set_source_files_properties(
+    ${PROTON}/util/unzip/unzip.c
+    ${PROTON}/util/unzip/ioapi.c
+    PROPERTIES COMPILE_FLAGS "-Wno-incompatible-pointer-types"
+)
+
 # Executable
 add_executable(RTDinkApp ${RTDINK_SOURCES} ${PROTON_SOURCES})
 
