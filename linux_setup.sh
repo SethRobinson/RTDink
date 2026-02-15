@@ -151,7 +151,6 @@ done
 # ---------------------------------------------------------------------------
 if [ ! -f "CMakeLists.txt" ] || [ ! -d "source" ]; then
     info "RTDink repo not detected in current directory."
-    info "Cloning RTDink into $INSTALL_DIR ..."
 
     # Make sure git is available
     if ! command -v git >/dev/null 2>&1; then
@@ -162,8 +161,21 @@ if [ ! -f "CMakeLists.txt" ] || [ ! -d "source" ]; then
     if [ -d "$INSTALL_DIR/.git" ]; then
         info "RTDink already cloned at $INSTALL_DIR, pulling latest..."
         cd "$INSTALL_DIR"
-        git pull
+        git pull || warn "git pull failed (network issue?), continuing with existing files..."
+    elif [ -d "$INSTALL_DIR" ] && [ -n "$(ls -A "$INSTALL_DIR" 2>/dev/null)" ]; then
+        # Directory exists and is not empty, but has no .git
+        if [ -f "$INSTALL_DIR/CMakeLists.txt" ] && [ -d "$INSTALL_DIR/source" ]; then
+            warn "Directory $INSTALL_DIR contains RTDink files but no .git directory."
+            warn "Proceeding with existing files (no git pull possible)..."
+            cd "$INSTALL_DIR"
+        else
+            error "Directory $INSTALL_DIR already exists and is not empty,"
+            error "but does not appear to be an RTDink checkout."
+            error "Please remove it or choose a different directory with --dir=PATH"
+            exit 1
+        fi
     else
+        info "Cloning RTDink into $INSTALL_DIR ..."
         git clone https://github.com/SethRobinson/RTDink.git "$INSTALL_DIR"
         cd "$INSTALL_DIR"
     fi
@@ -174,6 +186,22 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
+
+# Offer to pull latest RTDink changes when running from inside an existing checkout
+if [ -d ".git" ]; then
+    if [ -t 0 ]; then
+        # Interactive terminal — ask the user
+        echo -en "${GREEN}[INFO]${NC} Git repo detected. Pull latest RTDink changes before building? [y/N] "
+        read -r answer
+        if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
+            git pull || warn "git pull failed (network issue?), continuing with existing files..."
+        else
+            info "Skipping git pull, building with existing files."
+        fi
+    else
+        info "Non-interactive mode — skipping git pull for local checkout."
+    fi
+fi
 
 BIN_DIR="$SCRIPT_DIR/bin"
 
