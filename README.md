@@ -6,6 +6,14 @@ Visit https://www.rtsoft.com/pages/dink.php for installers for Windows, Mac, iOS
 
 Also mirrored on The Dink Network: https://www.dinknetwork.com/file/dink_smallwood_hd/
 
+**Linux?** Install and play with a single command (Ubuntu/Debian/Fedora/Arch/openSUSE/Alpine):
+
+```bash
+curl -sL https://raw.githubusercontent.com/SethRobinson/RTDink/master/linux_setup.sh | bash
+```
+
+This clones the repo, installs dependencies, builds from source, and downloads the game data automatically.
+
 ## Building from source
 
 RTDink can be built for multiple platforms. Each uses the [Proton SDK](https://github.com/SethRobinson/proton).  Each has full keyboard and controller support except Linux which is keyboard only.
