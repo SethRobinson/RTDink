@@ -161,7 +161,7 @@ if [ ! -f "CMakeLists.txt" ] || [ ! -d "source" ]; then
     if [ -d "$INSTALL_DIR/.git" ]; then
         info "RTDink already cloned at $INSTALL_DIR, pulling latest..."
         cd "$INSTALL_DIR"
-        git pull || warn "git pull failed (network issue?), continuing with existing files..."
+        git pull || warn "git pull failed (local changes or network issue?), continuing with existing files..."
     elif [ -d "$INSTALL_DIR" ] && [ -n "$(ls -A "$INSTALL_DIR" 2>/dev/null)" ]; then
         # Directory exists and is not empty, but has no .git
         if [ -f "$INSTALL_DIR/CMakeLists.txt" ] && [ -d "$INSTALL_DIR/source" ]; then
@@ -194,7 +194,7 @@ if [ -d ".git" ]; then
         echo -en "${GREEN}[INFO]${NC} Git repo detected. Pull latest RTDink changes before building? [y/N] "
         read -r answer
         if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
-            git pull || warn "git pull failed (network issue?), continuing with existing files..."
+            git pull || warn "git pull failed (local changes or network issue?), continuing with existing files..."
         else
             info "Skipping git pull, building with existing files."
         fi
@@ -235,7 +235,7 @@ info "Step 2: Setting up Proton SDK..."
 
 if [ -d "proton/.git" ]; then
     info "Proton SDK already cloned, pulling latest..."
-    cd proton && git pull && cd ..
+    (cd proton && git pull) || warn "Proton git pull failed (local changes or network issue?), continuing with existing files..."
 else
     info "Cloning Proton SDK..."
     git clone https://github.com/SethRobinson/proton.git
