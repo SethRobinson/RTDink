@@ -739,6 +739,7 @@ bool App::Init()
 	if (fullscreen && g_bUseBorderlessFullscreenOnWindows)
 	{
 		LogMsg("Setting fullscreen...");
+		//GetMessageManager()->SendGUI(MESSAGE_TYPE_GUI_TOGGLE_FULLSCREEN, 0, 0);  //lParam holds a lot of random data about the press, look it up if
 		g_bIsFullScreen = false; //because we're using toggle..
 		OnFullscreenToggleRequest();
 	}
@@ -1026,6 +1027,7 @@ void App::OnScreenSizeChange()
 	GetApp()->GetVar("fullscreen")->Set(uint32(g_bIsFullScreen));
 	GetApp()->GetVar("videox")->Set(uint32(GetPrimaryGLX()));
 	GetApp()->GetVar("videoy")->Set(uint32(GetPrimaryGLY()));
+	//GetApp()->GetVarWithDefault("borderless_fullscreen", uint32(g_bUseBorderlessFullscreenOnWindows))->Set(uint32(0));
 #ifdef _DEBUG
 	LogMsg("Got OnScreenSizeChange:  Setting to %d, %d", uint32(GetPrimaryGLX()), uint32(GetPrimaryGLY()));
 #endif
