@@ -149,7 +149,9 @@ done
 # ---------------------------------------------------------------------------
 # Bootstrap: if we're not inside the RTDink repo, clone it and re-run
 # ---------------------------------------------------------------------------
+BOOTSTRAPPED=false
 if [ ! -f "CMakeLists.txt" ] || [ ! -d "source" ]; then
+    BOOTSTRAPPED=true
     info "RTDink repo not detected in current directory."
 
     # Make sure git is available
@@ -185,11 +187,12 @@ if [ ! -f "CMakeLists.txt" ] || [ ! -d "source" ]; then
 fi
 
 # Determine the repo root directory
-if [ -n "${BASH_SOURCE[0]}" ] && [ "${BASH_SOURCE[0]}" != "bash" ] && [ -f "${BASH_SOURCE[0]}" ]; then
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-else
-    # Running from curl pipe or similar — we already cd'd into the repo above
+if [ "$BOOTSTRAPPED" = true ]; then
+    # We cd'd into the repo during bootstrap — use current directory
     SCRIPT_DIR="$(pwd)"
+else
+    # Running directly from within the repo — use script's own location
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
 cd "$SCRIPT_DIR"
 
