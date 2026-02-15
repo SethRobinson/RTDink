@@ -754,7 +754,7 @@ bool App::Init()
 		*/
 	}
 
-#else
+#elif defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(PLATFORM_OSX)
 	// Linux/macOS video settings
 	int fullscreen = GetApp()->GetVarWithDefault("fullscreen", uint32(1))->GetUINT32();
 

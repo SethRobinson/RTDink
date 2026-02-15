@@ -11992,15 +11992,6 @@ void CheckForHotkeys()
         }
     }
 
-    // Alt+Enter to toggle fullscreen (Windows)
-    if (GetBaseApp()->GetKeyState(VIRTUAL_KEY_RETURN) && GetBaseApp()->GetKeyState(VIRTUAL_KEY_MENU))
-    {
-        if (g_DebugKeyTimer < GetApp()->GetTick())
-        {
-            g_DebugKeyTimer = GetApp()->GetTick() + 500;
-            OnFullscreenToggleRequest();
-        }
-    }
     #endif // WINAPI
 #endif // C_DINK_KEYBOARD_INPUT
 

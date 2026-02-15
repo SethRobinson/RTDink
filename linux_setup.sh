@@ -4,11 +4,13 @@
 #
 # This script will:
 #   1. Clone RTDink (if not already in the repo)
-#   2. Install required dependencies (apt-based distros)
+#   2. Install required dependencies (auto-detects package manager)
 #   3. Clone the Proton SDK
 #   4. Build RTDink
 #   5. Download game data and compiled assets from the Windows release
 #   6. Assemble everything into bin/ ready to play
+#
+# Supported distros: Debian/Ubuntu, Fedora/RHEL, Arch/Manjaro, openSUSE, Alpine
 #
 # One-liner install:
 #   curl -sL https://raw.githubusercontent.com/SethRobinson/RTDink/master/linux_setup.sh | bash
@@ -29,6 +31,99 @@ NC='\033[0m' # No Color
 info()  { echo -e "${GREEN}[INFO]${NC} $1"; }
 warn()  { echo -e "${YELLOW}[WARN]${NC} $1"; }
 error() { echo -e "${RED}[ERROR]${NC} $1"; }
+
+# ---------------------------------------------------------------------------
+# Detect package manager
+# ---------------------------------------------------------------------------
+detect_pkg_manager() {
+    if command -v apt-get >/dev/null 2>&1; then
+        PKG_MANAGER="apt"
+    elif command -v dnf >/dev/null 2>&1; then
+        PKG_MANAGER="dnf"
+    elif command -v yum >/dev/null 2>&1; then
+        PKG_MANAGER="yum"
+    elif command -v pacman >/dev/null 2>&1; then
+        PKG_MANAGER="pacman"
+    elif command -v zypper >/dev/null 2>&1; then
+        PKG_MANAGER="zypper"
+    elif command -v apk >/dev/null 2>&1; then
+        PKG_MANAGER="apk"
+    else
+        PKG_MANAGER=""
+    fi
+}
+
+# Install packages using the detected package manager
+# Usage: pkg_install pkg1 pkg2 ...
+pkg_install() {
+    case "$PKG_MANAGER" in
+        apt)
+            sudo apt-get update
+            sudo apt-get install -y "$@"
+            ;;
+        dnf)
+            sudo dnf install -y "$@"
+            ;;
+        yum)
+            sudo yum install -y "$@"
+            ;;
+        pacman)
+            sudo pacman -S --needed --noconfirm "$@"
+            ;;
+        zypper)
+            sudo zypper install -y "$@"
+            ;;
+        apk)
+            sudo apk add "$@"
+            ;;
+        *)
+            error "No supported package manager found (tried apt, dnf, yum, pacman, zypper, apk)."
+            error "Please install the following packages manually, then re-run with --no-data or after installing deps:"
+            error "  C/C++ compiler, cmake, OpenGL dev libs, X11 dev libs, libpng, zlib, bzip2,"
+            error "  libcurl, SDL2, SDL2_mixer, 7zip/p7zip"
+            exit 1
+            ;;
+    esac
+}
+
+# Return the list of packages needed for this distro's package manager
+get_build_packages() {
+    case "$PKG_MANAGER" in
+        apt)
+            echo "build-essential cmake libgl1-mesa-dev libx11-dev libpng-dev zlib1g-dev libbz2-dev libcurl4-openssl-dev libsdl2-dev libsdl2-mixer-dev"
+            ;;
+        dnf|yum)
+            echo "gcc gcc-c++ make cmake mesa-libGL-devel libX11-devel libpng-devel zlib-devel bzip2-devel libcurl-devel SDL2-devel SDL2_mixer-devel"
+            ;;
+        pacman)
+            echo "base-devel cmake mesa libx11 libpng zlib bzip2 curl sdl2 sdl2_mixer"
+            ;;
+        zypper)
+            echo "gcc gcc-c++ make cmake Mesa-libGL-devel libX11-devel libpng16-devel zlib-devel libbz2-devel libcurl-devel libSDL2-devel libSDL2_mixer-devel"
+            ;;
+        apk)
+            echo "build-base cmake mesa-dev libx11-dev libpng-dev zlib-dev bzip2-dev curl-dev sdl2-dev sdl2_mixer-dev"
+            ;;
+    esac
+}
+
+# Return the 7zip package name for this distro
+get_7zip_package() {
+    case "$PKG_MANAGER" in
+        apt)     echo "p7zip-full" ;;
+        dnf|yum) echo "p7zip p7zip-plugins" ;;
+        pacman)  echo "p7zip" ;;
+        zypper)  echo "p7zip-full" ;;
+        apk)     echo "7zip" ;;
+    esac
+}
+
+# Return the git package name (always "git" but keeps the pattern consistent)
+get_git_package() {
+    echo "git"
+}
+
+detect_pkg_manager
 
 # ---------------------------------------------------------------------------
 # Parse arguments
@@ -61,7 +156,7 @@ if [ ! -f "CMakeLists.txt" ] || [ ! -d "source" ]; then
     # Make sure git is available
     if ! command -v git >/dev/null 2>&1; then
         info "Installing git..."
-        sudo apt update && sudo apt install -y git
+        pkg_install $(get_git_package)
     fi
 
     if [ -d "$INSTALL_DIR/.git" ]; then
@@ -86,28 +181,23 @@ BIN_DIR="$SCRIPT_DIR/bin"
 # Step 1: Install dependencies
 # ---------------------------------------------------------------------------
 info "Step 1: Checking dependencies..."
+info "Detected package manager: $PKG_MANAGER"
 
-PACKAGES="build-essential cmake libgl1-mesa-dev libx11-dev libpng-dev zlib1g-dev libbz2-dev libcurl4-openssl-dev libsdl2-dev libsdl2-mixer-dev"
+BUILD_PACKAGES=$(get_build_packages)
 
-MISSING=""
-for pkg in $PACKAGES; do
-    if ! dpkg -s "$pkg" >/dev/null 2>&1; then
-        MISSING="$MISSING $pkg"
-    fi
-done
-
-if [ -n "$MISSING" ]; then
-    info "Installing missing packages:$MISSING"
-    sudo apt update
-    sudo apt install -y $MISSING
-else
-    info "All dependencies already installed."
+if [ -z "$BUILD_PACKAGES" ]; then
+    error "Could not determine packages for your system."
+    error "Please install build dependencies manually (C/C++ toolchain, cmake, SDL2, SDL2_mixer, OpenGL, X11, libpng, zlib, bzip2, libcurl)."
+    exit 1
 fi
+
+info "Installing build dependencies..."
+pkg_install $BUILD_PACKAGES
 
 # For game data extraction (optional, only needed if downloading game data)
 if [ "$SKIP_DATA" = false ] && ! command -v 7z >/dev/null 2>&1; then
-    info "Installing p7zip-full (needed to extract game data from Windows installer)..."
-    sudo apt install -y p7zip-full
+    info "Installing 7zip (needed to extract game data from Windows installer)..."
+    pkg_install $(get_7zip_package)
 fi
 
 # ---------------------------------------------------------------------------

@@ -119,9 +119,6 @@
 		5D9F6E3C28A8EB1700D3F15D /* pngset.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6E2C28A8EB1600D3F15D /* pngset.c */; };
 		5D9F6E3D28A8EB1700D3F15D /* pngread.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6E2D28A8EB1700D3F15D /* pngread.c */; };
 		5D9F6E3E28A8EB1700D3F15D /* pngtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6E2E28A8EB1700D3F15D /* pngtrans.c */; };
-		5DAE00042DA5F00100AE0004 /* arm_init.c in Sources */ = {isa = PBXBuildFile; fileRef = 5DAE00012DA5F00100AE0001 /* arm_init.c */; };
-		5DAE00052DA5F00100AE0005 /* filter_neon_intrinsics.c in Sources */ = {isa = PBXBuildFile; fileRef = 5DAE00022DA5F00100AE0002 /* filter_neon_intrinsics.c */; };
-		5DAE00062DA5F00100AE0006 /* palette_neon_intrinsics.c in Sources */ = {isa = PBXBuildFile; fileRef = 5DAE00032DA5F00100AE0003 /* palette_neon_intrinsics.c */; };
 		5D9F6E6E28A8EB4900D3F15D /* jmemmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6E4128A8EB4600D3F15D /* jmemmgr.c */; };
 		5D9F6E6F28A8EB4900D3F15D /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6E4228A8EB4600D3F15D /* jutils.c */; };
 		5D9F6E7028A8EB4900D3F15D /* jcomapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D9F6E4328A8EB4600D3F15D /* jcomapi.c */; };
@@ -237,6 +234,9 @@
 		5DA1FCF70F01EEFD001E9C1B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DA1FCF60F01EEFD001E9C1B /* AudioToolbox.framework */; };
 		5DA1FD030F01EF07001E9C1B /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DA1FD020F01EF07001E9C1B /* CoreAudio.framework */; };
 		5DADFF4C0EA2F561007ADD60 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DADFF4B0EA2F561007ADD60 /* CoreGraphics.framework */; };
+		5DAE00042DA5F00100AE0004 /* arm_init.c in Sources */ = {isa = PBXBuildFile; fileRef = 5DAE00012DA5F00100AE0001 /* arm_init.c */; };
+		5DAE00052DA5F00100AE0005 /* filter_neon_intrinsics.c in Sources */ = {isa = PBXBuildFile; fileRef = 5DAE00022DA5F00100AE0002 /* filter_neon_intrinsics.c */; };
+		5DAE00062DA5F00100AE0006 /* palette_neon_intrinsics.c in Sources */ = {isa = PBXBuildFile; fileRef = 5DAE00032DA5F00100AE0003 /* palette_neon_intrinsics.c */; };
 		5DBB874D0FCA5B1900BD5EFD /* AudioManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DBB87490FCA5B1900BD5EFD /* AudioManager.cpp */; };
 		5DBB87740FCA6C5900BD5EFD /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DBB87730FCA6C5900BD5EFD /* OpenAL.framework */; };
 		5DBB89450FCCCAD300BD5EFD /* VariantDB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DBB89430FCCCAD300BD5EFD /* VariantDB.cpp */; };
@@ -484,9 +484,6 @@
 		5D9F6E2C28A8EB1600D3F15D /* pngset.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngset.c; path = ../shared/Irrlicht/source/Irrlicht/libpng/pngset.c; sourceTree = "<group>"; };
 		5D9F6E2D28A8EB1700D3F15D /* pngread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngread.c; path = ../shared/Irrlicht/source/Irrlicht/libpng/pngread.c; sourceTree = "<group>"; };
 		5D9F6E2E28A8EB1700D3F15D /* pngtrans.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngtrans.c; path = ../shared/Irrlicht/source/Irrlicht/libpng/pngtrans.c; sourceTree = "<group>"; };
-		5DAE00012DA5F00100AE0001 /* arm_init.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = arm_init.c; path = ../shared/Irrlicht/source/Irrlicht/libpng/arm/arm_init.c; sourceTree = "<group>"; };
-		5DAE00022DA5F00100AE0002 /* filter_neon_intrinsics.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = filter_neon_intrinsics.c; path = ../shared/Irrlicht/source/Irrlicht/libpng/arm/filter_neon_intrinsics.c; sourceTree = "<group>"; };
-		5DAE00032DA5F00100AE0003 /* palette_neon_intrinsics.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_neon_intrinsics.c; path = ../shared/Irrlicht/source/Irrlicht/libpng/arm/palette_neon_intrinsics.c; sourceTree = "<group>"; };
 		5D9F6E4128A8EB4600D3F15D /* jmemmgr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jmemmgr.c; path = ../shared/Irrlicht/source/Irrlicht/jpeglib/jmemmgr.c; sourceTree = "<group>"; };
 		5D9F6E4228A8EB4600D3F15D /* jutils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jutils.c; path = ../shared/Irrlicht/source/Irrlicht/jpeglib/jutils.c; sourceTree = "<group>"; };
 		5D9F6E4328A8EB4600D3F15D /* jcomapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jcomapi.c; path = ../shared/Irrlicht/source/Irrlicht/jpeglib/jcomapi.c; sourceTree = "<group>"; };
@@ -643,6 +640,9 @@
 		5DA1FCF60F01EEFD001E9C1B /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		5DA1FD020F01EF07001E9C1B /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		5DADFF4B0EA2F561007ADD60 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		5DAE00012DA5F00100AE0001 /* arm_init.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = arm_init.c; path = ../shared/Irrlicht/source/Irrlicht/libpng/arm/arm_init.c; sourceTree = "<group>"; };
+		5DAE00022DA5F00100AE0002 /* filter_neon_intrinsics.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = filter_neon_intrinsics.c; path = ../shared/Irrlicht/source/Irrlicht/libpng/arm/filter_neon_intrinsics.c; sourceTree = "<group>"; };
+		5DAE00032DA5F00100AE0003 /* palette_neon_intrinsics.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_neon_intrinsics.c; path = ../shared/Irrlicht/source/Irrlicht/libpng/arm/palette_neon_intrinsics.c; sourceTree = "<group>"; };
 		5DB42FD41201267800038DC0 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 		5DBB87490FCA5B1900BD5EFD /* AudioManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AudioManager.cpp; path = Audio/AudioManager.cpp; sourceTree = "<group>"; };
 		5DBB874A0FCA5B1900BD5EFD /* AudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioManager.h; path = Audio/AudioManager.h; sourceTree = "<group>"; };
