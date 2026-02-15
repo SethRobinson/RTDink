@@ -180,11 +180,17 @@ if [ ! -f "CMakeLists.txt" ] || [ ! -d "source" ]; then
         cd "$INSTALL_DIR"
     fi
 
-    # Re-run this script from inside the repo, passing along all arguments
-    exec bash "./linux_setup.sh" "$@"
+    # Fall through — continue running the current script from inside the repo
+    # (Don't exec the local copy; it may be outdated if git pull failed)
 fi
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Determine the repo root directory
+if [ -n "${BASH_SOURCE[0]}" ] && [ "${BASH_SOURCE[0]}" != "bash" ] && [ -f "${BASH_SOURCE[0]}" ]; then
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+else
+    # Running from curl pipe or similar — we already cd'd into the repo above
+    SCRIPT_DIR="$(pwd)"
+fi
 cd "$SCRIPT_DIR"
 
 # Offer to pull latest RTDink changes when running from inside an existing checkout
@@ -242,9 +248,9 @@ else
 fi
 
 # Fix case-sensitivity: Proton code includes "Addons" but directory is "addons"
-if [ ! -e "proton/shared/Addons" ]; then
+if [ -d "proton/shared/addons" ] && [ ! -e "proton/shared/Addons" ]; then
     info "Creating Addons symlink (case-sensitivity fix)..."
-    ln -s addons proton/shared/Addons
+    ln -sf addons proton/shared/Addons
 fi
 
 # ---------------------------------------------------------------------------
