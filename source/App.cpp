@@ -192,9 +192,9 @@ const char * GetAppName()
 	return "Dink Smallwood HD";
 };
 
-// Temporary hack to get the window handle for the app
+#if defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(PLATFORM_OSX)
+
 SDL_Window* GetSDLWindow() {
-	// If the game is already initialized, we can use the window handle from the SDL2 context
     SDL_Window* window = SDL_GL_GetCurrentWindow();
     if (!window) {
         LogMsg("Failed to get SDL window: %s", SDL_GetError());
@@ -202,36 +202,31 @@ SDL_Window* GetSDLWindow() {
     return window;
 }
 
-// Temporary hack to get the window handle for the app
 void UpdateViewport(int width, int height) {
-    // Update viewport of OpenGL
     glViewport(0, 0, width, height);
 
-	// Calculate the proportion to escalonate the game
-    float gameAspect = 1024.0f / 768.0f;  // Original proportion of the game
+    float gameAspect = 1024.0f / 768.0f;
     float windowAspect = (float)width / (float)height;
 
-	// Ajust the matrix of projection to mantain the proportion
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
     if (windowAspect > gameAspect) {
-		// More large window than the game: add horizontal margins
+        // Window wider than game: add horizontal margins (letterbox)
         float scaledHeight = width / gameAspect;
         float offsetY = (scaledHeight - height) / 2.0f;
-        glOrtho(0, width, height + offsetY, -offsetY, -1.0, 1.0);  // glOrtho(left, right, bottom, top, near, far)
+        glOrtho(0, width, height + offsetY, -offsetY, -1.0, 1.0);
     } else {
-		// More high window than the game: add vertical margins
+        // Window taller than game: add vertical margins (pillarbox)
         float scaledWidth = height * gameAspect;
         float offsetX = (scaledWidth - width) / 2.0f;
-        glOrtho(-offsetX, width + offsetX, height, 0, -1.0, 1.0);  // glOrtho(left, right, bottom, top, near, far)
+        glOrtho(-offsetX, width + offsetX, height, 0, -1.0, 1.0);
     }
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
 
-// Temporary hack to toggle fullscreen mode (cross-platform using SDL2)
 void OnFullscreenToggleRequestMultiplatform() {
     SDL_Window* window = GetSDLWindow();
     if (!window) return;
@@ -259,6 +254,8 @@ void OnFullscreenToggleRequestMultiplatform() {
     SetupFakePrimaryScreenSize(1024, 768);
     UpdateViewport(width, height);
 }
+
+#endif // RTLINUX || PLATFORM_LINUX || PLATFORM_OSX
 
 App::App()
 {
@@ -703,47 +700,25 @@ bool App::Init()
 	//when screen size changes we'll unload surfaces
 	GetBaseApp()->m_sig_unloadSurfaces.connect(1, boost::bind(&App::OnUnloadSurfaces, this));
 	
-	//crossplatform video settings
+#ifdef WINAPI
 	int videox = GetApp()->GetVarWithDefault("video_x", uint32(640))->GetUINT32();
 	int videoy = GetApp()->GetVarWithDefault("video_y", uint32(480))->GetUINT32();
 	int fullscreen = GetApp()->GetVarWithDefault("fullscreen", uint32(1))->GetUINT32();
+	bool borderlessfullscreen = GetApp()->GetVarWithDefault("fullscreen", uint32(0))->GetUINT32();
 
-		// Parameters handling (cross-platform)
-		if (DoesCommandLineParmExist("/?") || DoesCommandLineParmExist("?") || DoesCommandLineParmExist("--help"))
-		{
-    		std::string executableName;
-    		std::string pathSeparator;
-    		std::string examplePath;
+	if (DoesCommandLineParmExist("/?")|| DoesCommandLineParmExist("?") || DoesCommandLineParmExist("--help"))
+	{
+		std::string s;
+		s = std::string("-game <dmod directory> (Example:  dink.exe -game c:\\dmods\\island) (this also sets - dmodpath automatically to the dmods parent directory)\n\n") +
+		std::string("-dmodpath or --refdir <dir containing DMOD dirs> (Example:  dink.exe - game c:\\dmods)\n\n") +
+		std::string("-debug (turns on extra debug mode options for dmod authors, available from Dink HD menu as well)\n\n") +
+		std::string("-window (Forces windowed mode)\n\n") +
+		std::string("-skip (skips latest version check)\n\n") +
+		std::string("If a.dmod file is put in the Dink HD directory(where the.exe is) it will be automatically installed and then deleted\n");
+		std::string("dink.exe <dmod url> will install a dmod directly from the net.\n");
 
-			// Define the executable name and path separator based on the platform
-    		#ifdef _WIN32
-        		executableName = "dink.exe";
-        		pathSeparator = "\\";
-        		examplePath = "C:" + pathSeparator + "dmods" + pathSeparator + "island";
-    		#else
-        		executableName = "dink";
-        		pathSeparator = "/";
-        		examplePath = "/home/user/dmods/island";
-    		#endif
-
-    		std::string s;
-    		s = std::string("-game <dmod directory> (Example: " + executableName + " -game " + examplePath + ") (this also sets -dmodpath automatically to the dmods parent directory)\n\n") +
-        		std::string("-dmodpath or --refdir <dir containing DMOD dirs> (Example: " + executableName + " --refdir /home/user/dmods)\n\n") +
-        		std::string("-debug (turns on extra debug mode options for dmod authors, available from Dink HD menu as well)\n\n") +
-        		std::string("-window (Forces windowed mode)\n\n") +
-        		std::string("-skip (skips latest version check)\n\n") +
-        		std::string("If a.dmod file is put in the Dink HD directory (where the " + executableName + " is) it will be automatically installed and then deleted\n") +
-        		std::string(executableName + " <dmod url> will install a dmod directly from the net.\n");
-
-			// Show help in the console (Linux/macOS) or in the log (Windows)
-    		#ifdef _WIN32
-        		OutputDebugString(s.c_str());  // Windows: show on OutputDebugString
-    		#else
-        		printf("%s", s.c_str());       // Linux/macOS: show in the console
-    		#endif
-    		LogMsg("%s", s.c_str());  // Save in log.txt(every platforms)
-    		AddTextToLog(s.c_str(), (GetSavePath() + "log.txt").c_str());
-		}
+		MessageBox(GetForegroundWindow(), s.c_str(), "Command line options", MB_ICONSTOP);
+	}
 
 	if (DoesCommandLineParmExist("-window") || DoesCommandLineParmExist("-windowed"))
 	{
@@ -755,24 +730,17 @@ bool App::Init()
 		SetSkipMode(true);
 	}
 
-
 	if (DoesCommandLineParmExist("-debug") )
 	{
 		GetApp()->SetCheatsEnabled(true);
 		g_script_debug_mode = true;
 	}
 
-	// Fullscreen logic to change the screen resolution (now works on Linux)
-	if (fullscreen)
+	if (fullscreen && g_bUseBorderlessFullscreenOnWindows)
 	{
 		LogMsg("Setting fullscreen...");
-		//GetMessageManager()->SendGUI(MESSAGE_TYPE_GUI_TOGGLE_FULLSCREEN, 0, 0);  //lParam holds a lot of random data about the press, look it up if
 		g_bIsFullScreen = false; //because we're using toggle..
-    #ifdef _WIN32
-        OnFullscreenToggleRequest();
-    #else
-        OnFullscreenToggleRequestMultiplatform(); // hack to get fullscreen working on linux and mac, but this should be tested more
-    #endif
+		OnFullscreenToggleRequest();
 	}
 	else
 	{
@@ -784,7 +752,50 @@ bool App::Init()
 		}
 		*/
 	}
-	
+
+#else
+	// Linux/macOS video settings
+	int fullscreen = GetApp()->GetVarWithDefault("fullscreen", uint32(1))->GetUINT32();
+
+	if (DoesCommandLineParmExist("--help"))
+	{
+		std::string s;
+		s = std::string("-game <dmod directory> (Example: dink -game /home/user/dmods/island) (this also sets -dmodpath automatically to the dmods parent directory)\n\n") +
+		std::string("-dmodpath or --refdir <dir containing DMOD dirs> (Example: dink --refdir /home/user/dmods)\n\n") +
+		std::string("-debug (turns on extra debug mode options for dmod authors, available from Dink HD menu as well)\n\n") +
+		std::string("-window (Forces windowed mode)\n\n") +
+		std::string("-skip (skips latest version check)\n\n") +
+		std::string("If a .dmod file is put in the Dink HD directory it will be automatically installed and then deleted\n") +
+		std::string("dink <dmod url> will install a dmod directly from the net.\n");
+
+		printf("%s", s.c_str());
+	}
+
+	if (DoesCommandLineParmExist("-window") || DoesCommandLineParmExist("-windowed"))
+	{
+		fullscreen = false;
+		GetApp()->GetVar("fullscreen")->Set(uint32(0));
+	}
+	if (DoesCommandLineParmExist("-skip"))
+	{
+		SetSkipMode(true);
+	}
+
+	if (DoesCommandLineParmExist("-debug") )
+	{
+		GetApp()->SetCheatsEnabled(true);
+		g_script_debug_mode = true;
+	}
+
+	if (fullscreen)
+	{
+		LogMsg("Setting fullscreen...");
+		g_bIsFullScreen = false; //because we're using toggle..
+		OnFullscreenToggleRequestMultiplatform();
+	}
+
+#endif
+
 	return true;
 }
 
@@ -997,7 +1008,9 @@ void App::OnScreenSizeChange()
 	BaseApp::OnScreenSizeChange();
 	if (GetPrimaryGLX() != 0)
 	{
+#if defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(PLATFORM_OSX)
 		UpdateViewport(GetPrimaryGLX(), GetPrimaryGLY());
+#endif
 		SetupOrtho();
 		DinkOnForeground(); //rebuild lost surfaces
 		g_dglo.m_bForceControlsRebuild = true;
@@ -1452,34 +1465,7 @@ void LogMsg(const char* traceStr, ...)
 
 #endif
 
-#ifdef defined(PLATFORM_LINUX)
 
-// our custom LogMsg (Linux)
-void LogMsg(const char* traceStr, ...)
-{
-    va_list argsVA;
-    const int logSize = 1024 * 10;
-    char buffer[logSize];
-    memset((void*)buffer, 0, logSize);
-
-    va_start(argsVA, traceStr);
-    vsnprintf(buffer, logSize, traceStr, argsVA);
-    va_end(argsVA);
-
-    // Saída no terminal (Linux)
-    printf("%s\n", buffer);
-    fflush(stdout);
-
-    // Garante que o save funcione (chama AddTextToLog)
-    if (IsBaseAppInitted())
-    {
-        GetBaseApp()->GetConsole()->AddLine(buffer);
-        strcat(buffer, "\r\n");
-        GetApp()->AddTextToLog(buffer, (GetSavePath() + "log.txt").c_str());
-    }
-}
-
-#endif
 
 bool App::GetSystemNeedsTouchControls()
 {
