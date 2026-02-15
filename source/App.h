@@ -60,6 +60,7 @@ public:
 	virtual void OnMemoryWarning();
 	virtual void OnEnterBackground();
 	virtual void OnEnterForeground();
+	virtual void OnFullscreenToggleRequest();
 
 	string GetVersionString();
 	float GetVersion();

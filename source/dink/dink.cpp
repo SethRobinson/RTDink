@@ -11995,16 +11995,24 @@ void CheckForHotkeys()
     #endif // WINAPI
 #endif // C_DINK_KEYBOARD_INPUT
 
-    // F11 to toggle fullscreen (Linux/Mac/cross-platform)
+    // F11 or Alt+Enter to toggle fullscreen (Linux/Mac/cross-platform)
     #if defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(PLATFORM_OSX)
     {
         const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+        bool wantToggle = false;
+
         if (keystate[SDL_SCANCODE_F11])
+            wantToggle = true;
+
+        if (keystate[SDL_SCANCODE_RETURN] && (keystate[SDL_SCANCODE_LALT] || keystate[SDL_SCANCODE_RALT]))
+            wantToggle = true;
+
+        if (wantToggle)
         {
-            static uint32 lastF11Press = 0;
-            if (lastF11Press < GetApp()->GetTick())
+            static uint32 lastFullscreenPress = 0;
+            if (lastFullscreenPress < GetApp()->GetTick())
             {
-                lastF11Press = GetApp()->GetTick() + 500;
+                lastFullscreenPress = GetApp()->GetTick() + 500;
                 OnFullscreenToggleRequestMultiplatform();
             }
         }

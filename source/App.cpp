@@ -257,6 +257,15 @@ void OnFullscreenToggleRequestMultiplatform() {
 
 #endif // RTLINUX || PLATFORM_LINUX || PLATFORM_OSX
 
+void App::OnFullscreenToggleRequest()
+{
+#if defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(PLATFORM_OSX)
+    OnFullscreenToggleRequestMultiplatform();
+#else
+    BaseApp::OnFullscreenToggleRequest();
+#endif
+}
+
 App::App()
 {
 	m_logFileHandle = NULL;
@@ -756,7 +765,7 @@ bool App::Init()
 
 #elif defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(PLATFORM_OSX)
 	// Linux/macOS video settings
-	int fullscreen = GetApp()->GetVarWithDefault("fullscreen", uint32(1))->GetUINT32();
+	int fullscreen = GetApp()->GetVarWithDefault("fullscreen", uint32(0))->GetUINT32();
 
 	if (DoesCommandLineParmExist("--help"))
 	{
