@@ -250,12 +250,6 @@ else
     git clone https://github.com/SethRobinson/proton.git
 fi
 
-# Fix case-sensitivity: Proton code includes "Addons" but directory is "addons"
-if [ -d "proton/shared/addons" ] && [ ! -e "proton/shared/Addons" ]; then
-    info "Creating Addons symlink (case-sensitivity fix)..."
-    ln -sf addons proton/shared/Addons
-fi
-
 # ---------------------------------------------------------------------------
 # Step 3: Build
 # ---------------------------------------------------------------------------

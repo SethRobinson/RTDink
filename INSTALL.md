@@ -144,15 +144,12 @@ sudo apt install build-essential cmake libgl1-mesa-dev libx11-dev \
 # 1. Clone Proton SDK inside the project root
 git clone https://github.com/SethRobinson/proton.git
 
-# 2. Fix case-sensitivity (Linux filesystems are case-sensitive)
-ln -s addons proton/shared/Addons
-
-# 3. Configure and build
+# 2. Configure and build
 mkdir build && cd build
 cmake ..
 make -j$(nproc)
 
-# 4. Run (make sure dink/ game data is in the project root first)
+# 3. Run (make sure dink/ game data is in the project root first)
 ./RTDinkApp
 ```
 
@@ -161,7 +158,6 @@ CMake automatically creates symlinks for `interface/`, `audio/`, and `dink/` so 
 ### Troubleshooting
 
 - **Missing dependencies:** Install any missing `-dev` packages as reported by CMake.
-- **Case-sensitivity issues:** Make sure the `proton/shared/Addons` symlink exists (points to `addons`).
 - **No game data:** The game will launch but crash when starting a new game if the `dink/` directory is missing.
 
 ---
