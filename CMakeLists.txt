@@ -147,3 +147,8 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/dink)
             ${CMAKE_BINARY_DIR}/dink
     )
 endif()
+
+# Install rules (used by Flatpak and system-wide installs)
+install(TARGETS RTDinkApp DESTINATION bin)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/media/interface DESTINATION share/com.rtsoft.DinkSmallwoodHD)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/media/audio DESTINATION share/com.rtsoft.DinkSmallwoodHD)

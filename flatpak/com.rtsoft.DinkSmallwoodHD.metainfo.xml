@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.rtsoft.DinkSmallwoodHD</id>
+
+  <name>Dink Smallwood HD</name>
+  <summary>Classic action-adventure RPG remastered in HD</summary>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>LicenseRef-proprietary=https://github.com/SethRobinson/RTDink/blob/master/LICENSE.md</project_license>
+
+  <developer id="com.rtsoft">
+    <name>Robinson Technologies</name>
+  </developer>
+
+  <description>
+    <p>
+      Dink Smallwood HD is a remastered version of the classic 1997 action-adventure RPG
+      by Seth A. Robinson. Play as Dink Smallwood, a pig farmer who embarks on a grand
+      adventure filled with humor, monsters, and magic.
+    </p>
+    <p>
+      The HD version features improved rendering, touch/gamepad support, and the ability
+      to download and play hundreds of community-made add-on adventures (D-Mods).
+    </p>
+    <p>
+      Features:
+    </p>
+    <ul>
+      <li>Full original Dink Smallwood adventure</li>
+      <li>HD rendering with OpenGL</li>
+      <li>Gamepad support (Xbox 360 and compatible controllers)</li>
+      <li>Download and play community D-Mods directly from the game</li>
+      <li>Quick save and quick load</li>
+      <li>Speed-up mode for faster gameplay</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">com.rtsoft.DinkSmallwoodHD.desktop</launchable>
+
+  <url type="homepage">https://www.rtsoft.com/pages/dink.php</url>
+  <url type="bugtracker">https://github.com/SethRobinson/RTDink/issues</url>
+  <url type="vcs-browser">https://github.com/SethRobinson/RTDink</url>
+
+  <!-- TODO: Seth needs to provide screenshot URLs hosted on rtsoft.com or GitHub -->
+  <!-- Flathub requires at least one screenshot, ideally 16:9 ratio, 1280x720 or larger -->
+  <screenshots>
+    <screenshot type="default">
+      <caption>Dink explores the overworld</caption>
+      <image>https://raw.githubusercontent.com/SethRobinson/RTDink/master/flatpak/screenshots/screenshot1.png</image>
+    </screenshot>
+  </screenshots>
+
+  <content_rating type="oars-1.1">
+    <content_attribute id="violence-fantasy">moderate</content_attribute>
+    <content_attribute id="language-humor">mild</content_attribute>
+  </content_rating>
+
+  <releases>
+    <release version="1.99" date="2025-01-01">
+      <description>
+        <p>Latest release with Linux support improvements.</p>
+      </description>
+    </release>
+  </releases>
+
+  <requires>
+    <display_length compare="ge">640</display_length>
+  </requires>
+
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>gamepad</control>
+  </supports>
+</component>

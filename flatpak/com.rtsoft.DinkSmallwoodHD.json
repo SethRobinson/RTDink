@@ -1,0 +1,67 @@
+{
+  "app-id": "com.rtsoft.DinkSmallwoodHD",
+  "runtime": "org.freedesktop.Platform",
+  "runtime-version": "24.08",
+  "sdk": "org.freedesktop.Sdk",
+  "command": "dink-smallwood-hd",
+  "finish-args": [
+    "--share=ipc",
+    "--socket=fallback-x11",
+    "--socket=wayland",
+    "--socket=pulseaudio",
+    "--device=dri",
+    "--share=network"
+  ],
+  "modules": [
+    {
+      "name": "p7zip",
+      "buildsystem": "simple",
+      "build-commands": [
+        "make 7z -j$(nproc)",
+        "install -Dm755 bin/7z /app/bin/7z",
+        "cp -r bin/Codecs /app/bin/Codecs"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/p7zip-project/p7zip/archive/refs/tags/v17.05.tar.gz",
+          "sha256": "d2788f892571058c08d27095c22154579dfefb807ebe357d145ab2ddddefb1a6"
+        }
+      ]
+    },
+    {
+      "name": "dink-smallwood-hd",
+      "buildsystem": "cmake-ninja",
+      "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+      ],
+      "post-install": [
+        "install -Dm755 flatpak/dink-smallwood-hd.sh /app/bin/dink-smallwood-hd",
+        "install -Dm755 flatpak/apply_extra.sh /app/bin/apply_extra",
+        "install -Dm644 flatpak/com.rtsoft.DinkSmallwoodHD.desktop /app/share/applications/com.rtsoft.DinkSmallwoodHD.desktop",
+        "install -Dm644 flatpak/com.rtsoft.DinkSmallwoodHD.metainfo.xml /app/share/metainfo/com.rtsoft.DinkSmallwoodHD.metainfo.xml",
+        "install -Dm644 flatpak/com.rtsoft.DinkSmallwoodHD.png /app/share/icons/hicolor/512x512/apps/com.rtsoft.DinkSmallwoodHD.png"
+      ],
+      "sources": [
+        {
+          "type": "git",
+          "url": "https://github.com/SethRobinson/RTDink.git",
+          "commit": "83a6a85abc084d5ab35ab8188d8b1e1c77ba4860"
+        },
+        {
+          "type": "git",
+          "url": "https://github.com/SethRobinson/proton.git",
+          "commit": "4b702b2b3f74f2e801643f4d2b6828891259d121",
+          "dest": "proton"
+        },
+        {
+          "type": "extra-data",
+          "filename": "dink_installer.exe",
+          "url": "https://www.rtsoft.com/dink/DinkSmallwoodHDInstaller.exe",
+          "sha256": "8582461e0adc74669e0986bd0765009d7a6bbb616932fe39faf26a61bf68c76c",
+          "size": 85465864
+        }
+      ]
+    }
+  ]
+}
