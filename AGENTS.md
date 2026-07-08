@@ -154,6 +154,27 @@ Output: `bin\winRTDink_Release GL.exe`. Only deprecation warnings expected
   mac files kept going "missing" from the repo (e.g. MainMenu.xib in PR #23).
   Now only `OSX/build`, the generated xcworkspace, and stale local junk are
   ignored.
+- The Cocoa window/view layer lives in the PROTON repo
+  (`proton/shared/OSX/app`), not in RTDink. BuildMac.bat updates the mac's
+  proton checkout with `git pull --ff-only` from GitHub, so proton changes
+  must be committed AND pushed to SethRobinson/proton before a normal
+  BuildMac.bat picks them up (RTDink changes are pushed directly by the
+  script and don't need GitHub).
+- Fullscreen gotcha (fixed July 2026, fix lives in proton
+  `shared/OSX/app/MainController.mm`): `windowWillResize:` forces the window
+  to 4:3, and AppKit also calls it during the native green-button fullscreen
+  transition, which made the "fullscreen" window 4:3 (taller than the screen,
+  game cropped top+bottom). It now skips the aspect forcing when the window
+  is in or transitioning to/from fullscreen. Also `OSXToggleFullscreen()`
+  (proton `shared/OSX/OSXUtils.mm`) used `[NSApp mainWindow]`, which is nil
+  when the app isn't active (e.g. launched over ssh), so the toggle silently
+  did nothing; it now falls back to keyWindow / first window.
+- The Mac build accepts `-fullscreen` on the command line (forces fullscreen
+  at startup regardless of the saved setting; `-window` still wins). Useful
+  for testing fullscreen over ssh, e.g. launch the dev build with
+  `-fullscreen -skip`, then verify the window rect equals the screen size
+  with a small CGWindowListCopyWindowInfo helper (no TCC permissions needed;
+  osascript/System Events and screencapture are both blocked over ssh).
 
 ## Releasing ("Build all three releases of the apps and upload them")
 

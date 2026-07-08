@@ -936,6 +936,10 @@ bool App::Init()
 	int videoy = GetApp()->GetVarWithDefault("video_y", uint32(768))->GetUINT32();
 	int fullscreen = GetApp()->GetVarWithDefault("fullscreen", uint32(0))->GetUINT32();
 
+	if (DoesCommandLineParmExist("-fullscreen"))
+	{
+		fullscreen = true;
+	}
 	if (DoesCommandLineParmExist("-window") || DoesCommandLineParmExist("-windowed") || DoesCommandLineParmExist("-autotest"))
 	{
 		fullscreen = false;
