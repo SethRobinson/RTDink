@@ -96,75 +96,65 @@ proton/
 
 The macOS build uses the Xcode project at `OSX/RTDink.xcodeproj`.
 
-- **Supported architectures:** Universal binary — runs natively on both **Intel (x86_64)** and **Apple Silicon (ARM64 / M1+)**.
-- **Audio:** Uses **SDL2** + **SDL2_mixer** — no FMOD required.
-- **SDL2 frameworks are bundled inside the `.app`** — no SDL2 installation required to run the game.
+- **Supported architectures:** Universal binary, runs natively on both **Intel (x86_64)** and **Apple Silicon (ARM64 / M1+)**.
+- **Audio:** Uses **SDL2** + **SDL2_mixer**, no FMOD required.
+- **Distribution builds** embed the SDL2 frameworks inside the `.app` (done by the packaging script, see below), so the shipped game needs no SDL2 install on the player's machine.
 
 ### Directory layout
 
-Clone both repos as **siblings**:
+Clone this repo **inside** the Proton SDK checkout (same layout as Windows and iOS):
 
 ```
-some_folder/
-  proton/              <-- Proton SDK (cloned here)
-    shared/
-  RTDink/              <-- this repo (cloned here)
+proton/                <-- Proton SDK (cloned first)
+  shared/
+  RTSimpleApp/
+  RTDink/              <-- this repo (cloned inside proton/)
     OSX/
       RTDink.xcodeproj
 ```
 
-The Xcode project references `../../shared/` (relative to `OSX/`) to find the Proton SDK.
+The Xcode project references `../../shared/` and `../../RTSimpleApp/` relative to `OSX/`.
 
 ### Steps
 
-1. Clone the Proton SDK and this repo as siblings:
+1. Clone the Proton SDK, then this repo inside it:
 
 ```bash
 git clone https://github.com/SethRobinson/proton.git
+cd proton
 git clone https://github.com/SethRobinson/RTDink.git
 ```
 
-2. Install **SDL2** and **SDL2_mixer** frameworks:
-
-   **Option A — DMG frameworks** (recommended, works on all Macs, required for universal binary):
-   ```bash
-   # SDL2 framework
-   curl -L -o ~/SDL2.dmg "https://github.com/libsdl-org/SDL/releases/download/release-2.30.9/SDL2-2.30.9.dmg"
-   hdiutil attach ~/SDL2.dmg
-   mkdir -p ~/Library/Frameworks
-   cp -r /Volumes/SDL2/SDL2.framework ~/Library/Frameworks/
-   hdiutil detach /Volumes/SDL2
-
-   # SDL2_mixer framework
-   curl -L -o ~/SDL2_mixer.dmg "https://github.com/libsdl-org/SDL_mixer/releases/download/release-2.8.0/SDL2_mixer-2.8.0.dmg"
-   hdiutil attach ~/SDL2_mixer.dmg
-   cp -r "/Volumes/SDL2_mixer/SDL2_mixer.framework" ~/Library/Frameworks/
-   hdiutil detach /Volumes/SDL2_mixer
-   ```
-   The Xcode project looks for both frameworks in `~/Library/Frameworks/` automatically. These are universal frameworks (arm64 + x86_64) so the resulting `.app` runs on both Intel and Apple Silicon Macs.
-
-   **Option B — Homebrew** (native arch only, not suitable for universal binary):
-   ```bash
-   brew install sdl2 sdl2_mixer
-   ```
-   > **Note:** Homebrew on Apple Silicon only provides arm64 libraries. Use Option A if you need a universal binary.
-
-3. Generate the required libpng config header:
+2. Install the **SDL2** and **SDL2_mixer** frameworks (official universal DMG releases):
 
 ```bash
-LIBPNG=proton/shared/Irrlicht/source/Irrlicht/libpng
-cp "$LIBPNG/pnglibconf.h.prebuilt" "$LIBPNG/pnglibconf.h"
+mkdir -p ~/Library/Frameworks
+
+curl -L -o /tmp/SDL2.dmg "https://github.com/libsdl-org/SDL/releases/download/release-2.30.9/SDL2-2.30.9.dmg"
+hdiutil attach /tmp/SDL2.dmg
+ditto /Volumes/SDL2/SDL2.framework ~/Library/Frameworks/SDL2.framework
+hdiutil detach /Volumes/SDL2
+
+curl -L -o /tmp/SDL2_mixer.dmg "https://github.com/libsdl-org/SDL_mixer/releases/download/release-2.8.0/SDL2_mixer-2.8.0.dmg"
+hdiutil attach /tmp/SDL2_mixer.dmg
+ditto /Volumes/SDL2_mixer/SDL2_mixer.framework ~/Library/Frameworks/SDL2_mixer.framework
+hdiutil detach /Volumes/SDL2_mixer
 ```
 
-4. Open the Xcode project:
+> **Important:** copy the frameworks with `ditto` (or `cp -R`), never `cp -r`. `cp -r` follows the internal symlinks and flattens the framework structure, which breaks code signing later.
+
+3. Build. Either open `OSX/RTDink.xcodeproj` in Xcode and hit Cmd-B (Release), or from a terminal:
 
 ```bash
-open RTDink/OSX/RTDink.xcodeproj
+cd RTDink/OSX
+xcodebuild -project RTDink.xcodeproj -configuration Release build
 ```
 
-5. Select the **Release** configuration and build (`⌘B`).
+A "Generate pnglibconf.h" build phase creates the required libpng config header automatically on first build. The built app lands in `OSX/build/Release/`. Development builds load SDL2 from `~/Library/Frameworks`.
 
-> **Note:** The SDL2 frameworks are automatically embedded into the `.app` bundle at build time, so the final app is self-contained and does not require SDL2 to be installed on the target machine.
+### Release packaging (signing, notarization, DMG)
+
+`script/BuildAndPackageMac.sh` builds the universal binary, embeds the SDL2 frameworks, signs everything with the Developer ID identity (hardened runtime), creates the DMG, notarizes it with Apple and staples the ticket. It can be driven from a Windows box with `script/BuildMac.bat`, which pushes the source over ssh, runs the script on the Mac, and copies the finished DMG back. See the comments at the top of both scripts for the one-time credential setup.
 
 ---
 

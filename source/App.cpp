@@ -6,7 +6,9 @@
  */
 #include "PlatformPrecomp.h"
 #include "App.h"
-#ifndef _WIN32
+#ifdef _WIN32
+#include <direct.h> //for _mkdir
+#else
 #include <sys/stat.h>
 #endif
 #include "GUI/MainMenu.h"

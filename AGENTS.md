@@ -78,6 +78,49 @@ Output: `bin\winRTDink_Release GL.exe`. Only deprecation warnings expected
   `| tail -5` pipe cannot hide a failed build; the script exits 1 on failure and
   0 on success, and honors `NO_PAUSE=1` to skip the final `pause` for automation.
 
+### macOS (`script/BuildMac.bat [local] [nonotarize] [adhoc]`) (verified July 2026)
+
+- Builds remotely on `seth@studiomac.local` over ssh, same pattern as the
+  Flatpak script: pushes committed HEAD (or a `local` working-tree snapshot)
+  to a `mac-desktop-build` branch in `~/projects/proton/RTDink` on the Mac,
+  runs `script/BuildAndPackageMac.sh` there, and copies the finished
+  `DinkSmallwoodHD.dmg` back to `script/`. Honors `NO_PAUSE=1`.
+- Layout on the Mac mirrors Windows: RTDink is cloned INSIDE the proton
+  checkout (`~/projects/proton/RTDink`). The Xcode project
+  (`OSX/RTDink.xcodeproj`) references `../../shared` and `../../RTSimpleApp`,
+  so a sibling layout does NOT work.
+- Universal binary (arm64 + x86_64), macOS 11+. Audio is SDL2_mixer
+  (`RT_USE_SDL_AUDIO`, the define is read by proton's AudioManagerSDL.h), no
+  FMOD. Gamepads via GamepadProviderSDL2.
+- SDL2/SDL2_mixer come from `~/Library/Frameworks` (official universal DMG
+  releases, see INSTALL.md). Install with `ditto`/`cp -R`, never `cp -r`,
+  which flattens the framework symlinks and later breaks codesign with
+  "bundle format is ambiguous".
+- Dev builds (plain `xcodebuild -configuration Release`) are ad-hoc signed so
+  they work over ssh with a locked keychain, and load SDL2 from
+  `~/Library/Frameworks`. The package script embeds the frameworks into the
+  .app and does the real Developer ID signing (sign framework `Versions/A`,
+  not the top-level `.framework` dir).
+- Signing identity: `Developer ID Application: Robinson Technologies
+  Corporation (7DA5SJEYK8)` (the old team MK4EZB35P7 found in ancient configs
+  is dead). Over ssh the login keychain shows up locked; the package script
+  unlocks it with the password read from `~/.rtdink_keychain_pass` on the Mac
+  (chmod 600, never committed anywhere).
+- Notarization uses a notarytool keychain profile named `rtsoft-notary`;
+  the one-time `store-credentials` setup command is in the header of
+  BuildAndPackageMac.sh.
+- Gotcha fixed July 2026: on OSX `GetDMODRootPath()` returns the absolute
+  save path, so it must not be passed to
+  `CreateDirectoryRecursively(GetSavePath(), ...)` the way the relative
+  Windows/Linux "dmods/" values are; doing so recreates the save dir inside
+  itself.
+- The game's save dir and log.txt on the Mac:
+  `~/Library/Application Support/Dink Smallwood HD/`.
+- History note: `.gitignore` used to ignore the whole `OSX` dir, which is why
+  mac files kept going "missing" from the repo (e.g. MainMenu.xib in PR #23).
+  Now only `OSX/build`, the generated xcworkspace, and stale local junk are
+  ignored.
+
 ### AI-harness shell quirk (Claude Code sandbox on Windows)
 
 The sandboxed shell sets `NoDefaultCurrentDirectoryInExePath=1`, so cmd does not
