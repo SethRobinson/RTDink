@@ -1261,6 +1261,13 @@ void App::GetServerInfo( string &server, uint32 &port )
 	server = "https://www.rtsoft.com";
 	port = 80;
 
+#elif !defined(RT_USE_LIBCURL)
+
+	//native NetHTTP (mac and mobile) wants a bare hostname, it can't parse a scheme prefix
+	//or do TLS anyway.  versions.php answers fine over plain http on port 80.
+	server = "www.rtsoft.com";
+	port = 80;
+
 #else
 
 	server = "https://www.rtsoft.com";

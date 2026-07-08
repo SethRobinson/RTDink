@@ -42,7 +42,7 @@ goto :fail
 :results_ok
 
 if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
-scp -q %GLADOS_HOST%:%REMOTE_DATA_DIR%/autotest/* "%OUT_DIR%\" || goto :fail
+scp -q %GLADOS_HOST%:%REMOTE_DATA_DIR%/autotest/* "%OUT_DIR%" || goto :fail
 
 echo.
 echo ---- autotest_results.txt ----

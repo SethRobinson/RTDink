@@ -499,6 +499,11 @@ void DownloadDMODList(Entity *pMenu)
 	//GetApp()->GetServerInfo(url, port);
 
 	string host = "https://www.dinknetwork.com";
+#ifndef RT_USE_LIBCURL
+	//native NetHTTP (mac and mobile) wants a bare hostname, it can't parse a scheme prefix
+	//or do TLS anyway.  The api answers fine over plain http on port 80.
+	host = "www.dinknetwork.com";
+#endif
 	string url = "api";
 
 
