@@ -13,7 +13,7 @@ See [README.md](README.md) for download links if you just want to play the game.
 | **macOS** | Xcode | Universal binary (Intel + Apple Silicon), uses SDL2 + SDL2_mixer for audio (see [macOS section](#macos)) |
 | **HTML5** | Emscripten | See [Proton HTML5 setup](https://www.rtsoft.com/wiki/doku.php?id=proton:html5_setup) |
 
-All platforms require the **Dink Smallwood game data** (`dink/` directory) to play. See [README.md](README.md#just-want-to-play) for how to obtain it.
+All platforms require the **Dink Smallwood game data** (`dink/` directory) to play. It ships in this repo under `bin/dink`; the official installers on the [README download page](README.md#download) include it too.
 
 Most platforms (except Linux) expect the **Proton SDK sibling layout** -- RTDink is cloned inside the Proton directory:
 
@@ -27,9 +27,7 @@ proton/
 
 ## Windows
 
-Full step-by-step instructions are in [README.md](README.md#windows), including FMOD setup and required DLLs.
-
-The short version:
+RTDink is cloned inside the Proton SDK tree:
 
 ```
 proton/
@@ -39,12 +37,70 @@ proton/
       iPhoneRTDink.sln
 ```
 
-1. Clone [Proton SDK](https://github.com/SethRobinson/proton)
-2. Clone this repo inside the Proton directory
-3. Run `media\update_media.bat`
-4. Set up FMOD (see [README.md](README.md#step-2---getting-fmod-and-building-rtsimpleapp-in-fmod-mode))
-5. Open `windows_vs2017/iPhoneRTDink.sln` in Visual Studio
-6. Build `Release GL | x64`, copy DLLs and game data to `bin/`
+### Step 1 - Getting the Proton SDK and building RTSimpleApp
+
+1. Clone the Proton SDK: `git clone https://github.com/SethRobinson/proton`
+
+2. Run `proton\RTSimpleApp\media\update_media.bat` to prepare the Proton texture and sound assets
+
+3. Open `proton\RTSimpleApp\windows_vc\RTSimpleApp.sln`
+
+4. Select `DebugGL | x64` or `ReleaseGL | x64` configuration, build and run it -- it should work!
+
+NOTE: If you want to build for Win32, you will have to manually copy the 32 bit versions of the following dll files:
+* `proton\shared\win\lib\zlib1.dll`
+* `proton\shared\win\lib\audiere\bin\audiere.dll`
+
+To restore 64 bit libraries, copy these instead:
+* `proton\shared\win\lib\zlib1.dll`
+* `proton\shared\win\lib\64\zlibwapi.dll`
+* `proton\shared\win\lib\audiere\lib64\audiere.dll`
+
+If you have any issues, check out these two pages for more info on the Proton engine:
+* https://www.rtsoft.com/wiki/doku.php?id=proton:win_setup
+* https://www.rtsoft.com/wiki/doku.php?id=proton:win_setup2
+
+### Step 2 - Getting FMOD and building RTSimpleApp in FMOD mode
+
+1. Get the **FMOD Studio API** from https://www.fmod.com/download#fmodengine (you will need to register an account)
+
+![](doc/images/fmod_download_example.png)
+
+2. Extract the API files into `proton\shared\win\fmodstudio\`
+
+3. NOTE: You don't need to *INSTALL* the FMOD Engine, you just need to extract the `api\core` subfolder, which you can do with 7zip for example
+
+![](doc/images/fmod_libraries.png)
+
+4. Open `proton\RTSimpleApp\windows_vc\RTSimpleApp.sln` once again
+
+5. Select the `DebugFMOD_GL | x64` or `ReleaseFMOD_GL | x64` configuration -- it should build just fine
+
+6. Copy the FMOD dll into the output folder `proton\RTSimpleApp\bin`:
+   * `proton\shared\win\fmodstudio\api\core\lib\x64\fmod.dll`
+
+7. The RTSimpleApp with FMOD enabled should run now!
+
+### Step 3 - Building and running RTDink
+
+1. Go into the `proton` root folder and clone the RTDink repo: `git clone https://github.com/SethRobinson/RTDink`
+
+2. Run `proton\RTDink\media\update_media.bat` to prepare the Proton texture and sound assets (optional)
+
+3. Open `proton\RTDink\windows_vs2017\iPhoneRTDink.sln`
+
+4. Select the `Debug GL | x64` or `Release GL | x64` configuration and build
+
+5. Copy the required x64 DLLs and curl certificate into `proton\RTDink\bin`:
+   * `proton\shared\win\fmodstudio\api\core\lib\x64\fmod.dll`
+   * `proton\shared\win\lib\zlib1.dll`
+   * `proton\shared\win\lib\64\zlibwapi.dll`
+   * `proton\shared\win\lib\x64\libcurl-x64.dll`
+   * `proton\shared\win\lib\x64\libcrypto-1_1-x64.dll`
+   * `proton\shared\win\lib\x64\libssl-1_1-x64.dll`
+   * `proton\shared\win\lib\x64\curl-ca-bundle.crt`
+
+6. Your Dink Smallwood HD build should be ready to run!
 
 ---
 

@@ -152,6 +152,31 @@ Output: `bin\winRTDink_Release GL.exe`. Only deprecation warnings expected
   Now only `OSX/build`, the generated xcworkspace, and stale local junk are
   ignored.
 
+## Releasing ("Build all three releases of the apps and upload them")
+
+When Seth asks for this, build and upload the Windows, Mac, and Linux releases.
+All three are hosted at `https://www.rtsoft.com/dink/<file>`; the upload
+scripts use `%RT_PROJECTS%\UploadFileToRTsoftSSH.bat <file> dink` and honor
+`NO_PAUSE=1`. README.md's download table links to these exact filenames, so
+don't rename anything.
+
+1. Run the smoke tests first (`script\TestWindows.bat` etc., see Testing
+   above) so you don't ship a broken build.
+2. **Windows**: build `Release GL x64` with MSBuild (command below), run
+   `script\BuildAndPackageWindows.bat` (packages + signs + NSIS installer),
+   then `script\UploadWindowsVersion.bat`
+   (ships `DinkSmallwoodHDInstaller.exe`).
+3. **Mac**: `script\BuildMac.bat` (no args: full signed + notarized build,
+   takes a few extra minutes for Apple's notary service), then
+   `script\UploadMacVersion.bat` (ships `DinkSmallwoodHD.dmg`).
+4. **Linux**: `script\BuildFlatpak.bat` (no args builds both x86_64 and
+   aarch64), then `script\UploadFlatpakVersion.bat` (ships both
+   `DinkSmallwoodHD-<arch>.flatpak` bundles).
+
+The README screenshots (`doc/images/screenshot_*.png`) are copies of
+autotest output; refresh them from `script\testruns\windows\` after UI
+changes.
+
 ### AI-harness shell quirk (Claude Code sandbox on Windows)
 
 The sandboxed shell sets `NoDefaultCurrentDirectoryInExePath=1`, so cmd does not
