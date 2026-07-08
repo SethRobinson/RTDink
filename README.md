@@ -9,20 +9,21 @@ An enhanced, portable version of **Dink Smallwood**, the classic 1997 action RPG
 
 ## Download
 
-| Platform | Get it |
-|----------|--------|
-| **Windows** | [DinkSmallwoodHDInstaller.exe](https://www.rtsoft.com/dink/DinkSmallwoodHDInstaller.exe) |
-| **macOS** | [DinkSmallwoodHD.dmg](https://www.rtsoft.com/dink/DinkSmallwoodHD.dmg) (universal, Intel + Apple Silicon, macOS 11+) |
-| **Linux** | Flatpak, one command (see below) |
-| **iOS / Android** | Store links at [rtsoft.com/pages/dink.php](https://www.rtsoft.com/pages/dink.php) |
+| Platform | Get it | Size |
+|----------|--------|------|
+| **Windows** | [DinkSmallwoodHDInstaller.exe](https://www.rtsoft.com/dink/DinkSmallwoodHDInstaller.exe) | ~85 MB |
+| **macOS** | [DinkSmallwoodHD.dmg](https://www.rtsoft.com/dink/DinkSmallwoodHD.dmg) (universal, Intel + Apple Silicon, macOS 11+) | ~100 MB |
+| **Linux** | Flatpak, one command (see below) | ~90 MB |
+| **iOS** | [App Store](https://apps.apple.com/app/dink-smallwood-hd/id391690243) | |
+| **Android** | [Google Play](https://play.google.com/store/apps/details?id=com.rtsoft.rtdink) | |
+
+The Windows installer is code signed and the macOS app is Developer ID signed and notarized by Apple, so neither should trigger security warnings.
 
 Linux install (any distro with [Flatpak](https://flatpak.org/setup/); on ARM devices replace `x86_64` with `aarch64`):
 
 ```bash
 wget https://www.rtsoft.com/dink/DinkSmallwoodHD-x86_64.flatpak && flatpak install --user -y DinkSmallwoodHD-x86_64.flatpak && flatpak run com.rtsoft.DinkSmallwoodHD
 ```
-
-Downloads are also mirrored on [The Dink Network](https://www.dinknetwork.com/file/dink_smallwood_hd/).
 
 ## Building from source
 
