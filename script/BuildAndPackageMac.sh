@@ -14,17 +14,17 @@
 #   - Keychain password in ~/.rtdink_keychain_pass (chmod 600) so this can
 #     run over ssh where the keychain shows up locked. Not needed when run
 #     from a normal GUI terminal session.
-#   - notarytool credentials profile (once):
-#       xcrun notarytool store-credentials "$NOTARY_PROFILE" \
-#         --apple-id <appleid email> --team-id 7DA5SJEYK8 \
-#         --password <app-specific password from appleid.apple.com>
+#   - notarytool credentials profile: reuses the "patchy-notary" profile that
+#     already exists in the login keychain (created for Patchy with
+#     xcrun notarytool store-credentials; the credentials are just Apple ID +
+#     team, not app specific). Override with NOTARY_PROFILE=<name> if needed.
 
 set -euo pipefail
 
 APP_NAME="Dink Smallwood HD"
 # CODESIGN_IDENTITY=- gives an unsigned-style ad-hoc build for pipeline testing
 IDENTITY="${CODESIGN_IDENTITY:-Developer ID Application: Robinson Technologies Corporation (7DA5SJEYK8)}"
-NOTARY_PROFILE="${NOTARY_PROFILE:-rtsoft-notary}"
+NOTARY_PROFILE="${NOTARY_PROFILE:-patchy-notary}"
 TS_FLAG="--timestamp"
 [ "$IDENTITY" = "-" ] && TS_FLAG=""
 
@@ -46,18 +46,19 @@ echo "============================================"
 # ---------- keychain ----------
 # Over ssh the login keychain is locked; unlock it so codesign/notarytool work.
 # (ad-hoc signing needs no keychain)
-if [ "$IDENTITY" != "-" ] && ! security show-keychain-info login.keychain >/dev/null 2>&1; then
+LOGIN_KEYCHAIN="$HOME/Library/Keychains/login.keychain-db"
+if [ "$IDENTITY" != "-" ] && ! security show-keychain-info "$LOGIN_KEYCHAIN" >/dev/null 2>&1; then
     if [ -f "$HOME/.rtdink_keychain_pass" ]; then
         echo "[keychain] Unlocking login keychain..."
-        security unlock-keychain -p "$(cat "$HOME/.rtdink_keychain_pass")" login.keychain
+        security unlock-keychain -p "$(cat "$HOME/.rtdink_keychain_pass")" "$LOGIN_KEYCHAIN"
     else
         echo "[keychain] Keychain is locked and ~/.rtdink_keychain_pass not found."
         echo "           Trying interactive unlock (works in a terminal, not over plain ssh):"
-        security unlock-keychain login.keychain
+        security unlock-keychain "$LOGIN_KEYCHAIN"
     fi
 fi
 # Keep it unlocked for the duration of the build (timestamps + notarize can be slow)
-security set-keychain-settings -lut 7200 login.keychain 2>/dev/null || true
+security set-keychain-settings -lut 7200 "$LOGIN_KEYCHAIN" 2>/dev/null || true
 
 # ---------- build ----------
 echo "[1/6] Building Release (universal)..."

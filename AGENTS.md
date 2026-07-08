@@ -106,9 +106,9 @@ Output: `bin\winRTDink_Release GL.exe`. Only deprecation warnings expected
   is dead). Over ssh the login keychain shows up locked; the package script
   unlocks it with the password read from `~/.rtdink_keychain_pass` on the Mac
   (chmod 600, never committed anywhere).
-- Notarization uses a notarytool keychain profile named `rtsoft-notary`;
-  the one-time `store-credentials` setup command is in the header of
-  BuildAndPackageMac.sh.
+- Notarization reuses the `patchy-notary` notarytool keychain profile that
+  was set up for the Patchy project (the credentials are Apple ID + team, not
+  app specific). Override with the NOTARY_PROFILE env var if needed.
 - Gotcha fixed July 2026: on OSX `GetDMODRootPath()` returns the absolute
   save path, so it must not be passed to
   `CreateDirectoryRecursively(GetSavePath(), ...)` the way the relative
