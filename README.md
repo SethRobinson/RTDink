@@ -17,7 +17,7 @@ An enhanced, portable version of **Dink Smallwood**, the classic 1997 action RPG
 | **iOS** | [App Store](https://apps.apple.com/app/dink-smallwood-hd/id391690243) | |
 | **Android** | [Google Play](https://play.google.com/store/apps/details?id=com.rtsoft.rtdink) | |
 
-The Windows installer is code signed and the macOS app is Developer ID signed and notarized by Apple, so neither should trigger security warnings.
+The Windows installer is code signed by **Seth A. Robinson** and the macOS app is Developer ID signed by **Robinson Technologies Corporation** and notarized by Apple, so neither should trigger security warnings.
 
 Linux install (any distro with [Flatpak](https://flatpak.org/setup/); on ARM devices replace `x86_64` with `aarch64`):
 
