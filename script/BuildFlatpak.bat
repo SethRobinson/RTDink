@@ -7,8 +7,15 @@ set GLADOS_REPO=/home/glados/RTDink
 set FLATPAK_ID=com.rtsoft.DinkSmallwoodHD
 set SCRIPT_DIR=%~dp0
 
-REM -- Parse optional architecture argument (default: build all) --
-set REQUESTED=%~1
+REM -- Parse args: optional arch (default: build all) plus optional "local" flag --
+REM    "local" builds the current working tree (uncommitted changes included)
+REM    instead of the committed HEAD. .gitignore is respected, so saves,
+REM    secrets, and build output never leave this machine.
+set REQUESTED=
+set LOCAL_MODE=
+for %%A in (%*) do (
+    if /i "%%~A"=="local" (set LOCAL_MODE=1) else (set REQUESTED=%%~A)
+)
 if /i "%REQUESTED%"=="arm" set REQUESTED=aarch64
 if /i "%REQUESTED%"=="arm64" set REQUESTED=aarch64
 
@@ -33,6 +40,7 @@ if defined DO_ARM set ARCH_LABEL=%ARCH_LABEL% aarch64
 echo ============================================
 echo  Dink Smallwood HD - Flatpak Builder
 echo  Architectures:%ARCH_LABEL%
+if defined LOCAL_MODE (echo  Source: LOCAL working tree) else (echo  Source: committed HEAD)
 echo ============================================
 echo.
 
@@ -50,6 +58,14 @@ echo [setup] Installing flatpak-builder on glados...
 ssh -t %GLADOS_HOST% "sudo apt-get update && sudo apt-get install -y flatpak flatpak-builder && flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo && flatpak install --user -y flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08"
 if errorlevel 1 echo ERROR: Failed to install flatpak tools on glados. & goto :fail
 :builder_ok
+
+REM Having flatpak-builder does not mean the runtimes are there; check separately
+ssh %GLADOS_HOST% "flatpak info org.freedesktop.Sdk//24.08 >/dev/null 2>&1 && flatpak info org.freedesktop.Platform//24.08 >/dev/null 2>&1" >NUL 2>&1
+if not errorlevel 1 goto :runtimes_ok
+echo [setup] Installing freedesktop 24.08 Platform and Sdk on glados...
+ssh %GLADOS_HOST% "flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo && flatpak install --user -y flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08"
+if errorlevel 1 echo ERROR: Failed to install freedesktop runtimes on glados. & goto :fail
+:runtimes_ok
 
 if not defined DO_ARM goto :qemu_ok
 echo [setup] Checking QEMU and aarch64 runtimes on glados...
@@ -71,17 +87,53 @@ echo QEMU and aarch64 runtimes OK.
 echo.
 :qemu_ok
 
-echo [setup] Pushing current repo to glados...
 git remote get-url glados >NUL 2>&1
 if not errorlevel 1 goto :remote_ok
 git remote add glados %GLADOS_HOST%:%GLADOS_REPO%
 :remote_ok
+
+REM Detach HEAD on glados so pushing to flatpak-build is never rejected as
+REM "branch is currently checked out" (it stays on flatpak-build after a build)
+ssh %GLADOS_HOST% "cd %GLADOS_REPO% && git checkout --detach --force HEAD" >NUL 2>&1
+
+if not defined LOCAL_MODE goto :push_head
+
+echo [setup] LOCAL mode: snapshotting working tree. Differences from HEAD:
+git status --porcelain
+REM Build a throwaway commit of the working tree using a temp index so the
+REM real index (anything you have staged) is untouched. .gitignore is
+REM respected, so ignored junk (saves, bundles, logs) stays out.
+set SNAP_TREE=
+set SNAP_COMMIT=
+set GIT_INDEX_FILE=%TEMP%\rtdink_flatpak_snapshot_index
+del "%GIT_INDEX_FILE%" >NUL 2>&1
+git read-tree HEAD
+git add -A
+REM Belt and braces: never ship saves or AI credential notes, even if
+REM someone un-ignores them someday
+git rm --cached -q --ignore-unmatch agents_secret.md "bin/dink/save*.dat" "bin/dink/quicksave.dat" "bin/dink/continue_state.dat" "bin/dink/autosave*.dat" "bin/save.dat" >NUL 2>&1
+for /f %%T in ('git write-tree') do set SNAP_TREE=%%T
+for /f %%C in ('git commit-tree %SNAP_TREE% -p HEAD -m "flatpak local build snapshot (throwaway, not a real commit)"') do set SNAP_COMMIT=%%C
+set GIT_INDEX_FILE=
+del "%TEMP%\rtdink_flatpak_snapshot_index" >NUL 2>&1
+if not defined SNAP_COMMIT echo ERROR: Failed to snapshot working tree. & goto :fail
+echo [setup] Pushing working-tree snapshot %SNAP_COMMIT% to glados...
+git push glados %SNAP_COMMIT%:refs/heads/flatpak-build --force
+if errorlevel 1 echo ERROR: Failed to push to glados. & goto :fail
+echo Push OK.
+echo.
+goto :push_done
+
+:push_head
+echo [setup] Pushing committed HEAD to glados (add "local" parm to include uncommitted changes)...
 git push glados HEAD:flatpak-build --force
 if errorlevel 1 echo ERROR: Failed to push to glados. & goto :fail
 echo Push OK.
 echo.
+:push_done
 
-ssh %GLADOS_HOST% "cd %GLADOS_REPO% && git checkout -- . && git clean -fd -e build-flatpak/ -e build-flatpak-aarch64/ && git checkout flatpak-build"
+REM --force resets the work tree to the newly pushed commit even from detached HEAD
+ssh %GLADOS_HOST% "cd %GLADOS_REPO% && git checkout --force flatpak-build && git clean -fd -e build-flatpak/ -e build-flatpak-aarch64/ -e .flatpak-builder/"
 if errorlevel 1 echo ERROR: Failed to prepare repo on glados. & goto :fail
 
 REM ========== Build x86_64 ==========
@@ -91,7 +143,8 @@ echo  Building: x86_64
 echo ============================================
 echo.
 echo [x86_64 1/4] Building Flatpak...
-ssh %GLADOS_HOST% "cd %GLADOS_REPO% && flatpak-builder --user --force-clean --install build-flatpak flatpak/%FLATPAK_ID%.json 2>&1 | tail -5"
+REM pipefail keeps the tail pipe from hiding a failed build exit code
+ssh %GLADOS_HOST% "cd %GLADOS_REPO% && set -o pipefail && flatpak-builder --user --force-clean --install build-flatpak flatpak/%FLATPAK_ID%.json 2>&1 | tail -5"
 if errorlevel 1 echo ERROR: Flatpak build failed for x86_64. & goto :fail
 echo Build OK.
 echo.
@@ -118,7 +171,7 @@ echo  Building: aarch64
 echo ============================================
 echo.
 echo [aarch64 1/4] Building Flatpak...
-ssh %GLADOS_HOST% "cd %GLADOS_REPO% && flatpak-builder --user --force-clean --install --arch=aarch64 build-flatpak-aarch64 flatpak/%FLATPAK_ID%.json 2>&1 | tail -5"
+ssh %GLADOS_HOST% "cd %GLADOS_REPO% && set -o pipefail && flatpak-builder --user --force-clean --install --arch=aarch64 build-flatpak-aarch64 flatpak/%FLATPAK_ID%.json 2>&1 | tail -5"
 if errorlevel 1 echo ERROR: Flatpak build failed for aarch64. & goto :fail
 echo Build OK.
 echo.
@@ -146,13 +199,16 @@ if defined DO_ARM for %%F in ("%SCRIPT_DIR%DinkSmallwoodHD-aarch64.flatpak") do 
 echo ============================================
 echo.
 echo To install: flatpak install [bundle-file]
-echo Usage: %~nx0 [x86_64^|aarch64]   omit for both
+echo Usage: %~nx0 [x86_64^|aarch64] [local]   omit arch for both, "local" builds uncommitted working tree
 echo.
 goto :done
 
 :fail
 echo.
 echo Build failed.
+if not defined NO_PAUSE pause
+exit /b 1
+
 :done
-pause
+if not defined NO_PAUSE pause
 exit /b 0

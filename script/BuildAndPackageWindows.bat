@@ -52,7 +52,18 @@ set CL=/DRT_SCRIPT_BUILD
 echo "Waiting 5 seconds "
 timeout 5
 
-call %RT_PROJECTS%\Signing\sign.bat %C_TARGET_EXE% "Dink Smallwood HD"
+REM sign.bat needs three parms: file, description, and info URL (it feeds /d and /du)
+call %RT_PROJECTS%\Signing\sign.bat %C_TARGET_EXE% "Dink Smallwood HD" https://www.rtsoft.com
+if errorlevel 1 (
+    echo.
+    echo ****************************************************
+    echo ERROR: Signing %C_TARGET_EXE% failed!
+    echo ****************************************************
+    echo.
+    %RT_PROTON_UTIL%\beeper.exe /p
+    pause
+    exit /b 1
+)
 
 REM Do a little cleanup in  the dink bin dir as well
 del ..\bin\dink\continue_state.dat
@@ -61,7 +72,7 @@ del ..\bin\dink\quicksave.dat
 del ..\bin\dink\autosave.dat
 del ..\bin\dink\autosavedb.dat
 
-//make the windows installer part
+REM make the windows installer part
 SET C_FILENAME=DinkSmallwoodHDInstaller.exe
 del %C_FILENAME% > NUL
 
@@ -91,10 +102,20 @@ set d_fname=%C_FILENAME%
 echo "Waiting 5 seconds because NSIS does something and ruins the signing if I don't"
 timeout 5
 
-call %RT_PROJECTS%\Signing\sign.bat %C_FILENAME% "Dink Smallwood HD"
+call %RT_PROJECTS%\Signing\sign.bat %C_FILENAME% "Dink Smallwood HD" https://www.rtsoft.com
+if errorlevel 1 (
+    echo.
+    echo ****************************************************
+    echo ERROR: Signing %C_FILENAME% failed!
+    echo ****************************************************
+    echo.
+    %RT_PROTON_UTIL%\beeper.exe /p
+    pause
+    exit /b 1
+)
 
 :call FTPToSiteWin.bat
-cd script
+REM (we're already in the script dir here)
 
 :testy
 :Um, great.  But now let's put all the stuff in a standalone directory so other methods can package it easier
@@ -104,9 +125,10 @@ mkdir builds\win
 cd builds\win
 
   copy "..\..\..\bin\dink.exe" .
-  ;dink.pdf is optional, it's like 11 MB but it allows auto logged crash stacks to contain useful info
+  REM dink.pdb is optional, it's like 11 MB but it allows auto logged crash stacks to contain useful info
   copy "..\..\..\bin\dink.pdb" .
-  copy "..\..\..\readme.txt" .
+  REM same readme.txt the NSIS installer ships (repo root only has README.md)
+  copy "..\..\win_installer\readme.txt" .
   copy "..\..\..\bin\fmod.dll" .
   copy "..\..\..\bin\zlib1.dll" .
   copy "..\..\..\bin\version_history.txt" .

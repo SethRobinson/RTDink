@@ -217,3 +217,6 @@ proton/
 script/DinkSmallwoodHD.flatpak
 script/DinkSmallwoodHD-aarch64.flatpak
 script/DinkSmallwoodHD-x86_64.flatpak
+
+# local AI assistant notes that may hold secrets, must never be committed (see AGENTS.md)
+agents_secret.md
