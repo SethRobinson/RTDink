@@ -60,6 +60,8 @@ etc work on Mac for the first time).
 ## Git
 
 - Never add OpenAI/Codex/Claude etc as a co-author on git commits.
+- NEVER `git push` unless Seth explicitly says to push. "Commit" means commit
+  locally only; committing is not permission to push.
 
 ## Building (verified July 2026)
 
