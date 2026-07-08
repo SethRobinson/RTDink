@@ -13,11 +13,14 @@ REM    "local" builds the current working tree (uncommitted changes included)
 REM    instead of the committed HEAD. .gitignore is respected, so saves,
 REM    secrets, and build output never leave this machine.
 REM    "nonotarize" skips the Apple notarization step (quick test builds).
+REM    "adhoc" signs ad-hoc instead of Developer ID (no keychain needed,
+REM            implies nonotarize; for testing the pipeline only).
 set LOCAL_MODE=
 set MAC_ARGS=
+set MAC_ENV=
 for %%A in (%*) do (
-    if /i "%%~A"=="local" (set LOCAL_MODE=1) else if /i "%%~A"=="nonotarize" (set MAC_ARGS=nonotarize) else (
-        echo ERROR: Unknown option "%%~A". Usage: %~nx0 [local] [nonotarize]
+    if /i "%%~A"=="local" (set LOCAL_MODE=1) else if /i "%%~A"=="nonotarize" (set MAC_ARGS=nonotarize) else if /i "%%~A"=="adhoc" (set MAC_ENV=CODESIGN_IDENTITY=- & set MAC_ARGS=nonotarize) else (
+        echo ERROR: Unknown option "%%~A". Usage: %~nx0 [local] [nonotarize] [adhoc]
         goto :fail
     )
 )
@@ -92,7 +95,7 @@ if errorlevel 1 echo ERROR: Failed to prepare repo on the mac. & goto :fail
 
 REM ========== Build, sign, notarize ==========
 echo [1/2] Building and packaging on the mac (see BuildAndPackageMac.sh)...
-ssh %MAC_HOST% "cd %MAC_REPO%/script && bash BuildAndPackageMac.sh %MAC_ARGS%"
+ssh %MAC_HOST% "cd %MAC_REPO%/script && %MAC_ENV% bash BuildAndPackageMac.sh %MAC_ARGS%"
 if errorlevel 1 echo ERROR: Mac build/package failed. & goto :fail
 echo Build OK.
 echo.
@@ -107,7 +110,7 @@ echo  MAC BUILD COMPLETE
 for %%F in ("%SCRIPT_DIR%DinkSmallwoodHD.dmg") do echo   DinkSmallwoodHD.dmg  (%%~zF bytes)
 echo ============================================
 echo.
-echo Usage: %~nx0 [local] [nonotarize]
+echo Usage: %~nx0 [local] [nonotarize] [adhoc]
 echo.
 goto :done
 
