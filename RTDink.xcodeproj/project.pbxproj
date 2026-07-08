@@ -636,6 +636,8 @@
 		5D9F6FDA28A8EFB800D3F15D /* GamepadiCade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GamepadiCade.h; path = Gamepad/GamepadiCade.h; sourceTree = "<group>"; };
 		5D9F6FDB28A8EFB800D3F15D /* GamepadProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GamepadProvider.cpp; path = Gamepad/GamepadProvider.cpp; sourceTree = "<group>"; };
 		5D9F6FDC28A8EFB800D3F15D /* GamepadProvideriCade.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GamepadProvideriCade.cpp; path = Gamepad/GamepadProvideriCade.cpp; sourceTree = "<group>"; };
+		5DAE00082DA5F10000AE0008 /* GamepadProviderSDL2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GamepadProviderSDL2.cpp; path = Gamepad/GamepadProviderSDL2.cpp; sourceTree = "<group>"; };
+		5DAE000A2DA5F10000AE000A /* GamepadSDL2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GamepadSDL2.cpp; path = Gamepad/GamepadSDL2.cpp; sourceTree = "<group>"; };
 		5D9F6FE528A8F01800D3F15D /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
 		5DA1FCF60F01EEFD001E9C1B /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		5DA1FD020F01EF07001E9C1B /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -941,6 +943,8 @@
 				5D9F6FD228A8EFB700D3F15D /* GamepadProvider.h */,
 				5D9F6FDC28A8EFB800D3F15D /* GamepadProvideriCade.cpp */,
 				5D9F6FD828A8EFB800D3F15D /* GamepadProvideriCade.h */,
+				5DAE00082DA5F10000AE0008 /* GamepadProviderSDL2.cpp */,
+				5DAE000A2DA5F10000AE000A /* GamepadSDL2.cpp */,
 				5D9F6FCD28A8EFB600D3F15D /* GamepadProviderIOS.h */,
 				5D9F6FCF28A8EFB700D3F15D /* GamepadProviderIOS.mm */,
 				5D9F6FD428A8EFB700D3F15D /* GamepadProviderIOSNative.h */,

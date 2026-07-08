@@ -8,12 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		5D21B9E11FA6C31D00B12CB3 /* png.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9CE1FA6C31B00B12CB3 /* png.c */; };
+		AA000009000000000000AA01 /* GamepadProviderGCController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA00000A000000000000AA01 /* GamepadProviderGCController.mm */; };
+		AA00000B000000000000AA01 /* GamepadGCController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA00000C000000000000AA01 /* GamepadGCController.mm */; };
+		AA00000D000000000000AA01 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA00000E000000000000AA01 /* GameController.framework */; };
 		5D21B9E21FA6C31D00B12CB3 /* pngerror.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9CF1FA6C31B00B12CB3 /* pngerror.c */; };
 		5D21B9E31FA6C31D00B12CB3 /* pngtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9D01FA6C31B00B12CB3 /* pngtrans.c */; };
 		5D21B9E41FA6C31D00B12CB3 /* pngrutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9D11FA6C31B00B12CB3 /* pngrutil.c */; };
 		5D21B9E51FA6C31D00B12CB3 /* pngwrite.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9D21FA6C31B00B12CB3 /* pngwrite.c */; };
 		5D21B9E61FA6C31D00B12CB3 /* pngget.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9D31FA6C31B00B12CB3 /* pngget.c */; };
-		5D21B9E71FA6C31D00B12CB3 /* pnggccrd.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9D41FA6C31B00B12CB3 /* pnggccrd.c */; };
 		5D21B9E81FA6C31D00B12CB3 /* pngrio.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9D51FA6C31B00B12CB3 /* pngrio.c */; };
 		5D21B9E91FA6C31D00B12CB3 /* pngwtran.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9D61FA6C31C00B12CB3 /* pngwtran.c */; };
 		5D21B9EA1FA6C31D00B12CB3 /* pngpread.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9D71FA6C31C00B12CB3 /* pngpread.c */; };
@@ -21,14 +23,25 @@
 		5D21B9EC1FA6C31D00B12CB3 /* pngwio.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9D91FA6C31C00B12CB3 /* pngwio.c */; };
 		5D21B9ED1FA6C31D00B12CB3 /* pngmem.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9DA1FA6C31C00B12CB3 /* pngmem.c */; };
 		5D21B9EE1FA6C31D00B12CB3 /* pngwutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9DB1FA6C31C00B12CB3 /* pngwutil.c */; };
-		5D21B9EF1FA6C31D00B12CB3 /* pngvcrd.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9DE1FA6C31D00B12CB3 /* pngvcrd.c */; };
 		5D21B9F01FA6C31D00B12CB3 /* pngread.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9DF1FA6C31D00B12CB3 /* pngread.c */; };
 		5D21B9F11FA6C31D00B12CB3 /* pngrtran.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9E01FA6C31D00B12CB3 /* pngrtran.c */; };
 		5D21B9F91FA6C34500B12CB3 /* GamepadProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9F41FA6C34500B12CB3 /* GamepadProvider.cpp */; };
 		5D21B9FA1FA6C34500B12CB3 /* GamepadManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9F61FA6C34500B12CB3 /* GamepadManager.cpp */; };
 		5D21B9FB1FA6C34500B12CB3 /* Gamepad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9F81FA6C34500B12CB3 /* Gamepad.cpp */; };
 		5D21B9FE1FA6C37E00B12CB3 /* AudioManagerFMODStudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D21B9FD1FA6C37E00B12CB3 /* AudioManagerFMODStudio.cpp */; };
+		AA000004000000000000AA01 /* AudioManagerSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA000003000000000000AA01 /* AudioManagerSDL.cpp */; };
+		AA000005000000000000AA01 /* GamepadProviderSDL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA000006000000000000AA01 /* GamepadProviderSDL2.cpp */; };
+		AA000007000000000000AA01 /* GamepadSDL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA000008000000000000AA01 /* GamepadSDL2.cpp */; };
+
+
 		5D21BA051FA6C3DD00B12CB3 /* AdProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D21BA021FA6C3DD00B12CB3 /* AdProvider.cpp */; };
+		AA000001000000000000AA01 /* EmulatedPointerComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA000002000000000000AA01 /* EmulatedPointerComponent.cpp */; };
+		AA000001000000000000AA06 /* TouchDragComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA000002000000000000AA06 /* TouchDragComponent.cpp */; };
+
+		AA000001000000000000AA02 /* LogDisplayComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA000002000000000000AA02 /* LogDisplayComponent.cpp */; };
+		AA000001000000000000AA03 /* arm_init.c in Sources */ = {isa = PBXBuildFile; fileRef = AA000002000000000000AA03 /* arm_init.c */; };
+		AA000001000000000000AA04 /* filter_neon_intrinsics.c in Sources */ = {isa = PBXBuildFile; fileRef = AA000002000000000000AA04 /* filter_neon_intrinsics.c */; };
+		AA000001000000000000AA05 /* palette_neon_intrinsics.c in Sources */ = {isa = PBXBuildFile; fileRef = AA000002000000000000AA05 /* palette_neon_intrinsics.c */; };
 		5D21BA071FA6C3DD00B12CB3 /* GamepadiCade.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D21BA041FA6C3DD00B12CB3 /* GamepadiCade.cpp */; };
 		5D21BA0B1FA6C47F00B12CB3 /* JPGSurfaceLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D21BA091FA6C47E00B12CB3 /* JPGSurfaceLoader.cpp */; };
 		5D21BA0E1FA6C6BF00B12CB3 /* RenderScissorComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D21BA0C1FA6C6BE00B12CB3 /* RenderScissorComponent.cpp */; };
@@ -84,7 +97,7 @@
 		5D70B62612B5FED300A1AB17 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D70B61E12B5FED300A1AB17 /* main.m */; };
 		5D70B62712B5FED300A1AB17 /* MainController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5D70B62012B5FED300A1AB17 /* MainController.mm */; };
 		5D70B62812B5FED300A1AB17 /* MyApplication.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5D70B62212B5FED300A1AB17 /* MyApplication.mm */; };
-		5D70B62912B5FED300A1AB17 /* MyOpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5D70B62412B5FED300A1AB17 /* MyOpenGLView.mm */; };
+		5D70B62912B5FED300A1AB17 /* MyOpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5D70B62412B5FED300A1AB17 /* MyOpenGLView.mm */; settings = {COMPILER_FLAGS = "-Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -Wno-error=int-to-pointer-cast"; }; };
 		5D70B81112B606DC00A1AB17 /* PlatformSetup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D70B79C12B606DC00A1AB17 /* PlatformSetup.cpp */; };
 		5D70B81212B606DC00A1AB17 /* PlatformPrecomp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D70B79E12B606DC00A1AB17 /* PlatformPrecomp.cpp */; };
 		5D70B81312B606DC00A1AB17 /* BaseApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D70B79F12B606DC00A1AB17 /* BaseApp.cpp */; };
@@ -172,11 +185,6 @@
 		5D70C10612B72BE700A1AB17 /* TextScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D70C09D12B72BE700A1AB17 /* TextScanner.cpp */; };
 		5D70C10712B72BE700A1AB17 /* MathUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D70C09F12B72BE700A1AB17 /* MathUtils.cpp */; };
 		5D70C10812B72BE700A1AB17 /* Variant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D70C0A112B72BE700A1AB17 /* Variant.cpp */; };
-		5D70C10912B72BE700A1AB17 /* connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D70C0A512B72BE700A1AB17 /* connection.cpp */; };
-		5D70C10A12B72BE700A1AB17 /* named_slot_map.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D70C0A612B72BE700A1AB17 /* named_slot_map.cpp */; };
-		5D70C10B12B72BE700A1AB17 /* signal_base.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D70C0A712B72BE700A1AB17 /* signal_base.cpp */; };
-		5D70C10C12B72BE700A1AB17 /* slot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D70C0A812B72BE700A1AB17 /* slot.cpp */; };
-		5D70C10D12B72BE700A1AB17 /* trackable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D70C0A912B72BE700A1AB17 /* trackable.cpp */; };
 		5D70C10E12B72BE700A1AB17 /* GLESUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D70C0AA12B72BE700A1AB17 /* GLESUtils.cpp */; };
 		5D70C10F12B72BE700A1AB17 /* ResourceUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D70C0AC12B72BE700A1AB17 /* ResourceUtils.cpp */; };
 		5D70C11012B72BE700A1AB17 /* MiscUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D70C0AF12B72BE700A1AB17 /* MiscUtils.cpp */; };
@@ -210,7 +218,6 @@
 		5D70C16912B72C0900A1AB17 /* DebugMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D70C14B12B72C0900A1AB17 /* DebugMenu.cpp */; };
 		5D70C16A12B72C0900A1AB17 /* MainMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D70C14D12B72C0900A1AB17 /* MainMenu.cpp */; };
 		5D8FA3AC12DA754700E9B3B8 /* interface in Resources */ = {isa = PBXBuildFile; fileRef = 5D8FA3AB12DA754700E9B3B8 /* interface */; };
-		5D8FA49F12DBFA1100E9B3B8 /* game in Resources */ = {isa = PBXBuildFile; fileRef = 5D8FA49D12DBFA1100E9B3B8 /* game */; };
 		5D8FA52212DBFA3100E9B3B8 /* dink in Resources */ = {isa = PBXBuildFile; fileRef = 5D8FA4A012DBFA3000E9B3B8 /* dink */; };
 		5D8FA52312DBFA3100E9B3B8 /* audio in Resources */ = {isa = PBXBuildFile; fileRef = 5D8FA51512DBFA3100E9B3B8 /* audio */; };
 		5DBEA04C1FA6C94C0081C341 /* jcsample.c in Sources */ = {isa = PBXBuildFile; fileRef = 5DBEA04B1FA6C94C0081C341 /* jcsample.c */; };
@@ -234,7 +241,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				5DBEA04D1FA6CE360081C341 /* libfmod.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,10 +252,22 @@
 		256AC3F00F4B6AF500CF3369 /* RTDink_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTDink_Prefix.pch; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		AA00000A000000000000AA01 /* GamepadProviderGCController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = GamepadProviderGCController.mm; path = ../../shared/Gamepad/GamepadProviderGCController.mm; sourceTree = SOURCE_ROOT; };
+		AA00000F000000000000AA01 /* GamepadProviderGCController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GamepadProviderGCController.h; path = ../../shared/Gamepad/GamepadProviderGCController.h; sourceTree = SOURCE_ROOT; };
+		AA00000C000000000000AA01 /* GamepadGCController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = GamepadGCController.mm; path = ../../shared/Gamepad/GamepadGCController.mm; sourceTree = SOURCE_ROOT; };
+		AA000010000000000000AA01 /* GamepadGCController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GamepadGCController.h; path = ../../shared/Gamepad/GamepadGCController.h; sourceTree = SOURCE_ROOT; };
+		AA00000E000000000000AA01 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = /System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
 		5D21B9CE1FA6C31B00B12CB3 /* png.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = png.c; path = ../../../shared/Irrlicht/source/Irrlicht/libpng/png.c; sourceTree = "<group>"; };
 		5D21B9CF1FA6C31B00B12CB3 /* pngerror.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngerror.c; path = ../../../shared/Irrlicht/source/Irrlicht/libpng/pngerror.c; sourceTree = "<group>"; };
 		5D21B9D01FA6C31B00B12CB3 /* pngtrans.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngtrans.c; path = ../../../shared/Irrlicht/source/Irrlicht/libpng/pngtrans.c; sourceTree = "<group>"; };
 		5D21B9D11FA6C31B00B12CB3 /* pngrutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngrutil.c; path = ../../../shared/Irrlicht/source/Irrlicht/libpng/pngrutil.c; sourceTree = "<group>"; };
+		AA000002000000000000AA01 /* EmulatedPointerComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EmulatedPointerComponent.cpp; path = ../source/Component/EmulatedPointerComponent.cpp; sourceTree = SOURCE_ROOT; };
+		AA000002000000000000AA02 /* LogDisplayComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LogDisplayComponent.cpp; path = ../../shared/Entity/LogDisplayComponent.cpp; sourceTree = SOURCE_ROOT; };
+		AA000002000000000000AA06 /* TouchDragComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TouchDragComponent.cpp; path = ../../shared/Entity/TouchDragComponent.cpp; sourceTree = SOURCE_ROOT; };
+
+		AA000002000000000000AA03 /* arm_init.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = arm_init.c; path = ../../shared/Irrlicht/source/Irrlicht/libpng/arm/arm_init.c; sourceTree = SOURCE_ROOT; };
+		AA000002000000000000AA04 /* filter_neon_intrinsics.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = filter_neon_intrinsics.c; path = ../../shared/Irrlicht/source/Irrlicht/libpng/arm/filter_neon_intrinsics.c; sourceTree = SOURCE_ROOT; };
+		AA000002000000000000AA05 /* palette_neon_intrinsics.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_neon_intrinsics.c; path = ../../shared/Irrlicht/source/Irrlicht/libpng/arm/palette_neon_intrinsics.c; sourceTree = SOURCE_ROOT; };
 		5D21B9D21FA6C31B00B12CB3 /* pngwrite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngwrite.c; path = ../../../shared/Irrlicht/source/Irrlicht/libpng/pngwrite.c; sourceTree = "<group>"; };
 		5D21B9D31FA6C31B00B12CB3 /* pngget.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngget.c; path = ../../../shared/Irrlicht/source/Irrlicht/libpng/pngget.c; sourceTree = "<group>"; };
 		5D21B9D41FA6C31B00B12CB3 /* pnggccrd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pnggccrd.c; path = ../../../shared/Irrlicht/source/Irrlicht/libpng/pnggccrd.c; sourceTree = "<group>"; };
@@ -273,6 +291,8 @@
 		5D21B9F81FA6C34500B12CB3 /* Gamepad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gamepad.cpp; path = ../../shared/Gamepad/Gamepad.cpp; sourceTree = "<group>"; };
 		5D21B9FC1FA6C37E00B12CB3 /* AudioManagerFMODStudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioManagerFMODStudio.h; path = ../../shared/Audio/AudioManagerFMODStudio.h; sourceTree = "<group>"; };
 		5D21B9FD1FA6C37E00B12CB3 /* AudioManagerFMODStudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AudioManagerFMODStudio.cpp; path = ../../shared/Audio/AudioManagerFMODStudio.cpp; sourceTree = "<group>"; };
+		AA000003000000000000AA01 /* AudioManagerSDL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AudioManagerSDL.cpp; path = ../../shared/Audio/AudioManagerSDL.cpp; sourceTree = "<group>"; };
+		AA000003000000000000AA02 /* AudioManagerSDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioManagerSDL.h; path = ../../shared/Audio/AudioManagerSDL.h; sourceTree = "<group>"; };
 		5D21B9FF1FA6C3DC00B12CB3 /* AdProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AdProvider.h; path = ../../shared/Ad/AdProvider.h; sourceTree = "<group>"; };
 		5D21BA001FA6C3DC00B12CB3 /* GamepadiCade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GamepadiCade.h; path = ../../shared/Gamepad/GamepadiCade.h; sourceTree = "<group>"; };
 		5D21BA021FA6C3DD00B12CB3 /* AdProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AdProvider.cpp; path = ../../shared/Ad/AdProvider.cpp; sourceTree = "<group>"; };
@@ -282,6 +302,10 @@
 		5D21BA0C1FA6C6BE00B12CB3 /* RenderScissorComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderScissorComponent.cpp; path = ../../shared/Entity/RenderScissorComponent.cpp; sourceTree = "<group>"; };
 		5D21BA0D1FA6C6BE00B12CB3 /* RenderScissorComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderScissorComponent.h; path = ../../shared/Entity/RenderScissorComponent.h; sourceTree = "<group>"; };
 		5D21BA0F1FA6C6EE00B12CB3 /* GamepadProvideriCade.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GamepadProvideriCade.cpp; path = ../../shared/Gamepad/GamepadProvideriCade.cpp; sourceTree = "<group>"; };
+		AA000006000000000000AA01 /* GamepadProviderSDL2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GamepadProviderSDL2.cpp; path = ../../shared/Gamepad/GamepadProviderSDL2.cpp; sourceTree = "<group>"; };
+		AA000008000000000000AA01 /* GamepadSDL2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GamepadSDL2.cpp; path = ../../shared/Gamepad/GamepadSDL2.cpp; sourceTree = "<group>"; };
+
+
 		5D21BA101FA6C6EE00B12CB3 /* GamepadProvideriCade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GamepadProvideriCade.h; path = ../../shared/Gamepad/GamepadProvideriCade.h; sourceTree = "<group>"; };
 		5D21BA131FA6C76500B12CB3 /* jdatadst.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jdatadst.c; path = ../../../shared/Irrlicht/source/Irrlicht/jpeglib/jdatadst.c; sourceTree = "<group>"; };
 		5D21BA141FA6C76500B12CB3 /* jdatasrc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jdatasrc.c; path = ../../../shared/Irrlicht/source/Irrlicht/jpeglib/jdatasrc.c; sourceTree = "<group>"; };
@@ -547,8 +571,8 @@
 		5D70C12712B72C0900A1AB17 /* CursorComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CursorComponent.h; path = ../source/Component/CursorComponent.h; sourceTree = SOURCE_ROOT; };
 		5D70C12812B72C0900A1AB17 /* FPSControlComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FPSControlComponent.cpp; path = ../source/Component/FPSControlComponent.cpp; sourceTree = SOURCE_ROOT; };
 		5D70C12912B72C0900A1AB17 /* FPSControlComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FPSControlComponent.h; path = ../source/Component/FPSControlComponent.h; sourceTree = SOURCE_ROOT; };
-		5D70C12A12B72C0900A1AB17 /* ParticleTestComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ParticleTestComponent.cpp; path = ../source/Component/ParticleTestComponent.cpp; sourceTree = SOURCE_ROOT; };
-		5D70C12B12B72C0900A1AB17 /* ParticleTestComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParticleTestComponent.h; path = ../source/Component/ParticleTestComponent.h; sourceTree = SOURCE_ROOT; };
+		5D70C12A12B72C0900A1AB17 /* ParticleTestComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ParticleTestComponent.cpp; path = ../../proton/RTSimpleApp/source/Component/ParticleTestComponent.cpp; sourceTree = SOURCE_ROOT; };
+		5D70C12B12B72C0900A1AB17 /* ParticleTestComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParticleTestComponent.h; path = ../../proton/RTSimpleApp/source/Component/ParticleTestComponent.h; sourceTree = SOURCE_ROOT; };
 		5D70C12D12B72C0900A1AB17 /* ExpiredMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExpiredMenu.h; path = ../source/GUI/ExpiredMenu.h; sourceTree = SOURCE_ROOT; };
 		5D70C12E12B72C0900A1AB17 /* ExpiredMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ExpiredMenu.cpp; path = ../source/GUI/ExpiredMenu.cpp; sourceTree = SOURCE_ROOT; };
 		5D70C12F12B72C0900A1AB17 /* ReadTextMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReadTextMenu.h; path = ../source/GUI/ReadTextMenu.h; sourceTree = SOURCE_ROOT; };
@@ -584,7 +608,6 @@
 		5D70C14D12B72C0900A1AB17 /* MainMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MainMenu.cpp; path = ../source/GUI/MainMenu.cpp; sourceTree = SOURCE_ROOT; };
 		5D70C14E12B72C0900A1AB17 /* MainMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainMenu.h; path = ../source/GUI/MainMenu.h; sourceTree = SOURCE_ROOT; };
 		5D8FA3AB12DA754700E9B3B8 /* interface */ = {isa = PBXFileReference; lastKnownFileType = folder; name = interface; path = ../bin/interface; sourceTree = "<group>"; };
-		5D8FA49D12DBFA1100E9B3B8 /* game */ = {isa = PBXFileReference; lastKnownFileType = folder; name = game; path = ../bin/game; sourceTree = "<group>"; };
 		5D8FA4A012DBFA3000E9B3B8 /* dink */ = {isa = PBXFileReference; lastKnownFileType = folder; name = dink; path = ../bin/dink; sourceTree = "<group>"; };
 		5D8FA51512DBFA3100E9B3B8 /* audio */ = {isa = PBXFileReference; lastKnownFileType = folder; name = audio; path = ../bin/audio; sourceTree = "<group>"; };
 		5DBEA04B1FA6C94C0081C341 /* jcsample.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jcsample.c; path = ../../../shared/Irrlicht/source/Irrlicht/jpeglib/jcsample.c; sourceTree = "<group>"; };
@@ -606,11 +629,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5D4E96E81FA6B7D7001AAECE /* libfmod.dylib in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				AFD4D88A113C504F00C2DE76 /* OpenGL.framework in Frameworks */,
 				AF9DBBC6113C611C00D05754 /* QuartzCore.framework in Frameworks */,
 				5DDE02A012B4F50D000C5CC0 /* libz.dylib in Frameworks */,
+				AA00000D000000000000AA01 /* GameController.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -624,6 +647,7 @@
 				AFD4D889113C504F00C2DE76 /* OpenGL.framework */,
 				AF9DBBC5113C611C00D05754 /* QuartzCore.framework */,
 				5DDE029F12B4F50D000C5CC0 /* libz.dylib */,
+				AA00000E000000000000AA01 /* GameController.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -700,6 +724,10 @@
 			children = (
 				5D21BA0F1FA6C6EE00B12CB3 /* GamepadProvideriCade.cpp */,
 				5D21BA101FA6C6EE00B12CB3 /* GamepadProvideriCade.h */,
+				AA00000A000000000000AA01 /* GamepadProviderGCController.mm */,
+				AA00000F000000000000AA01 /* GamepadProviderGCController.h */,
+				AA00000C000000000000AA01 /* GamepadGCController.mm */,
+				AA000010000000000000AA01 /* GamepadGCController.h */,
 				5D21BA041FA6C3DD00B12CB3 /* GamepadiCade.cpp */,
 				5D21BA001FA6C3DC00B12CB3 /* GamepadiCade.h */,
 				5D21B9F81FA6C34500B12CB3 /* Gamepad.cpp */,
@@ -891,6 +919,8 @@
 			children = (
 				5D21B9FD1FA6C37E00B12CB3 /* AudioManagerFMODStudio.cpp */,
 				5D21B9FC1FA6C37E00B12CB3 /* AudioManagerFMODStudio.h */,
+				AA000003000000000000AA01 /* AudioManagerSDL.cpp */,
+				AA000003000000000000AA02 /* AudioManagerSDL.h */,
 				5D70C01512B72BE700A1AB17 /* AudioManager.cpp */,
 				5D70C01612B72BE700A1AB17 /* AudioManager.h */,
 			);
@@ -1273,6 +1303,7 @@
 			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "RTDink" */;
 			buildPhases = (
 				8D1107290486CEB800E47090 /* Resources */,
+				AF0000001000000000000001 /* Generate pnglibconf.h */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
 				5D70BB2712B7208900A1AB17 /* CopyFiles */,
@@ -1326,8 +1357,7 @@
 				5DFB850A12BAEDB500337543 /* app.icns in Resources */,
 				5DD32A5A12CAE4340009B0F3 /* Info.plist in Resources */,
 				5D8FA3AC12DA754700E9B3B8 /* interface in Resources */,
-				5D8FA49F12DBFA1100E9B3B8 /* game in Resources */,
-				5D8FA52212DBFA3100E9B3B8 /* dink in Resources */,
+					5D8FA52212DBFA3100E9B3B8 /* dink in Resources */,
 				5D8FA52312DBFA3100E9B3B8 /* audio in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1337,21 +1367,22 @@
 /* Begin PBXShellScriptBuildPhase section */
 		5D8CE30414C6570D009EB534 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"",
 			);
 			name = "Run Script";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = "/bin/sh -x";
-			shellScript = "install_name_tool -change @rpath/libfmod.dylib @loader_path/../Frameworks/libfmod.dylib \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME\"\notool -L \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME\"";
+			shellPath = /bin/sh;
+			shellScript = "if [ -f \"$PROJECT_DIR/libfmod.dylib\" ]; then\n  install_name_tool -change @rpath/libfmod.dylib @loader_path/../Frameworks/libfmod.dylib \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME\"\nfi\nif [ -f \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME\" ]; then\n  otool -L \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME\"\nfi\n";
 		};
 		5DBEA04E1FA6D2CF0081C341 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -1365,6 +1396,7 @@
 		};
 		5DBEA0501FA6DBE30081C341 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 12;
 			files = (
 			);
@@ -1375,6 +1407,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "echo Disabled, run PackageDinkOSX.command instead, that way this signs it for us first\nexit\n\nif [ \"${CONFIGURATION}\" = 'Release' ]; then\n[ \"$ACTION\" = build ] || exit 0\n[ \"$BUILD_VARIANTS\" = \"normal\" ] || exit 0\n\n\nAPPNAME=\"Dink Smallwood HD\"\n\nCODESIGN=\"Mac Developer: Seth Robinson\"\n#CODESIGN=\"3rd Party Mac Developer Application: Robinson Technologies\"\n\nINSTALLSIGN=\"3rd Party Mac Developer Installer: Robinson Technologies\"\n\n#codesign -vvvv -f -s \"$CODESIGN\" \"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.app/Contents/MacOS/libfmod.dylib\"\n#codesign -vvvv -f -s \"$CODESIGN\" \"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.app\"\n#codesign -vvvv \"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.app\"\nfi\n";
+		};
+		AF0000001000000000000001 /* Generate pnglibconf.h */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate pnglibconf.h";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Create symlinks if proton is cloned inside the repo (MacInCloud layout)\n# This makes ../../shared and ../../proton work from OSX/ dir\nPROTON_INSIDE=\"$SRCROOT/../proton\"\nSHARED_SIBLING=\"$SRCROOT/../../shared\"\nPROTON_SIBLING=\"$SRCROOT/../../proton\"\n\nif [ -d \"$PROTON_INSIDE\" ]; then\n  if [ ! -d \"$SHARED_SIBLING\" ]; then\n    echo \"Creating shared symlink: $SHARED_SIBLING -> $PROTON_INSIDE/shared\"\n    ln -sf \"$PROTON_INSIDE/shared\" \"$SHARED_SIBLING\"\n  fi\n  if [ ! -d \"$PROTON_SIBLING\" ]; then\n    echo \"Creating proton symlink: $PROTON_SIBLING -> $PROTON_INSIDE\"\n    ln -sf \"$PROTON_INSIDE\" \"$PROTON_SIBLING\"\n  fi\nfi\n\n\n# Create SDL2/SDL_mixer.h compatibility symlink for SDL2_mixer.framework\nSDL2_MIXER_HEADERS=\"$HOME/Library/Frameworks/SDL2_mixer.framework/Headers\"\nSDL2_HEADERS=\"$HOME/Library/Frameworks/SDL2.framework/Headers\"\nif [ -d \"$SDL2_MIXER_HEADERS\" ] && [ -d \"$SDL2_HEADERS\" ]; then\n  if [ ! -f \"$SDL2_HEADERS/SDL_mixer.h\" ]; then\n    ln -sf \"$SDL2_MIXER_HEADERS/SDL_mixer.h\" \"$SDL2_HEADERS/SDL_mixer.h\"\n    echo \"Created SDL_mixer.h symlink in SDL2.framework/Headers\"\n  fi\nfi\n\n# Generate pnglibconf.h\nLIBPNG=\"$SRCROOT/../../shared/Irrlicht/source/Irrlicht/libpng\"\nif [ -d \"$LIBPNG\" ] && [ ! -f \"$LIBPNG/pnglibconf.h\" ] && [ -f \"$LIBPNG/pnglibconf.h.prebuilt\" ]; then\n  cp \"$LIBPNG/pnglibconf.h.prebuilt\" \"$LIBPNG/pnglibconf.h\"\n  echo \"Copied pnglibconf.h from $LIBPNG\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1449,13 +1496,18 @@
 				5D70C0D612B72BE700A1AB17 /* ScrollBarRenderComponent.cpp in Sources */,
 				5D70C0D712B72BE700A1AB17 /* ScrollComponent.cpp in Sources */,
 				5D21BA111FA6C6EE00B12CB3 /* GamepadProvideriCade.cpp in Sources */,
+				AA000005000000000000AA01 /* GamepadProviderSDL2.cpp in Sources */,
+				AA000007000000000000AA01 /* GamepadSDL2.cpp in Sources */,
+				AA000009000000000000AA01 /* GamepadProviderGCController.mm in Sources */,
+				AA00000B000000000000AA01 /* GamepadGCController.mm in Sources */,
+				AA000004000000000000AA01 /* AudioManagerSDL.cpp in Sources */,
+
 				5D70C0D812B72BE700A1AB17 /* TextBoxRenderComponent.cpp in Sources */,
 				5D21B9EB1FA6C31D00B12CB3 /* pngset.c in Sources */,
 				5D70C0D912B72BE700A1AB17 /* HTTPComponent.cpp in Sources */,
 				5D70C0DA12B72BE700A1AB17 /* TyperComponent.cpp in Sources */,
 				5D70C0DB12B72BE700A1AB17 /* ProgressBarComponent.cpp in Sources */,
 				5D70C0DC12B72BE700A1AB17 /* TapSequenceDetectComponent.cpp in Sources */,
-				5D21B9FE1FA6C37E00B12CB3 /* AudioManagerFMODStudio.cpp in Sources */,
 				5D21B9F11FA6C31D00B12CB3 /* pngrtran.c in Sources */,
 				5D70C0DD12B72BE700A1AB17 /* UnderlineRenderComponent.cpp in Sources */,
 				5D70C0DE12B72BE700A1AB17 /* FocusInputComponent.cpp in Sources */,
@@ -1466,7 +1518,6 @@
 				5D70C0E212B72BE700A1AB17 /* TextRenderComponent.cpp in Sources */,
 				5D70C0E312B72BE700A1AB17 /* Button2DComponent.cpp in Sources */,
 				5D21BA671FA6C76C00B12CB3 /* jcinit.c in Sources */,
-				5D21B9EF1FA6C31D00B12CB3 /* pngvcrd.c in Sources */,
 				5D21B9E41FA6C31D00B12CB3 /* pngrutil.c in Sources */,
 				5D70C0E412B72BE700A1AB17 /* TouchHandlerComponent.cpp in Sources */,
 				5D70C0E512B72BE700A1AB17 /* OverlayRenderComponent.cpp in Sources */,
@@ -1485,7 +1536,6 @@
 				5D70C0EB12B72BE700A1AB17 /* SoftSurface.cpp in Sources */,
 				5D21B9E51FA6C31D00B12CB3 /* pngwrite.c in Sources */,
 				5D70C0EC12B72BE700A1AB17 /* RenderBatcher.cpp in Sources */,
-				5D21B9E71FA6C31D00B12CB3 /* pnggccrd.c in Sources */,
 				5D70C0ED12B72BE700A1AB17 /* L_Defination.cpp in Sources */,
 				5D70C0EE12B72BE700A1AB17 /* L_DroppingEffect.cpp in Sources */,
 				5D70C0EF12B72BE700A1AB17 /* L_EffectEmitter.cpp in Sources */,
@@ -1531,12 +1581,7 @@
 				5D70C10712B72BE700A1AB17 /* MathUtils.cpp in Sources */,
 				5D70C10812B72BE700A1AB17 /* Variant.cpp in Sources */,
 				5D21BA591FA6C76C00B12CB3 /* jcparam.c in Sources */,
-				5D70C10912B72BE700A1AB17 /* connection.cpp in Sources */,
-				5D70C10A12B72BE700A1AB17 /* named_slot_map.cpp in Sources */,
-				5D70C10B12B72BE700A1AB17 /* signal_base.cpp in Sources */,
-				5D70C10C12B72BE700A1AB17 /* slot.cpp in Sources */,
 				5D21B9E11FA6C31D00B12CB3 /* png.c in Sources */,
-				5D70C10D12B72BE700A1AB17 /* trackable.cpp in Sources */,
 				5D21BA4F1FA6C76C00B12CB3 /* jmemnobs.c in Sources */,
 				5D21BA4E1FA6C76C00B12CB3 /* jmemmgr.c in Sources */,
 				5D21B9FB1FA6C34500B12CB3 /* Gamepad.cpp in Sources */,
@@ -1561,6 +1606,13 @@
 				5D70C15712B72C0900A1AB17 /* CursorComponent.cpp in Sources */,
 				5D70C15812B72C0900A1AB17 /* FPSControlComponent.cpp in Sources */,
 				5D70C15912B72C0900A1AB17 /* ParticleTestComponent.cpp in Sources */,
+				AA000001000000000000AA01 /* EmulatedPointerComponent.cpp in Sources */,
+				AA000001000000000000AA06 /* TouchDragComponent.cpp in Sources */,
+
+				AA000001000000000000AA02 /* LogDisplayComponent.cpp in Sources */,
+				AA000001000000000000AA03 /* arm_init.c in Sources */,
+				AA000001000000000000AA04 /* filter_neon_intrinsics.c in Sources */,
+				AA000001000000000000AA05 /* palette_neon_intrinsics.c in Sources */,
 				5D21BA4A1FA6C76C00B12CB3 /* jidctred.c in Sources */,
 				5D21BA5F1FA6C76C00B12CB3 /* jdcolor.c in Sources */,
 				5D70C15A12B72C0900A1AB17 /* ExpiredMenu.cpp in Sources */,
@@ -1615,8 +1667,8 @@
 		5D8CE30214C655CE009EB534 /* Dist */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				ARCHS = "$(ARCHS_STANDARD)";
+				CODE_SIGN_IDENTITY = "-";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1624,7 +1676,8 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					BOOST_ALL_NO_LIB,
 					NDEBUG,
-					C_GL_MODE,
+C_GL_MODE,
+				PLATFORM_OSX,
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -1636,12 +1689,20 @@
 					../../shared/FliteTTS/include,
 					../../shared/OSX,
 					/Users/Seth/dev/rtsvn/projects/proton/locallibs,
+					../../proton/RTSimpleApp/source,
+					../proton/RTSimpleApp/source,
+					/opt/homebrew/include,
+					/usr/local/include,
+					"$(HOME)/Library/Frameworks/SDL2.framework/Headers",
+					"$(HOME)/Library/Frameworks/SDL2_mixer.framework/Headers",
+					/opt/homebrew/opt/sdl2_mixer/include/SDL2,
+					/usr/local/opt/sdl2_mixer/include/SDL2,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PREBINDING = NO;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
-				VALID_ARCHS = "i386 x86_64";
+				VALID_ARCHS = "arm64 x86_64";
 			};
 			name = Dist;
 		};
@@ -1649,10 +1710,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = MK4EZB35P7;
+				DEVELOPMENT_TEAM = "";
 				GCC_MODEL_TUNING = G5;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					BOOST_ALL_NO_LIB,
@@ -1661,16 +1722,32 @@
 					RT_PNG_SUPPORT,
 					RT_IPV6,
 					RT_JPG_SUPPORT,
-					C_GL_MODE,
+C_GL_MODE,
+				PLATFORM_OSX,
+					RT_USE_SDL_AUDIO,
 				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(HOME)/Library/Frameworks",
+					/opt/homebrew/opt/sdl2/Frameworks,
+					/usr/local/opt/sdl2/Frameworks,
+					/opt/homebrew/opt/sdl2_mixer/Frameworks,
+					/usr/local/opt/sdl2_mixer/Frameworks,
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					/opt/homebrew/lib,
+					/usr/local/lib,
 				);
+				OTHER_CFLAGS = "-w -Wno-error -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast";
+				OTHER_LDFLAGS = "-framework SDL2 -framework SDL2_mixer -rpath $(HOME)/Library/Frameworks -rpath /opt/homebrew/lib -rpath /usr/local/lib";
 				PRODUCT_NAME = "Dink Smallwood HD";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGNING_ALLOWED = NO;
 			};
 			name = Dist;
 		};
@@ -1678,11 +1755,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = MK4EZB35P7;
+				DEVELOPMENT_TEAM = "";
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -1690,10 +1767,22 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(HOME)/Library/Frameworks",
+					/opt/homebrew/opt/sdl2/Frameworks,
+					/usr/local/opt/sdl2/Frameworks,
+					/opt/homebrew/opt/sdl2_mixer/Frameworks,
+					/usr/local/opt/sdl2_mixer/Frameworks,
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					/opt/homebrew/lib,
+					/usr/local/lib,
 				);
+				OTHER_CFLAGS = "-w -Wno-error -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast";
+				OTHER_LDFLAGS = "-framework SDL2 -framework SDL2_mixer -rpath $(HOME)/Library/Frameworks -rpath /opt/homebrew/lib -rpath /usr/local/lib";
 				PRODUCT_NAME = "Dink Smallwood HD";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
@@ -1703,17 +1792,30 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = MK4EZB35P7;
+				DEVELOPMENT_TEAM = "";
 				GCC_MODEL_TUNING = G5;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				"EXCLUDED_SOURCE_FILE_NAMES[arch=x86_64]" = "arm_init.c filter_neon_intrinsics.c palette_neon_intrinsics.c filter_neon.S";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(HOME)/Library/Frameworks",
+					/opt/homebrew/opt/sdl2/Frameworks,
+					/usr/local/opt/sdl2/Frameworks,
+					/opt/homebrew/opt/sdl2_mixer/Frameworks,
+					/usr/local/opt/sdl2_mixer/Frameworks,
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					/opt/homebrew/lib,
+					/usr/local/lib,
 				);
+				OTHER_CFLAGS = "-w -Wno-error -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast";
+				OTHER_LDFLAGS = "-framework SDL2 -framework SDL2_mixer -rpath $(HOME)/Library/Frameworks -rpath /opt/homebrew/lib -rpath /usr/local/lib";
 				PRODUCT_NAME = "Dink Smallwood HD";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
@@ -1722,7 +1824,7 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1734,11 +1836,13 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					_DEBUG,
 					BOOST_ALL_NO_LIB,
-					C_GL_MODE,
+C_GL_MODE,
+				PLATFORM_OSX,
 					RT_JPG_SUPPORT,
 					RT_IPV6,
 					RT_PNG_SUPPORT,
 					RT_CUSTOM_LOGMSG,
+					RT_USE_SDL_AUDIO,
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -1750,8 +1854,16 @@
 					../../shared/FliteTTS/include,
 					../../shared/OSX,
 					/Users/Seth/dev/rtsvn/projects/proton/locallibs,
+					../../proton/RTSimpleApp/source,
+					../proton/RTSimpleApp/source,
+					/opt/homebrew/include,
+					/usr/local/include,
+					"$(HOME)/Library/Frameworks/SDL2.framework/Headers",
+					"$(HOME)/Library/Frameworks/SDL2_mixer.framework/Headers",
+					/opt/homebrew/opt/sdl2_mixer/include/SDL2,
+					/usr/local/opt/sdl2_mixer/include/SDL2,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				SDKROOT = macosx;
@@ -1761,7 +1873,7 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_IDENTITY = "";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = c11;
@@ -1770,11 +1882,13 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					BOOST_ALL_NO_LIB,
 					NDEBUG,
-					C_GL_MODE,
+C_GL_MODE,
+				PLATFORM_OSX,
 					RT_CUSTOM_LOGMSG,
 					RT_JPG_SUPPORT,
 					RT_IPV6,
 					RT_PNG_SUPPORT,
+					RT_USE_SDL_AUDIO,
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -1786,11 +1900,19 @@
 					../../shared/FliteTTS/include,
 					../../shared/OSX,
 					/Users/Seth/dev/rtsvn/projects/proton/locallibs,
+					../../proton/RTSimpleApp/source,
+					../proton/RTSimpleApp/source,
+					/opt/homebrew/include,
+					/usr/local/include,
+					"$(HOME)/Library/Frameworks/SDL2.framework/Headers",
+					"$(HOME)/Library/Frameworks/SDL2_mixer.framework/Headers",
+					/opt/homebrew/opt/sdl2_mixer/include/SDL2,
+					/usr/local/opt/sdl2_mixer/include/SDL2,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PREBINDING = NO;
 				SDKROOT = macosx;
-				VALID_ARCHS = "i386 x86_64";
+				VALID_ARCHS = "arm64 x86_64";
 			};
 			name = Release;
 		};

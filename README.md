@@ -33,7 +33,7 @@ RTDink can be built for multiple platforms. Each uses the [Proton SDK](https://g
 |----------|-------------|-------------|
 | **Windows** | Visual Studio 2017+ | See [detailed Windows instructions](#windows) below |
 | **Linux** | CMake + SDL2 | `git clone ... && ./linux_setup.sh` ([details](INSTALL.md#linux)) |
-| **macOS** | Xcode | Broken/unmaintained -- see [INSTALL.md](INSTALL.md#macos) |
+| **macOS** | Xcode | Universal binary (Intel + Apple Silicon), uses SDL2 + SDL2_mixer -- see [INSTALL.md](INSTALL.md#macos) |
 | **HTML5** | Emscripten | See [Proton HTML5 setup](https://www.rtsoft.com/wiki/doku.php?id=proton:html5_setup) |
 | **iOS** | Xcode | Proton SDK sibling layout, open `RTDink.xcodeproj` ([more info](INSTALL.md#ios)) |
 | **Android** | Gradle + CMake | Proton SDK sibling layout, open `AndroidGradle/` in Android Studio ([more info](INSTALL.md#android)) |
@@ -131,7 +131,7 @@ The original **Dink Smallwood** (1997) was created by **Seth A. Robinson**, **Ju
 * **yeoldtoast** Editors and a bunch of other Dink stuff
 * **RobJ** -- DinkC command fixes and compatibility improvements
 * **SimonK** -- DMOD stress testing and limit increase requests
-* **Mateus Sales Bentes** -- Linux port work
+* **Mateus Sales Bentes** -- Linux port work, macOS universal binary (Intel + Apple Silicon)
 
 Special thanks to the entire [dinknetwork.com](https://www.dinknetwork.com/) community for their Dink creations and support over the years!
 

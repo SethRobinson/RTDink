@@ -10,7 +10,7 @@ See [README.md](README.md) for download links if you just want to play the game.
 | **Linux** | CMake | Proton SDK cloned inside project, uses SDL2 + SDL2_mixer for audio |
 | **iOS** | Xcode | Proton SDK sibling layout, uses FMOD for audio |
 | **Android** | Gradle + CMake | Proton SDK sibling layout, uses FMOD for audio |
-| **macOS** | Xcode | Broken/unmaintained |
+| **macOS** | Xcode | Universal binary (Intel + Apple Silicon), uses SDL2 + SDL2_mixer for audio (see [macOS section](#macos)) |
 | **HTML5** | Emscripten | See [Proton HTML5 setup](https://www.rtsoft.com/wiki/doku.php?id=proton:html5_setup) |
 
 All platforms require the **Dink Smallwood game data** (`dink/` directory) to play. See [README.md](README.md#just-want-to-play) for how to obtain it.
@@ -92,23 +92,79 @@ proton/
 
 ---
 
-## macOS (broken/unmaintained)
+## macOS
 
-> **Note:** The macOS build has not been maintained for a long time and likely does not build without fixes. It is left here for reference.
+The macOS build uses the Xcode project at `OSX/RTDink.xcodeproj`.
 
-The Xcode project is at the repo root (`RTDink.xcodeproj`). Same sibling layout as Windows:
+- **Supported architectures:** Universal binary — runs natively on both **Intel (x86_64)** and **Apple Silicon (ARM64 / M1+)**.
+- **Audio:** Uses **SDL2** + **SDL2_mixer** — no FMOD required.
+- **SDL2 frameworks are bundled inside the `.app`** — no SDL2 installation required to run the game.
+
+### Directory layout
+
+Clone both repos as **siblings**:
 
 ```
-proton/
-  shared/          <-- Proton SDK
-  RTDink/
-    RTDink.xcodeproj
+some_folder/
+  proton/              <-- Proton SDK (cloned here)
+    shared/
+  RTDink/              <-- this repo (cloned here)
+    OSX/
+      RTDink.xcodeproj
 ```
 
-1. Clone [Proton SDK](https://github.com/SethRobinson/proton)
-2. Clone this repo inside the Proton directory
-3. Open `RTDink.xcodeproj` in Xcode
-4. Build and run (may require fixes)
+The Xcode project references `../../shared/` (relative to `OSX/`) to find the Proton SDK.
+
+### Steps
+
+1. Clone the Proton SDK and this repo as siblings:
+
+```bash
+git clone https://github.com/SethRobinson/proton.git
+git clone https://github.com/SethRobinson/RTDink.git
+```
+
+2. Install **SDL2** and **SDL2_mixer** frameworks:
+
+   **Option A — DMG frameworks** (recommended, works on all Macs, required for universal binary):
+   ```bash
+   # SDL2 framework
+   curl -L -o ~/SDL2.dmg "https://github.com/libsdl-org/SDL/releases/download/release-2.30.9/SDL2-2.30.9.dmg"
+   hdiutil attach ~/SDL2.dmg
+   mkdir -p ~/Library/Frameworks
+   cp -r /Volumes/SDL2/SDL2.framework ~/Library/Frameworks/
+   hdiutil detach /Volumes/SDL2
+
+   # SDL2_mixer framework
+   curl -L -o ~/SDL2_mixer.dmg "https://github.com/libsdl-org/SDL_mixer/releases/download/release-2.8.0/SDL2_mixer-2.8.0.dmg"
+   hdiutil attach ~/SDL2_mixer.dmg
+   cp -r "/Volumes/SDL2_mixer/SDL2_mixer.framework" ~/Library/Frameworks/
+   hdiutil detach /Volumes/SDL2_mixer
+   ```
+   The Xcode project looks for both frameworks in `~/Library/Frameworks/` automatically. These are universal frameworks (arm64 + x86_64) so the resulting `.app` runs on both Intel and Apple Silicon Macs.
+
+   **Option B — Homebrew** (native arch only, not suitable for universal binary):
+   ```bash
+   brew install sdl2 sdl2_mixer
+   ```
+   > **Note:** Homebrew on Apple Silicon only provides arm64 libraries. Use Option A if you need a universal binary.
+
+3. Generate the required libpng config header:
+
+```bash
+LIBPNG=proton/shared/Irrlicht/source/Irrlicht/libpng
+cp "$LIBPNG/pnglibconf.h.prebuilt" "$LIBPNG/pnglibconf.h"
+```
+
+4. Open the Xcode project:
+
+```bash
+open RTDink/OSX/RTDink.xcodeproj
+```
+
+5. Select the **Release** configuration and build (`⌘B`).
+
+> **Note:** The SDL2 frameworks are automatically embedded into the `.app` bundle at build time, so the final app is self-contained and does not require SDL2 to be installed on the target machine.
 
 ---
 

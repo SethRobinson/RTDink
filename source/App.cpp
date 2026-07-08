@@ -6,6 +6,9 @@
  */
 #include "PlatformPrecomp.h"
 #include "App.h"
+#ifndef _WIN32
+#include <sys/stat.h>
+#endif
 #include "GUI/MainMenu.h"
 #include "Entity/EntityUtils.h"//create the classes that our globally library expects to exist somewhere.
 #include "dink/dink.h"
@@ -42,7 +45,11 @@ void AddText(const char *tex, const char *filename);
 #include "StackWalker/StackUtils.h"
 #endif
 
+#ifdef PLATFORM_OSX
+bool g_bIsFullScreen = false;
+#else
 extern bool g_bIsFullScreen;
+#endif
 
 extern bool g_script_debug_mode;
 extern Surface g_transitionSurf;
@@ -85,8 +92,50 @@ GamepadManager * GetGamepadManager() {return &g_gamepadManager;}
   AudioManagerFMOD g_audioManager;
 #else
   //it's being compiled as a native OSX app
-#include "Audio/AudioManagerFMODStudio.h"
-  AudioManagerFMOD g_audioManager; //dummy with no sound
+#include "Audio/AudioManagerSDL.h"
+#include "Gamepad/GamepadProviderSDL2.h"
+#include <SDL2/SDL.h>
+  AudioManagerSDL g_audioManager;
+
+  // g_sig_SDLEvent is defined in SDL2Main.cpp for SDL-main builds (Linux/Win).
+  // For the OSX Cocoa build which doesn't use SDL2Main.cpp, define it here.
+  boost::signals2::signal<void(VariantList*)> g_sig_SDLEvent;
+
+// Returns the path containing dink/ game data.
+// Checks inside the bundle first, then falls back to the folder next to the .app
+// so users can place GOG/Steam data alongside the app without modifying the bundle.
+#include <sys/stat.h>
+#include <CoreFoundation/CoreFoundation.h>
+static string GetGameDataPath()
+{
+	string bundlePath = GetBaseAppPath();
+
+	struct stat st;
+	if (stat((bundlePath + "dink").c_str(), &st) == 0 && S_ISDIR(st.st_mode))
+	{
+		LogMsg("Game data found in bundle: %s", bundlePath.c_str());
+		return bundlePath;
+	}
+
+	// Fall back to the directory containing the .app
+	CFBundleRef mainBundle = CFBundleGetMainBundle();
+	CFURLRef bundleURL = CFBundleCopyBundleURL(mainBundle);
+	CFURLRef parentURL = CFURLCreateCopyDeletingLastPathComponent(NULL, bundleURL);
+	char parentPath[PATH_MAX];
+	CFURLGetFileSystemRepresentation(parentURL, TRUE, (UInt8 *)parentPath, PATH_MAX);
+	CFRelease(bundleURL);
+	CFRelease(parentURL);
+
+	string externalPath = string(parentPath) + "/";
+	if (stat((externalPath + "dink").c_str(), &st) == 0 && S_ISDIR(st.st_mode))
+	{
+		LogMsg("Game data found next to .app: %s", externalPath.c_str());
+		return externalPath;
+	}
+
+	LogMsg("Warning: dink/ not found in bundle or next to .app, defaulting to bundle path");
+	return bundlePath;
+}
 
   //in theory, CocosDenshion should work for the Mac builds, but right now it seems to want a big chunk of
   //Cocos2d included so I'm not fiddling with it for now
@@ -195,6 +244,8 @@ const char * GetAppName()
 
 #if defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(PLATFORM_OSX)
 
+#include <SDL2/SDL.h>
+
 SDL_Window* GetSDLWindow() {
     SDL_Window* window = SDL_GL_GetCurrentWindow();
     if (!window) {
@@ -213,12 +264,10 @@ void UpdateViewport(int width, int height) {
     glLoadIdentity();
 
     if (windowAspect > gameAspect) {
-        // Window wider than game: add horizontal margins (letterbox)
         float scaledHeight = width / gameAspect;
         float offsetY = (scaledHeight - height) / 2.0f;
         glOrtho(0, width, height + offsetY, -offsetY, -1.0, 1.0);
     } else {
-        // Window taller than game: add vertical margins (pillarbox)
         float scaledWidth = height * gameAspect;
         float offsetX = (scaledWidth - width) / 2.0f;
         glOrtho(-offsetX, width + offsetX, height, 0, -1.0, 1.0);
@@ -228,6 +277,9 @@ void UpdateViewport(int width, int height) {
     glLoadIdentity();
 }
 
+
+#if defined(RTLINUX) || defined(PLATFORM_LINUX)
+// Linux: SDL owns the window - use SDL fullscreen toggle
 void OnFullscreenToggleRequestMultiplatform() {
     SDL_Window* window = GetSDLWindow();
     if (!window) return;
@@ -255,13 +307,35 @@ void OnFullscreenToggleRequestMultiplatform() {
     SetupFakePrimaryScreenSize(1024, 768);
     UpdateViewport(width, height);
 }
-
+#endif // RTLINUX || PLATFORM_LINUX
 #endif // RTLINUX || PLATFORM_LINUX || PLATFORM_OSX
+
+#if defined(PLATFORM_OSX)
+
+// macOS: Cocoa owns the window - implemented in OSXUtils.mm (Objective-C++ required)
+void OSXToggleFullscreen();
+
+// dink.cpp calls OnFullscreenToggleRequestMultiplatform() on all desktop platforms
+void OnFullscreenToggleRequestMultiplatform() {
+    OSXToggleFullscreen();
+}
+
+#else
+
+// Windows and other platforms: BaseApp handles fullscreen via OS messages.
+// dink.cpp calls this so we need a stub that routes correctly.
+void OnFullscreenToggleRequestMultiplatform() {
+    if (GetApp()) GetApp()->OnFullscreenToggleRequest();
+}
+
+#endif // platform fullscreen
 
 void App::OnFullscreenToggleRequest()
 {
-#if defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(PLATFORM_OSX)
+#if defined(RTLINUX) || defined(PLATFORM_LINUX)
     OnFullscreenToggleRequestMultiplatform();
+#elif defined(PLATFORM_OSX)
+    OSXToggleFullscreen();
 #else
     BaseApp::OnFullscreenToggleRequest();
 #endif
@@ -649,10 +723,19 @@ bool App::Init()
 	GetGamepadManager()->AddProvider(pTempDirectX); //use directx joysticks
 	#endif
 
-#if defined(RTLINUX) || defined(PLATFORM_LINUX)
-	GetGamepadManager()->AddProvider(new GamepadProviderSDL2());
+#if defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(PLATFORM_OSX)
+{
+    // On macOS Cocoa builds SDL video is not used.
+    // Initialize SDL with events + joystick + gamecontroller upfront so the
+    // IOKit HID manager is set up before GamepadProviderSDL2::Init() runs.
+    // SDL_InitSubSystem inside GamepadProviderSDL2 will be a no-op for already
+    // initialized subsystems, so this is safe.
+    #ifdef PLATFORM_OSX
+    SDL_Init(SDL_INIT_EVENTS | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER);
+    #endif
+    GetGamepadManager()->AddProvider(new GamepadProviderSDL2());
+}
 #endif
-
     if (GetVar("check_icade")->GetUINT32() != 0)
 	{
 		AddIcadeProvider();
@@ -715,7 +798,11 @@ bool App::Init()
 	GetAudioManager()->SetMidiMusicModVol(0.3f);
 
 	GetAudioManager()->Preload("audio/click.wav");
+#ifdef PLATFORM_OSX
+	InitDinkPaths(GetGameDataPath(), "dink", "");
+#else
 	InitDinkPaths(GetBaseAppPath(), "dink", "");
+#endif
 	
 	GetBaseApp()->m_sig_pre_enterbackground.connect(1, boost::bind(&App::OnPreEnterBackground, this, _1));
 	GetBaseApp()->m_sig_loadSurfaces.connect(1, boost::bind(&App::OnLoadSurfaces, this));
@@ -776,8 +863,8 @@ bool App::Init()
 		*/
 	}
 
-#elif defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(PLATFORM_OSX)
-	// Linux/macOS video settings
+#elif defined(RTLINUX) || defined(PLATFORM_LINUX)
+	// Linux video settings
 	int fullscreen = GetApp()->GetVarWithDefault("fullscreen", uint32(0))->GetUINT32();
 
 	if (DoesCommandLineParmExist("--help"))
@@ -816,6 +903,39 @@ bool App::Init()
 		g_bIsFullScreen = false; //because we're using toggle..
 		OnFullscreenToggleRequestMultiplatform();
 	}
+
+#elif defined(PLATFORM_OSX)
+{
+	// macOS video settings — read saved resolution and fullscreen preference
+	int videox = GetApp()->GetVarWithDefault("video_x", uint32(1024))->GetUINT32();
+	int videoy = GetApp()->GetVarWithDefault("video_y", uint32(768))->GetUINT32();
+	int fullscreen = GetApp()->GetVarWithDefault("fullscreen", uint32(0))->GetUINT32();
+
+	if (DoesCommandLineParmExist("-window") || DoesCommandLineParmExist("-windowed"))
+	{
+		fullscreen = false;
+		GetApp()->GetVar("fullscreen")->Set(uint32(0));
+	}
+	if (DoesCommandLineParmExist("-skip"))
+	{
+		SetSkipMode(true);
+	}
+	if (DoesCommandLineParmExist("-debug"))
+	{
+		GetApp()->SetCheatsEnabled(true);
+		g_script_debug_mode = true;
+	}
+
+	// Apply saved window size (sends MESSAGE_SET_VIDEO_MODE to MyOpenGLView)
+	SetVideoMode(videox, videoy, false, 0);
+
+	if (fullscreen)
+	{
+		LogMsg("Setting fullscreen...");
+		g_bIsFullScreen = false; //because we're using toggle..
+		OnFullscreenToggleRequestMultiplatform();
+	}
+}
 
 #endif
 
@@ -920,6 +1040,37 @@ void App::Update()
 {
 	BaseApp::Update();
 	m_adManager.Update();
+
+#if defined(RTLINUX) || defined(PLATFORM_LINUX)
+{
+    // Linux: SDL owns the window, pump all events
+    SDL_Event ev;
+    while (SDL_PollEvent(&ev))
+    {
+        VariantList v;
+        v.Get(0).Set((Entity*)&ev);
+        g_sig_SDLEvent(&v);
+    }
+}
+#elif defined(PLATFORM_OSX)
+{
+    // macOS Cocoa: SDL does not own the window, but we still need to pump
+    // SDL joystick/gamepad events. SDL_PumpEvents() processes the SDL event
+    // queue without touching the Cocoa window or event loop.
+    SDL_PumpEvents();
+    SDL_Event ev;
+    // Drain all joystick/gamepad events in one pass (SDL_JOYAXISMOTION=0x600
+    // through SDL_CONTROLLERDEVICEREMAPPED=0x657 covers all pad events)
+    while (SDL_PeepEvents(&ev, 1, SDL_GETEVENT,
+                          SDL_JOYAXISMOTION, SDL_CONTROLLERDEVICEREMAPPED) > 0)
+    {
+        VariantList v;
+        v.Get(0).Set((Entity*)&ev);
+        g_sig_SDLEvent(&v);
+    }
+}
+#endif
+
 	g_gamepadManager.Update();
 
 	if (!m_bDidPostInit)
@@ -1032,15 +1183,15 @@ void App::OnScreenSizeChange()
 	if (GetPrimaryGLX() != 0)
 	{
 #if defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(PLATFORM_OSX)
-		UpdateViewport(GetPrimaryGLX(), GetPrimaryGLY());
+	UpdateViewport(GetPrimaryGLX(), GetPrimaryGLY());
 #endif
-		SetupOrtho();
-		DinkOnForeground(); //rebuild lost surfaces
-		g_dglo.m_bForceControlsRebuild = true;
-		if (GetDinkGameState() != DINK_GAME_STATE_PLAYING)
-		{
-			PrepareForGL();
-		}
+	SetupOrtho();
+	DinkOnForeground(); //rebuild lost surfaces
+	g_dglo.m_bForceControlsRebuild = true;
+	if (GetDinkGameState() != DINK_GAME_STATE_PLAYING)
+	{
+		PrepareForGL();
+	}
 	}
 
 	UpdateTitleBar();
@@ -1049,12 +1200,17 @@ void App::OnScreenSizeChange()
 	GetApp()->GetVar("fullscreen")->Set(uint32(g_bIsFullScreen));
 	GetApp()->GetVar("videox")->Set(uint32(GetPrimaryGLX()));
 	GetApp()->GetVar("videoy")->Set(uint32(GetPrimaryGLY()));
-	//GetApp()->GetVarWithDefault("borderless_fullscreen", uint32(g_bUseBorderlessFullscreenOnWindows))->Set(uint32(0));
+#ifdef _DEBUG
+	LogMsg("Got OnScreenSizeChange:  Setting to %d, %d", uint32(GetPrimaryGLX()), uint32(GetPrimaryGLY()));
+#endif
+#elif defined(PLATFORM_OSX)
+	GetApp()->GetVar("fullscreen")->Set(uint32(g_bIsFullScreen));
+	GetApp()->GetVar("video_x")->Set(uint32(GetPrimaryGLX()));
+	GetApp()->GetVar("video_y")->Set(uint32(GetPrimaryGLY()));
 #ifdef _DEBUG
 	LogMsg("Got OnScreenSizeChange:  Setting to %d, %d", uint32(GetPrimaryGLX()), uint32(GetPrimaryGLY()));
 #endif
 #endif
-
 }
 
 void App::GetServerInfo( string &server, uint32 &port )
@@ -1309,7 +1465,11 @@ void ImportSaveState(string physicalFname)
 			SlideScreen(pNewMenu, false);
 			GetMessageManager()->CallEntityFunction(pNewMenu, 500, "OnDelete", NULL);
 
+#ifdef PLATFORM_OSX
+			InitDinkPaths(GetGameDataPath(), "dink", RemoveTrailingBackslash(newDMODDir));
+#else
 			InitDinkPaths(GetBaseAppPath(), "dink", RemoveTrailingBackslash(newDMODDir));
+#endif
 			GameCreate(pNewMenu->GetParent(), 0, physicalFname);
 			GetBaseApp()->SetGameTickPause(false);
 		}
@@ -1415,12 +1575,25 @@ void App::AddTextToLog(const char *tex, const char *filename)
 
 		if (m_logFileHandle == NULL)
 		{
-
 			//open 'er up
 			m_logFileHandle = fopen(filename, "ab");
 			if (!m_logFileHandle)
 			{
-				assert(!"huh?");
+				// Save path may not exist yet, try to create it
+				string savePath = GetSavePath();
+				if (!savePath.empty())
+				{
+#ifdef _WIN32
+					_mkdir(savePath.c_str());
+#else
+					mkdir(savePath.c_str(), 0755);
+#endif
+					m_logFileHandle = fopen(filename, "ab");
+				}
+				if (!m_logFileHandle)
+				{
+					return; // silently fail, don't crash
+				}
 			}
 			return;
 		}
@@ -1519,3 +1692,4 @@ bool TouchesHaveBeenReceived()
 #endif
 	return false;
 }
+
