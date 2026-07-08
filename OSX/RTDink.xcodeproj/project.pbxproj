@@ -1708,7 +1708,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				OTHER_CFLAGS = "-Wno-deprecated-declarations";
+				OTHER_CFLAGS = "-Wno-deprecated-declarations -Wno-writable-strings -Wno-unused-variable";
 				OTHER_LDFLAGS = "-framework SDL2 -framework SDL2_mixer -rpath @executable_path/../Frameworks -rpath $(HOME)/Library/Frameworks";
 				PRODUCT_NAME = "Dink Smallwood HD";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1739,7 +1739,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				OTHER_CFLAGS = "-Wno-deprecated-declarations";
+				OTHER_CFLAGS = "-Wno-deprecated-declarations -Wno-writable-strings -Wno-unused-variable";
 				OTHER_LDFLAGS = "-framework SDL2 -framework SDL2_mixer -rpath @executable_path/../Frameworks -rpath $(HOME)/Library/Frameworks";
 				PRODUCT_NAME = "Dink Smallwood HD";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1766,7 +1766,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				OTHER_CFLAGS = "-Wno-deprecated-declarations";
+				OTHER_CFLAGS = "-Wno-deprecated-declarations -Wno-writable-strings -Wno-unused-variable";
 				OTHER_LDFLAGS = "-framework SDL2 -framework SDL2_mixer -rpath @executable_path/../Frameworks -rpath $(HOME)/Library/Frameworks";
 				PRODUCT_NAME = "Dink Smallwood HD";
 				PROVISIONING_PROFILE_SPECIFIER = "";
