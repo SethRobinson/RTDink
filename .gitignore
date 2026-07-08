@@ -67,7 +67,8 @@ windows_vs2017/Backup
 builds
 dxsdk/Lib/x64/Unused
 dxsdk/Lib/x86/Unused
-OSX
+OSX/build
+OSX/RTDink.xcodeproj/project.xcworkspace
 iOSIcons
 
 # Xcode user-specific files

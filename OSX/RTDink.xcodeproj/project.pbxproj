@@ -571,8 +571,8 @@
 		5D70C12712B72C0900A1AB17 /* CursorComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CursorComponent.h; path = ../source/Component/CursorComponent.h; sourceTree = SOURCE_ROOT; };
 		5D70C12812B72C0900A1AB17 /* FPSControlComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FPSControlComponent.cpp; path = ../source/Component/FPSControlComponent.cpp; sourceTree = SOURCE_ROOT; };
 		5D70C12912B72C0900A1AB17 /* FPSControlComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FPSControlComponent.h; path = ../source/Component/FPSControlComponent.h; sourceTree = SOURCE_ROOT; };
-		5D70C12A12B72C0900A1AB17 /* ParticleTestComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ParticleTestComponent.cpp; path = ../../proton/RTSimpleApp/source/Component/ParticleTestComponent.cpp; sourceTree = SOURCE_ROOT; };
-		5D70C12B12B72C0900A1AB17 /* ParticleTestComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParticleTestComponent.h; path = ../../proton/RTSimpleApp/source/Component/ParticleTestComponent.h; sourceTree = SOURCE_ROOT; };
+		5D70C12A12B72C0900A1AB17 /* ParticleTestComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ParticleTestComponent.cpp; path = ../../RTSimpleApp/source/Component/ParticleTestComponent.cpp; sourceTree = SOURCE_ROOT; };
+		5D70C12B12B72C0900A1AB17 /* ParticleTestComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParticleTestComponent.h; path = ../../RTSimpleApp/source/Component/ParticleTestComponent.h; sourceTree = SOURCE_ROOT; };
 		5D70C12D12B72C0900A1AB17 /* ExpiredMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExpiredMenu.h; path = ../source/GUI/ExpiredMenu.h; sourceTree = SOURCE_ROOT; };
 		5D70C12E12B72C0900A1AB17 /* ExpiredMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ExpiredMenu.cpp; path = ../source/GUI/ExpiredMenu.cpp; sourceTree = SOURCE_ROOT; };
 		5D70C12F12B72C0900A1AB17 /* ReadTextMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReadTextMenu.h; path = ../source/GUI/ReadTextMenu.h; sourceTree = SOURCE_ROOT; };
@@ -1421,7 +1421,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Create symlinks if proton is cloned inside the repo (MacInCloud layout)\n# This makes ../../shared and ../../proton work from OSX/ dir\nPROTON_INSIDE=\"$SRCROOT/../proton\"\nSHARED_SIBLING=\"$SRCROOT/../../shared\"\nPROTON_SIBLING=\"$SRCROOT/../../proton\"\n\nif [ -d \"$PROTON_INSIDE\" ]; then\n  if [ ! -d \"$SHARED_SIBLING\" ]; then\n    echo \"Creating shared symlink: $SHARED_SIBLING -> $PROTON_INSIDE/shared\"\n    ln -sf \"$PROTON_INSIDE/shared\" \"$SHARED_SIBLING\"\n  fi\n  if [ ! -d \"$PROTON_SIBLING\" ]; then\n    echo \"Creating proton symlink: $PROTON_SIBLING -> $PROTON_INSIDE\"\n    ln -sf \"$PROTON_INSIDE\" \"$PROTON_SIBLING\"\n  fi\nfi\n\n\n# Create SDL2/SDL_mixer.h compatibility symlink for SDL2_mixer.framework\nSDL2_MIXER_HEADERS=\"$HOME/Library/Frameworks/SDL2_mixer.framework/Headers\"\nSDL2_HEADERS=\"$HOME/Library/Frameworks/SDL2.framework/Headers\"\nif [ -d \"$SDL2_MIXER_HEADERS\" ] && [ -d \"$SDL2_HEADERS\" ]; then\n  if [ ! -f \"$SDL2_HEADERS/SDL_mixer.h\" ]; then\n    ln -sf \"$SDL2_MIXER_HEADERS/SDL_mixer.h\" \"$SDL2_HEADERS/SDL_mixer.h\"\n    echo \"Created SDL_mixer.h symlink in SDL2.framework/Headers\"\n  fi\nfi\n\n# Generate pnglibconf.h\nLIBPNG=\"$SRCROOT/../../shared/Irrlicht/source/Irrlicht/libpng\"\nif [ -d \"$LIBPNG\" ] && [ ! -f \"$LIBPNG/pnglibconf.h\" ] && [ -f \"$LIBPNG/pnglibconf.h.prebuilt\" ]; then\n  cp \"$LIBPNG/pnglibconf.h.prebuilt\" \"$LIBPNG/pnglibconf.h\"\n  echo \"Copied pnglibconf.h from $LIBPNG\"\nfi\n";
+			shellScript = "# Generate pnglibconf.h (repo layout is proton/RTDink, so shared/ is at ../../shared)\nLIBPNG=\"$SRCROOT/../../shared/Irrlicht/source/Irrlicht/libpng\"\nif [ -d \"$LIBPNG\" ] && [ ! -f \"$LIBPNG/pnglibconf.h\" ] && [ -f \"$LIBPNG/pnglibconf.h.prebuilt\" ]; then\n  cp \"$LIBPNG/pnglibconf.h.prebuilt\" \"$LIBPNG/pnglibconf.h\"\n  echo \"Copied pnglibconf.h from $LIBPNG\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1689,8 +1689,7 @@ C_GL_MODE,
 					../../shared/FliteTTS/include,
 					../../shared/OSX,
 					/Users/Seth/dev/rtsvn/projects/proton/locallibs,
-					../../proton/RTSimpleApp/source,
-					../proton/RTSimpleApp/source,
+					../../RTSimpleApp/source,
 					/opt/homebrew/include,
 					/usr/local/include,
 					"$(HOME)/Library/Frameworks/SDL2.framework/Headers",
@@ -1854,8 +1853,7 @@ C_GL_MODE,
 					../../shared/FliteTTS/include,
 					../../shared/OSX,
 					/Users/Seth/dev/rtsvn/projects/proton/locallibs,
-					../../proton/RTSimpleApp/source,
-					../proton/RTSimpleApp/source,
+					../../RTSimpleApp/source,
 					/opt/homebrew/include,
 					/usr/local/include,
 					"$(HOME)/Library/Frameworks/SDL2.framework/Headers",
@@ -1900,8 +1898,7 @@ C_GL_MODE,
 					../../shared/FliteTTS/include,
 					../../shared/OSX,
 					/Users/Seth/dev/rtsvn/projects/proton/locallibs,
-					../../proton/RTSimpleApp/source,
-					../proton/RTSimpleApp/source,
+					../../RTSimpleApp/source,
 					/opt/homebrew/include,
 					/usr/local/include,
 					"$(HOME)/Library/Frameworks/SDL2.framework/Headers",
