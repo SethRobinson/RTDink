@@ -29,12 +29,9 @@
 		AA000004000000000000AA01 /* AudioManagerSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA000003000000000000AA01 /* AudioManagerSDL.cpp */; };
 		AA000005000000000000AA01 /* GamepadProviderSDL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA000006000000000000AA01 /* GamepadProviderSDL2.cpp */; };
 		AA000007000000000000AA01 /* GamepadSDL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA000008000000000000AA01 /* GamepadSDL2.cpp */; };
-
-
 		5D21BA051FA6C3DD00B12CB3 /* AdProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D21BA021FA6C3DD00B12CB3 /* AdProvider.cpp */; };
 		AA000001000000000000AA01 /* EmulatedPointerComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA000002000000000000AA01 /* EmulatedPointerComponent.cpp */; };
 		AA000001000000000000AA06 /* TouchDragComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA000002000000000000AA06 /* TouchDragComponent.cpp */; };
-
 		AA000001000000000000AA02 /* LogDisplayComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA000002000000000000AA02 /* LogDisplayComponent.cpp */; };
 		AA000001000000000000AA03 /* arm_init.c in Sources */ = {isa = PBXBuildFile; fileRef = AA000002000000000000AA03 /* arm_init.c */; };
 		AA000001000000000000AA04 /* filter_neon_intrinsics.c in Sources */ = {isa = PBXBuildFile; fileRef = AA000002000000000000AA04 /* filter_neon_intrinsics.c */; };
@@ -256,7 +253,6 @@
 		AA000002000000000000AA01 /* EmulatedPointerComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EmulatedPointerComponent.cpp; path = ../source/Component/EmulatedPointerComponent.cpp; sourceTree = SOURCE_ROOT; };
 		AA000002000000000000AA02 /* LogDisplayComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LogDisplayComponent.cpp; path = ../../shared/Entity/LogDisplayComponent.cpp; sourceTree = SOURCE_ROOT; };
 		AA000002000000000000AA06 /* TouchDragComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TouchDragComponent.cpp; path = ../../shared/Entity/TouchDragComponent.cpp; sourceTree = SOURCE_ROOT; };
-
 		AA000002000000000000AA03 /* arm_init.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = arm_init.c; path = ../../shared/Irrlicht/source/Irrlicht/libpng/arm/arm_init.c; sourceTree = SOURCE_ROOT; };
 		AA000002000000000000AA04 /* filter_neon_intrinsics.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = filter_neon_intrinsics.c; path = ../../shared/Irrlicht/source/Irrlicht/libpng/arm/filter_neon_intrinsics.c; sourceTree = SOURCE_ROOT; };
 		AA000002000000000000AA05 /* palette_neon_intrinsics.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_neon_intrinsics.c; path = ../../shared/Irrlicht/source/Irrlicht/libpng/arm/palette_neon_intrinsics.c; sourceTree = SOURCE_ROOT; };
@@ -296,8 +292,6 @@
 		5D21BA0F1FA6C6EE00B12CB3 /* GamepadProvideriCade.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GamepadProvideriCade.cpp; path = ../../shared/Gamepad/GamepadProvideriCade.cpp; sourceTree = "<group>"; };
 		AA000006000000000000AA01 /* GamepadProviderSDL2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GamepadProviderSDL2.cpp; path = ../../shared/Gamepad/GamepadProviderSDL2.cpp; sourceTree = "<group>"; };
 		AA000008000000000000AA01 /* GamepadSDL2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GamepadSDL2.cpp; path = ../../shared/Gamepad/GamepadSDL2.cpp; sourceTree = "<group>"; };
-
-
 		5D21BA101FA6C6EE00B12CB3 /* GamepadProvideriCade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GamepadProvideriCade.h; path = ../../shared/Gamepad/GamepadProvideriCade.h; sourceTree = "<group>"; };
 		5D21BA131FA6C76500B12CB3 /* jdatadst.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jdatadst.c; path = ../../../shared/Irrlicht/source/Irrlicht/jpeglib/jdatadst.c; sourceTree = "<group>"; };
 		5D21BA141FA6C76500B12CB3 /* jdatasrc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jdatasrc.c; path = ../../../shared/Irrlicht/source/Irrlicht/jpeglib/jdatasrc.c; sourceTree = "<group>"; };
@@ -1343,7 +1337,7 @@
 				5DFB850A12BAEDB500337543 /* app.icns in Resources */,
 				5DD32A5A12CAE4340009B0F3 /* Info.plist in Resources */,
 				5D8FA3AC12DA754700E9B3B8 /* interface in Resources */,
-					5D8FA52212DBFA3100E9B3B8 /* dink in Resources */,
+				5D8FA52212DBFA3100E9B3B8 /* dink in Resources */,
 				5D8FA52312DBFA3100E9B3B8 /* audio in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1485,7 +1479,6 @@
 				AA000005000000000000AA01 /* GamepadProviderSDL2.cpp in Sources */,
 				AA000007000000000000AA01 /* GamepadSDL2.cpp in Sources */,
 				AA000004000000000000AA01 /* AudioManagerSDL.cpp in Sources */,
-
 				5D70C0D812B72BE700A1AB17 /* TextBoxRenderComponent.cpp in Sources */,
 				5D21B9EB1FA6C31D00B12CB3 /* pngset.c in Sources */,
 				5D70C0D912B72BE700A1AB17 /* HTTPComponent.cpp in Sources */,
@@ -1592,7 +1585,6 @@
 				5D70C15912B72C0900A1AB17 /* ParticleTestComponent.cpp in Sources */,
 				AA000001000000000000AA01 /* EmulatedPointerComponent.cpp in Sources */,
 				AA000001000000000000AA06 /* TouchDragComponent.cpp in Sources */,
-
 				AA000001000000000000AA02 /* LogDisplayComponent.cpp in Sources */,
 				AA000001000000000000AA03 /* arm_init.c in Sources */,
 				AA000001000000000000AA04 /* filter_neon_intrinsics.c in Sources */,
@@ -1660,8 +1652,8 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					BOOST_ALL_NO_LIB,
 					NDEBUG,
-C_GL_MODE,
-				PLATFORM_OSX,
+					C_GL_MODE,
+					PLATFORM_OSX,
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -1674,12 +1666,8 @@ C_GL_MODE,
 					../../shared/OSX,
 					/Users/Seth/dev/rtsvn/projects/proton/locallibs,
 					../../RTSimpleApp/source,
-					/opt/homebrew/include,
-					/usr/local/include,
 					"$(HOME)/Library/Frameworks/SDL2.framework/Headers",
 					"$(HOME)/Library/Frameworks/SDL2_mixer.framework/Headers",
-					/opt/homebrew/opt/sdl2_mixer/include/SDL2,
-					/usr/local/opt/sdl2_mixer/include/SDL2,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PREBINDING = NO;
@@ -1696,7 +1684,7 @@ C_GL_MODE,
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 7DA5SJEYK8;
 				GCC_MODEL_TUNING = G5;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					BOOST_ALL_NO_LIB,
@@ -1705,32 +1693,25 @@ C_GL_MODE,
 					RT_PNG_SUPPORT,
 					RT_IPV6,
 					RT_JPG_SUPPORT,
-C_GL_MODE,
-				PLATFORM_OSX,
+					C_GL_MODE,
+					PLATFORM_OSX,
 					RT_USE_SDL_AUDIO,
 				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				"EXCLUDED_SOURCE_FILE_NAMES[arch=x86_64]" = "arm_init.c filter_neon_intrinsics.c palette_neon_intrinsics.c filter_neon.S";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(HOME)/Library/Frameworks",
-					/opt/homebrew/opt/sdl2/Frameworks,
-					/usr/local/opt/sdl2/Frameworks,
-					/opt/homebrew/opt/sdl2_mixer/Frameworks,
-					/usr/local/opt/sdl2_mixer/Frameworks,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					/opt/homebrew/lib,
-					/usr/local/lib,
 				);
-				OTHER_CFLAGS = "-w -Wno-error -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast";
-				OTHER_LDFLAGS = "-framework SDL2 -framework SDL2_mixer -rpath $(HOME)/Library/Frameworks -rpath /opt/homebrew/lib -rpath /usr/local/lib";
+				OTHER_CFLAGS = "-Wno-deprecated-declarations";
+				OTHER_LDFLAGS = "-framework SDL2 -framework SDL2_mixer -rpath @executable_path/../Frameworks -rpath $(HOME)/Library/Frameworks";
 				PRODUCT_NAME = "Dink Smallwood HD";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				CODE_SIGNING_REQUIRED = NO;
-				CODE_SIGNING_ALLOWED = NO;
 			};
 			name = Dist;
 		};
@@ -1742,7 +1723,7 @@ C_GL_MODE,
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 7DA5SJEYK8;
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -1753,19 +1734,13 @@ C_GL_MODE,
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(HOME)/Library/Frameworks",
-					/opt/homebrew/opt/sdl2/Frameworks,
-					/usr/local/opt/sdl2/Frameworks,
-					/opt/homebrew/opt/sdl2_mixer/Frameworks,
-					/usr/local/opt/sdl2_mixer/Frameworks,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					/opt/homebrew/lib,
-					/usr/local/lib,
 				);
-				OTHER_CFLAGS = "-w -Wno-error -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast";
-				OTHER_LDFLAGS = "-framework SDL2 -framework SDL2_mixer -rpath $(HOME)/Library/Frameworks -rpath /opt/homebrew/lib -rpath /usr/local/lib";
+				OTHER_CFLAGS = "-Wno-deprecated-declarations";
+				OTHER_LDFLAGS = "-framework SDL2 -framework SDL2_mixer -rpath @executable_path/../Frameworks -rpath $(HOME)/Library/Frameworks";
 				PRODUCT_NAME = "Dink Smallwood HD";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
@@ -1778,7 +1753,7 @@ C_GL_MODE,
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 7DA5SJEYK8;
 				GCC_MODEL_TUNING = G5;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
@@ -1786,19 +1761,13 @@ C_GL_MODE,
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(HOME)/Library/Frameworks",
-					/opt/homebrew/opt/sdl2/Frameworks,
-					/usr/local/opt/sdl2/Frameworks,
-					/opt/homebrew/opt/sdl2_mixer/Frameworks,
-					/usr/local/opt/sdl2_mixer/Frameworks,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					/opt/homebrew/lib,
-					/usr/local/lib,
 				);
-				OTHER_CFLAGS = "-w -Wno-error -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast";
-				OTHER_LDFLAGS = "-framework SDL2 -framework SDL2_mixer -rpath $(HOME)/Library/Frameworks -rpath /opt/homebrew/lib -rpath /usr/local/lib";
+				OTHER_CFLAGS = "-Wno-deprecated-declarations";
+				OTHER_LDFLAGS = "-framework SDL2 -framework SDL2_mixer -rpath @executable_path/../Frameworks -rpath $(HOME)/Library/Frameworks";
 				PRODUCT_NAME = "Dink Smallwood HD";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
@@ -1819,8 +1788,8 @@ C_GL_MODE,
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					_DEBUG,
 					BOOST_ALL_NO_LIB,
-C_GL_MODE,
-				PLATFORM_OSX,
+					C_GL_MODE,
+					PLATFORM_OSX,
 					RT_JPG_SUPPORT,
 					RT_IPV6,
 					RT_PNG_SUPPORT,
@@ -1838,12 +1807,8 @@ C_GL_MODE,
 					../../shared/OSX,
 					/Users/Seth/dev/rtsvn/projects/proton/locallibs,
 					../../RTSimpleApp/source,
-					/opt/homebrew/include,
-					/usr/local/include,
 					"$(HOME)/Library/Frameworks/SDL2.framework/Headers",
 					"$(HOME)/Library/Frameworks/SDL2_mixer.framework/Headers",
-					/opt/homebrew/opt/sdl2_mixer/include/SDL2,
-					/usr/local/opt/sdl2_mixer/include/SDL2,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1864,8 +1829,8 @@ C_GL_MODE,
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					BOOST_ALL_NO_LIB,
 					NDEBUG,
-C_GL_MODE,
-				PLATFORM_OSX,
+					C_GL_MODE,
+					PLATFORM_OSX,
 					RT_CUSTOM_LOGMSG,
 					RT_JPG_SUPPORT,
 					RT_IPV6,
@@ -1883,12 +1848,8 @@ C_GL_MODE,
 					../../shared/OSX,
 					/Users/Seth/dev/rtsvn/projects/proton/locallibs,
 					../../RTSimpleApp/source,
-					/opt/homebrew/include,
-					/usr/local/include,
 					"$(HOME)/Library/Frameworks/SDL2.framework/Headers",
 					"$(HOME)/Library/Frameworks/SDL2_mixer.framework/Headers",
-					/opt/homebrew/opt/sdl2_mixer/include/SDL2,
-					/usr/local/opt/sdl2_mixer/include/SDL2,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PREBINDING = NO;

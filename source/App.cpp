@@ -104,7 +104,6 @@ GamepadManager * GetGamepadManager() {return &g_gamepadManager;}
 // Returns the path containing dink/ game data.
 // Checks inside the bundle first, then falls back to the folder next to the .app
 // so users can place GOG/Steam data alongside the app without modifying the bundle.
-#include <sys/stat.h>
 #include <CoreFoundation/CoreFoundation.h>
 static string GetGameDataPath()
 {
@@ -264,10 +263,12 @@ void UpdateViewport(int width, int height) {
     glLoadIdentity();
 
     if (windowAspect > gameAspect) {
+        // Window wider than game: add horizontal margins (letterbox)
         float scaledHeight = width / gameAspect;
         float offsetY = (scaledHeight - height) / 2.0f;
         glOrtho(0, width, height + offsetY, -offsetY, -1.0, 1.0);
     } else {
+        // Window taller than game: add vertical margins (pillarbox)
         float scaledWidth = height * gameAspect;
         float offsetX = (scaledWidth - width) / 2.0f;
         glOrtho(-offsetX, width + offsetX, height, 0, -1.0, 1.0);
@@ -640,7 +641,6 @@ bool App::Init()
 	switch (GetPlatformID())
 	{
 	case PLATFORM_ID_WINDOWS:
-	case PLATFORM_ID_OSX:
 	case PLATFORM_ID_LINUX:
 	case PLATFORM_ID_BBX:
 	case PLATFORM_ID_WEBOS:
@@ -648,9 +648,11 @@ bool App::Init()
 		CreateDirectoryRecursively(GetSavePath(), GetDMODRootPath());
 		break;
 
-
+	//OSX can't be in the group above: its GetDMODRootPath() returns the absolute
+	//save path (GetAppCachePath), not a relative dir, so prepending GetSavePath()
+	//would recreate the whole save path inside itself
 	default:
-		
+
 		CreateAppCacheDirIfNeeded();
 		break;
 	}
@@ -1183,15 +1185,15 @@ void App::OnScreenSizeChange()
 	if (GetPrimaryGLX() != 0)
 	{
 #if defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(PLATFORM_OSX)
-	UpdateViewport(GetPrimaryGLX(), GetPrimaryGLY());
+		UpdateViewport(GetPrimaryGLX(), GetPrimaryGLY());
 #endif
-	SetupOrtho();
-	DinkOnForeground(); //rebuild lost surfaces
-	g_dglo.m_bForceControlsRebuild = true;
-	if (GetDinkGameState() != DINK_GAME_STATE_PLAYING)
-	{
-		PrepareForGL();
-	}
+		SetupOrtho();
+		DinkOnForeground(); //rebuild lost surfaces
+		g_dglo.m_bForceControlsRebuild = true;
+		if (GetDinkGameState() != DINK_GAME_STATE_PLAYING)
+		{
+			PrepareForGL();
+		}
 	}
 
 	UpdateTitleBar();

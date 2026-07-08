@@ -69,6 +69,12 @@ dxsdk/Lib/x64/Unused
 dxsdk/Lib/x86/Unused
 OSX/build
 OSX/RTDink.xcodeproj/project.xcworkspace
+# local leftovers from the pre-2026 mac setup, not part of the build
+OSX/audio/
+OSX/dink/
+OSX/libfmod.dylib
+OSX/RTDink copy-Info.plist
+OSX/SignRelease.command
 iOSIcons
 
 # Xcode user-specific files
