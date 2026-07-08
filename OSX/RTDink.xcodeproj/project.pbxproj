@@ -220,6 +220,7 @@
 		5DDDC70712CAEB4C0075D2F9 /* EmitVirtualKeyComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DDDC70612CAEB4C0075D2F9 /* EmitVirtualKeyComponent.cpp */; };
 		5DDE02A012B4F50D000C5CC0 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DDE029F12B4F50D000C5CC0 /* libz.dylib */; };
 		5DDE02A512B4F526000C5CC0 /* App.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DDE02A412B4F526000C5CC0 /* App.cpp */; };
+		AA10000000000000000000A3 /* AutoTester.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA10000000000000000000A2 /* AutoTester.cpp */; };
 		5DFB850A12BAEDB500337543 /* app.icns in Resources */ = {isa = PBXBuildFile; fileRef = 5DFB850912BAEDB500337543 /* app.icns */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -603,6 +604,8 @@
 		5DDE029F12B4F50D000C5CC0 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		5DDE02A312B4F526000C5CC0 /* App.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = App.h; path = ../source/App.h; sourceTree = SOURCE_ROOT; };
 		5DDE02A412B4F526000C5CC0 /* App.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = App.cpp; path = ../source/App.cpp; sourceTree = SOURCE_ROOT; };
+		AA10000000000000000000A1 /* AutoTester.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AutoTester.h; path = ../source/AutoTester.h; sourceTree = SOURCE_ROOT; };
+		AA10000000000000000000A2 /* AutoTester.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AutoTester.cpp; path = ../source/AutoTester.cpp; sourceTree = SOURCE_ROOT; };
 		5DFB850912BAEDB500337543 /* app.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = app.icns; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Dink Smallwood HD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Dink Smallwood HD.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF9DBBC5113C611C00D05754 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -674,6 +677,8 @@
 				5D70C11212B72C0900A1AB17 /* Dink */,
 				5DDE02A312B4F526000C5CC0 /* App.h */,
 				5DDE02A412B4F526000C5CC0 /* App.cpp */,
+				AA10000000000000000000A1 /* AutoTester.h */,
+				AA10000000000000000000A2 /* AutoTester.cpp */,
 				256AC3F00F4B6AF500CF3369 /* RTDink_Prefix.pch */,
 			);
 			name = source;
@@ -1414,6 +1419,7 @@
 				5D21BA631FA6C76C00B12CB3 /* jdmarker.c in Sources */,
 				5D21BA5E1FA6C76C00B12CB3 /* jcmarker.c in Sources */,
 				5DDE02A512B4F526000C5CC0 /* App.cpp in Sources */,
+				AA10000000000000000000A3 /* AutoTester.cpp in Sources */,
 				5D70B62512B5FED300A1AB17 /* OSXUtils.mm in Sources */,
 				5D70B62612B5FED300A1AB17 /* main.m in Sources */,
 				5D70B62712B5FED300A1AB17 /* MainController.mm in Sources */,

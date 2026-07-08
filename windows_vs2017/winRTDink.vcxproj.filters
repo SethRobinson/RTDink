@@ -163,6 +163,9 @@
     <ClCompile Include="..\source\App.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\AutoTester.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\shared\win\app\main.cpp">
       <Filter>source</Filter>
     </ClCompile>
@@ -838,6 +841,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\App.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\AutoTester.h">
       <Filter>source</Filter>
     </ClInclude>
     <ClInclude Include="..\source\GUI\AboutMenu.h">

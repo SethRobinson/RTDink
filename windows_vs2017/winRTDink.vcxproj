@@ -2369,6 +2369,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\source\App.cpp" />
+    <ClCompile Include="..\source\AutoTester.cpp" />
     <ClCompile Include="..\source\Component\ActionButtonComponent.cpp" />
     <ClCompile Include="..\source\Component\CursorComponent.cpp" />
     <ClCompile Include="..\source\Component\DragControlComponent.cpp" />
@@ -2621,6 +2622,7 @@
     <ClInclude Include="..\..\shared\win\powerVR\OGLES\Include\GLES\gl.h" />
     <ClInclude Include="..\..\shared\win\WinUtils.h" />
     <ClInclude Include="..\source\App.h" />
+    <ClInclude Include="..\source\AutoTester.h" />
     <ClInclude Include="..\source\Component\ActionButtonComponent.h" />
     <ClInclude Include="..\source\Component\CursorComponent.h" />
     <ClInclude Include="..\source\Component\DragControlComponent.h" />

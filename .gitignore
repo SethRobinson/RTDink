@@ -228,3 +228,7 @@ script/DinkSmallwoodHD-x86_64.flatpak
 # local AI assistant notes that may hold secrets, must never be committed (see AGENTS.md)
 agents_secret.md
 script/DinkSmallwoodHD.dmg
+
+# autotest artifacts (screenshots + results collected by script/Test*.bat)
+script/testruns/
+bin/autotest/

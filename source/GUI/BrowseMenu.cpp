@@ -48,6 +48,28 @@ struct DMODEntry
 
 vector<DMODEntry> g_dmodData;
 
+//accessors so AutoTester can drive the browser install flow without touching the scroll UI
+int BrowseMenuGetDMODCount()
+{
+	return (int)g_dmodData.size();
+}
+
+bool BrowseMenuGetDMODInfoByName(const string &name, string &urlOut, float &sizeOut)
+{
+	string nameLower = ToLowerCaseString(name);
+
+	for (int i = 0; i < (int)g_dmodData.size(); i++)
+	{
+		if (ToLowerCaseString(g_dmodData[i].m_name) == nameLower)
+		{
+			urlOut = g_dmodData[i].m_url;
+			sizeOut = g_dmodData[i].m_size;
+			return true;
+		}
+	}
+	return false;
+}
+
 void BrowseMenuAddScrollContent(Entity *pParent, TextScanner *t);
 Entity * ShowScoreMessage(Entity *pMenu, string msg);
 

@@ -29,6 +29,11 @@
 #include "GUI/PopUpMenu.h"
 #include "GUI/PauseMenu.h"
 #include "Component/EmulatedPointerComponent.h"
+#include "AutoTester.h"
+
+#ifdef PLATFORM_OSX
+#include <crt_externs.h> //for _NSGetArgc/_NSGetArgv, the Cocoa entry path doesn't hand us argv
+#endif
 
 
 #ifdef PLATFORM_HTML5
@@ -519,6 +524,20 @@ bool App::Init()
 
 	LogMsg("Initializing Dink HD %s", GetVersionString().c_str());
 	UpdateTitleBar();
+
+#ifdef PLATFORM_OSX
+	//unlike the Windows and SDL entry points, Cocoa's main() never feeds us argv, so grab it
+	//ourselves.  Makes -autotest/-window/-skip/-game etc work on Mac too.
+	{
+		int argc = *_NSGetArgc();
+		char **argv = *_NSGetArgv();
+		for (int i = 1; i < argc; i++)
+		{
+			GetBaseApp()->AddCommandLineParm(argv[i]);
+		}
+	}
+#endif
+
 	//add fake parms
 
 #ifdef PLATFORM_HTML5
@@ -827,18 +846,19 @@ bool App::Init()
 		std::string("-debug (turns on extra debug mode options for dmod authors, available from Dink HD menu as well)\n\n") +
 		std::string("-window (Forces windowed mode)\n\n") +
 		std::string("-skip (skips latest version check)\n\n") +
+		std::string("-autotest (runs the automated smoke test and quits, see AGENTS.md)\n\n") +
 		std::string("If a.dmod file is put in the Dink HD directory(where the.exe is) it will be automatically installed and then deleted\n");
 		std::string("dink.exe <dmod url> will install a dmod directly from the net.\n");
 
 		MessageBox(GetForegroundWindow(), s.c_str(), "Command line options", MB_ICONSTOP);
 	}
 
-	if (DoesCommandLineParmExist("-window") || DoesCommandLineParmExist("-windowed"))
+	if (DoesCommandLineParmExist("-window") || DoesCommandLineParmExist("-windowed") || DoesCommandLineParmExist("-autotest"))
 	{
 		fullscreen = false;
 		GetApp()->GetVar("fullscreen")->Set(uint32(0));
 	}
-	if (DoesCommandLineParmExist("-skip"))
+	if (DoesCommandLineParmExist("-skip") || DoesCommandLineParmExist("-autotest"))
 	{
 		SetSkipMode(true);
 	}
@@ -879,18 +899,19 @@ bool App::Init()
 		std::string("-debug (turns on extra debug mode options for dmod authors, available from Dink HD menu as well)\n\n") +
 		std::string("-window (Forces windowed mode)\n\n") +
 		std::string("-skip (skips latest version check)\n\n") +
+		std::string("-autotest (runs the automated smoke test and quits, see AGENTS.md)\n\n") +
 		std::string("If a .dmod file is put in the Dink HD directory it will be automatically installed and then deleted\n") +
 		std::string("dink <dmod url> will install a dmod directly from the net.\n");
 
 		printf("%s", s.c_str());
 	}
 
-	if (DoesCommandLineParmExist("-window") || DoesCommandLineParmExist("-windowed"))
+	if (DoesCommandLineParmExist("-window") || DoesCommandLineParmExist("-windowed") || DoesCommandLineParmExist("-autotest"))
 	{
 		fullscreen = false;
 		GetApp()->GetVar("fullscreen")->Set(uint32(0));
 	}
-	if (DoesCommandLineParmExist("-skip"))
+	if (DoesCommandLineParmExist("-skip") || DoesCommandLineParmExist("-autotest"))
 	{
 		SetSkipMode(true);
 	}
@@ -915,14 +936,20 @@ bool App::Init()
 	int videoy = GetApp()->GetVarWithDefault("video_y", uint32(768))->GetUINT32();
 	int fullscreen = GetApp()->GetVarWithDefault("fullscreen", uint32(0))->GetUINT32();
 
-	if (DoesCommandLineParmExist("-window") || DoesCommandLineParmExist("-windowed"))
+	if (DoesCommandLineParmExist("-window") || DoesCommandLineParmExist("-windowed") || DoesCommandLineParmExist("-autotest"))
 	{
 		fullscreen = false;
 		GetApp()->GetVar("fullscreen")->Set(uint32(0));
 	}
-	if (DoesCommandLineParmExist("-skip"))
+	if (DoesCommandLineParmExist("-skip") || DoesCommandLineParmExist("-autotest"))
 	{
 		SetSkipMode(true);
+	}
+	if (DoesCommandLineParmExist("-autotest"))
+	{
+		//force a consistent window size so the test screenshots are README-worthy
+		videox = 1024;
+		videoy = 768;
 	}
 	if (DoesCommandLineParmExist("-debug"))
 	{
@@ -1155,6 +1182,11 @@ void App::Update()
 		pPointer->AddComponent(new EmulatedPointerComponent);
 		AddFocusIfNeeded(pPointer, false, 0, 0, 2); //note the higher priority, so this will always render last
 	
+		if (DoesCommandLineParmExist("-autotest"))
+		{
+			AutoTesterInit(); //must run before MainMenuCreate so it can neutralize the continue-session popups
+		}
+
 #ifdef _DEBUG
 //		BrowseMenuCreate(pGUIEnt);
 		MainMenuCreate(pGUIEnt);
@@ -1163,18 +1195,21 @@ void App::Update()
 		MainMenuCreate(pGUIEnt);
 #endif
 
-	
+
 	}
 	else
 	{
 		CheckForHotkeys();
 	}
-	
+
+	if (AutoTesterIsActive()) AutoTesterUpdate();
 }
 
 void App::Draw()
 {
 	BaseApp::Draw();
+
+	if (AutoTesterIsActive()) AutoTesterOnPostDraw();
 }
 
 void App::OnScreenSizeChange()
@@ -1397,8 +1432,24 @@ bool App::OnPreInitVideo()
 			}
 
 			g_bUseBorderlessFullscreenOnWindows = temp.GetVarWithDefault("borderless_fullscreen", uint32(0))->GetUINT32() != 0;
+
+			if (DoesCommandLineParmExist("-autotest"))
+			{
+				//force a consistent windowed size so the test screenshots are README-worthy
+				g_winVideoScreenX = 1024;
+				g_winVideoScreenY = 768;
+				g_bIsFullScreen = false;
+				GetApp()->GetVar("fullscreen")->Set(uint32(0));
+			}
 		}
-		
+
+#endif
+
+#if defined(RTLINUX) || defined(PLATFORM_LINUX)
+		if (DoesCommandLineParmExist("-autotest"))
+		{
+			SetPrimaryScreenSize(1024, 768); //force a consistent window size for test screenshots
+		}
 #endif
 		return true;
 }

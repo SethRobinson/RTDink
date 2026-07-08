@@ -17,6 +17,37 @@ Project operating instructions for AI assistants working in this repository.
 - Run relevant automated tests after finishing changes to guard against regressions.
 - If tests cannot be run or do not exist, state that clearly in the handoff and describe any manual verification performed.
 
+### Automated smoke test (`-autotest`, added July 2026)
+
+The game has a self-driving smoke test: `dink -autotest` (implies `-window` and
+`-skip`, forces a 1024x768 window) runs one scripted session that screenshots
+the main menu, installs a DMOD through the live dinknetwork.com browser
+pipeline, installs a DMOD from a URL, starts a new game and screenshots it,
+deletes everything it installed (saves/continue state are preserved via
+backup+restore), writes `autotest/autotest_results.txt` plus
+`autotest_mainmenu.png` / `autotest_newgame.png` in the save dir, and quits.
+The results file is the authoritative pass/fail channel (`SUMMARY: PASS (5/5)`
+on the last line; the process exit code is always 0). Implementation:
+`source/AutoTester.cpp` state machine, hooked from `App::Update`/`App::Draw`;
+the two test DMODs are constants at the top of that file (browser test looks
+up "Cycles of Evil" in the live list; URL test downloads the 24K
+`abcdefgh.dmod`, plain http because the Mac build's NetHTTP has no TLS).
+
+Per-platform driver scripts (all honor `NO_PAUSE=1`, exit 0/1, copy artifacts
+to `script\testruns\<platform>\`, which is gitignored):
+
+- `script\TestWindows.bat` - runs `bin\winRTDink_Release GL.exe`; build first.
+- `script\TestMac.bat` - runs the last dev build on studiomac over ssh
+  (`OSX/build/Release/Dink Smallwood HD.app`, produced by BuildMac.bat).
+  Requires seth logged into the mac's GUI session.
+- `script\TestLinux.bat` - runs the installed flatpak on glados over ssh with
+  `DISPLAY=:0` (glados has a real display). BuildFlatpak.bat installs the
+  flatpak; rebuild before testing or you test a stale binary.
+
+Gotcha: the Cocoa entry path on Mac never passed argv to the app; `App::Init`
+now ingests it via `_NSGetArgc/_NSGetArgv` (this also made `-game`/`-window`
+etc work on Mac for the first time).
+
 
 ## Security
 
