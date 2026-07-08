@@ -88,8 +88,8 @@ echo "[3/6] Code signing (Developer ID, hardened runtime)..."
 find "$FW_DST" -name "*.dylib" -print0 2>/dev/null | while IFS= read -r -d '' LIB; do
     codesign --force --options runtime $TS_FLAG -s "$IDENTITY" "$LIB"
 done
-codesign --force --options runtime $TS_FLAG -s "$IDENTITY" "$FW_DST/SDL2.framework"
-codesign --force --options runtime $TS_FLAG -s "$IDENTITY" "$FW_DST/SDL2_mixer.framework"
+codesign --force --options runtime $TS_FLAG -s "$IDENTITY" "$FW_DST/SDL2.framework/Versions/A"
+codesign --force --options runtime $TS_FLAG -s "$IDENTITY" "$FW_DST/SDL2_mixer.framework/Versions/A"
 codesign --force --options runtime $TS_FLAG -s "$IDENTITY" "$APP"
 codesign --verify --deep --strict "$APP"
 echo "Signature OK."
