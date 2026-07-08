@@ -328,7 +328,7 @@ void OnFullscreenToggleRequestMultiplatform() {
     OSXToggleFullscreen();
 }
 
-#else
+#elif !defined(RTLINUX) && !defined(PLATFORM_LINUX) //linux already defined its own version above
 
 // Windows and other platforms: BaseApp handles fullscreen via OS messages.
 // dink.cpp calls this so we need a stub that routes correctly.
