@@ -100,7 +100,7 @@ GamepadManager * GetGamepadManager() {return &g_gamepadManager;}
 #else
   //it's being compiled as a native OSX app
 #include "Audio/AudioManagerSDL.h"
-#include "Gamepad/GamepadProviderSDL2.h"
+#include "Gamepad/GamepadProviderGCController.h"
 #include <SDL2/SDL.h>
   AudioManagerSDL g_audioManager;
 
@@ -746,18 +746,13 @@ bool App::Init()
 	GetGamepadManager()->AddProvider(pTempDirectX); //use directx joysticks
 	#endif
 
-#if defined(RTLINUX) || defined(PLATFORM_LINUX) || defined(PLATFORM_OSX)
-{
-    // On macOS Cocoa builds SDL video is not used.
-    // Initialize SDL with events + joystick + gamecontroller upfront so the
-    // IOKit HID manager is set up before GamepadProviderSDL2::Init() runs.
-    // SDL_InitSubSystem inside GamepadProviderSDL2 will be a no-op for already
-    // initialized subsystems, so this is safe.
-    #ifdef PLATFORM_OSX
-    SDL_Init(SDL_INIT_EVENTS | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER);
-    #endif
+#if defined(RTLINUX) || defined(PLATFORM_LINUX)
     GetGamepadManager()->AddProvider(new GamepadProviderSDL2());
-}
+#elif defined(PLATFORM_OSX)
+    // Gamepads come from Apple's GameController framework; SDL is still used
+    // for audio and events, but not joysticks.
+    SDL_Init(SDL_INIT_EVENTS);
+    GetGamepadManager()->AddProvider(new GamepadProviderGCController());
 #endif
     if (GetVar("check_icade")->GetUINT32() != 0)
 	{

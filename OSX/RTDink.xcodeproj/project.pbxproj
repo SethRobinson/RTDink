@@ -29,6 +29,9 @@
 		AA000004000000000000AA01 /* AudioManagerSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA000003000000000000AA01 /* AudioManagerSDL.cpp */; };
 		AA000005000000000000AA01 /* GamepadProviderSDL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA000006000000000000AA01 /* GamepadProviderSDL2.cpp */; };
 		AA000007000000000000AA01 /* GamepadSDL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA000008000000000000AA01 /* GamepadSDL2.cpp */; };
+		GC000001000000000000AA01 /* GamepadProviderGCController.mm in Sources */ = {isa = PBXBuildFile; fileRef = GC000011000000000000AA01 /* GamepadProviderGCController.mm */; };
+		GC000002000000000000AA01 /* GamepadGCController.mm in Sources */ = {isa = PBXBuildFile; fileRef = GC000012000000000000AA01 /* GamepadGCController.mm */; };
+		GC000003000000000000AA01 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = GC000013000000000000AA01 /* GameController.framework */; };
 		5D21BA051FA6C3DD00B12CB3 /* AdProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D21BA021FA6C3DD00B12CB3 /* AdProvider.cpp */; };
 		AA000001000000000000AA01 /* EmulatedPointerComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA000002000000000000AA01 /* EmulatedPointerComponent.cpp */; };
 		AA000001000000000000AA06 /* TouchDragComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA000002000000000000AA06 /* TouchDragComponent.cpp */; };
@@ -293,6 +296,11 @@
 		5D21BA0F1FA6C6EE00B12CB3 /* GamepadProvideriCade.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GamepadProvideriCade.cpp; path = ../../shared/Gamepad/GamepadProvideriCade.cpp; sourceTree = "<group>"; };
 		AA000006000000000000AA01 /* GamepadProviderSDL2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GamepadProviderSDL2.cpp; path = ../../shared/Gamepad/GamepadProviderSDL2.cpp; sourceTree = "<group>"; };
 		AA000008000000000000AA01 /* GamepadSDL2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GamepadSDL2.cpp; path = ../../shared/Gamepad/GamepadSDL2.cpp; sourceTree = "<group>"; };
+		GC000011000000000000AA01 /* GamepadProviderGCController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = GamepadProviderGCController.mm; path = ../../shared/Gamepad/GamepadProviderGCController.mm; sourceTree = "<group>"; };
+		GC000021000000000000AA01 /* GamepadProviderGCController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GamepadProviderGCController.h; path = ../../shared/Gamepad/GamepadProviderGCController.h; sourceTree = "<group>"; };
+		GC000012000000000000AA01 /* GamepadGCController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = GamepadGCController.mm; path = ../../shared/Gamepad/GamepadGCController.mm; sourceTree = "<group>"; };
+		GC000022000000000000AA01 /* GamepadGCController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GamepadGCController.h; path = ../../shared/Gamepad/GamepadGCController.h; sourceTree = "<group>"; };
+		GC000013000000000000AA01 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
 		5D21BA101FA6C6EE00B12CB3 /* GamepadProvideriCade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GamepadProvideriCade.h; path = ../../shared/Gamepad/GamepadProvideriCade.h; sourceTree = "<group>"; };
 		5D21BA131FA6C76500B12CB3 /* jdatadst.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jdatadst.c; path = ../../../shared/Irrlicht/source/Irrlicht/jpeglib/jdatadst.c; sourceTree = "<group>"; };
 		5D21BA141FA6C76500B12CB3 /* jdatasrc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jdatasrc.c; path = ../../../shared/Irrlicht/source/Irrlicht/jpeglib/jdatasrc.c; sourceTree = "<group>"; };
@@ -621,6 +629,7 @@
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				AFD4D88A113C504F00C2DE76 /* OpenGL.framework in Frameworks */,
 				AF9DBBC6113C611C00D05754 /* QuartzCore.framework in Frameworks */,
+				GC000003000000000000AA01 /* GameController.framework in Frameworks */,
 				5DDE02A012B4F50D000C5CC0 /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -634,6 +643,7 @@
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 				AFD4D889113C504F00C2DE76 /* OpenGL.framework */,
 				AF9DBBC5113C611C00D05754 /* QuartzCore.framework */,
+				GC000013000000000000AA01 /* GameController.framework */,
 				5DDE029F12B4F50D000C5CC0 /* libz.dylib */,
 			);
 			name = "Linked Frameworks";
@@ -721,6 +731,10 @@
 				5D21B9F31FA6C34500B12CB3 /* GamepadManager.h */,
 				5D21B9F41FA6C34500B12CB3 /* GamepadProvider.cpp */,
 				5D21B9F71FA6C34500B12CB3 /* GamepadProvider.h */,
+				GC000011000000000000AA01 /* GamepadProviderGCController.mm */,
+				GC000021000000000000AA01 /* GamepadProviderGCController.h */,
+				GC000012000000000000AA01 /* GamepadGCController.mm */,
+				GC000022000000000000AA01 /* GamepadGCController.h */,
 			);
 			name = Gamepad;
 			sourceTree = "<group>";
@@ -1484,6 +1498,8 @@
 				5D21BA111FA6C6EE00B12CB3 /* GamepadProvideriCade.cpp in Sources */,
 				AA000005000000000000AA01 /* GamepadProviderSDL2.cpp in Sources */,
 				AA000007000000000000AA01 /* GamepadSDL2.cpp in Sources */,
+				GC000001000000000000AA01 /* GamepadProviderGCController.mm in Sources */,
+				GC000002000000000000AA01 /* GamepadGCController.mm in Sources */,
 				AA000004000000000000AA01 /* AudioManagerSDL.cpp in Sources */,
 				5D70C0D812B72BE700A1AB17 /* TextBoxRenderComponent.cpp in Sources */,
 				5D21B9EB1FA6C31D00B12CB3 /* pngset.c in Sources */,

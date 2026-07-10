@@ -125,7 +125,9 @@ Output: `bin\winRTDink_Release GL.exe`. Only deprecation warnings expected
   so a sibling layout does NOT work.
 - Universal binary (arm64 + x86_64), macOS 11+. Audio is SDL2_mixer
   (`RT_USE_SDL_AUDIO`, the define is read by proton's AudioManagerSDL.h), no
-  FMOD. Gamepads via GamepadProviderSDL2.
+  FMOD. Gamepads via GamepadProviderGCController (Apple GameController
+  framework, in proton since July 2026; replaced GamepadProviderSDL2, which
+  Linux still uses).
 - SDL2/SDL2_mixer come from `~/Library/Frameworks` (official universal DMG
   releases, see INSTALL.md). Install with `ditto`/`cp -R`, never `cp -r`,
   which flattens the framework symlinks and later breaks codesign with
