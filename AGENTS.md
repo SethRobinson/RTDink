@@ -203,6 +203,29 @@ The README screenshots (`doc/images/screenshot_*.png`) are copies of
 autotest output; refresh them from `script\testruns\windows\` after UI
 changes.
 
+### HTML5 / web version (`html5\`, verified July 2026)
+
+- Builds with Emscripten 6.0.3 from `d:\pro\emsdk` (`EMSCRIPTEN_ROOT`, set by
+  proton's `base_setup.bat`). Build: `html5\build_release.bat nopause`; then
+  `html5\UploadToWebsite.bat` scp's to `rtsoft@rtsoft.com:www/web/dink/`
+  (live at https://www.rtsoft.com/web/dink/). `BuildAndUpload.bat` chains both.
+- `CustomMain4-3AspectRatioTemplate.html` (local, in `html5\`) is the
+  hand-tweaked PWA/mobile page; sed generates `RTDink.html`/`index.html` from
+  it, substituting the app name and an `RTBuildStamp` build stamp that
+  cache-busts the js/wasm/data URLs. Edit the TEMPLATE, never the generated
+  html, and don't switch back to proton's shared templates (the PWA/mobile
+  tweaks would be lost). Same pattern as RTDscroll's July 2026 setup.
+- `manifest.webmanifest`, the icon pngs, `.htaccess`, and `/web/arcade-mobile.js`
+  live on the server only (mirrored in `d:\website\web\dink`); the upload
+  script must never delete or overwrite them.
+- Emscripten 6 port notes: needs `-s USE_SDL=1` (SDL 1.x shim no longer
+  default), `-s INITIAL_MEMORY` (was TOTAL_MEMORY); `PRECISE_F32`,
+  `--ignore-dynamic-linking`, `--memory-init-file` are gone. The ancient
+  prebuilt `fmodstudioL_wasm.a` still links fine under 6.0.3.
+- After a web deploy, copy the deployed files over `d:\website\web\dink\`
+  (the local mirror of rtsoft.com) so the website repo can't clobber the game
+  on its next site deploy; see the Feature Index in `d:\website\AGENTS.md`.
+
 ### AI-harness shell quirk (Claude Code sandbox on Windows)
 
 The sandboxed shell sets `NoDefaultCurrentDirectoryInExePath=1`, so cmd does not

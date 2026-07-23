@@ -1,0 +1,334 @@
+<!-- This unity webgl template is based on "A better Unity WebGL template" by greggman: https://github.com/greggman/better-unity-webgl-template -->
+<!-- Also based on code by John Sharp: https://lyceum-allotments.github.io/2016/06/emscripten-and-sdl2-tutorial-part-7-get-naked-owl/  -->
+<!-- Tweaks by Seth A. Robinson (rtsoft.com) - note, this is sort of a mess because I haven't fully intregrated the unity/emscripten stuff at this time.  It works though -->
+<!-- This is the PWA/mobile-friendly template for Dink Smallwood HD. build_release.bat runs it through sed to
+     replace RTTemplateName with the app name and writes the result to <AppName>.html; UploadToWebsite.bat
+     copies that to index.html and uploads both. Edit THIS file, not the generated html, or your changes
+     will be lost on the next build/upload. The manifest.webmanifest and icon files it references live
+     on the server only (www/web/dink). -->
+
+<script>
+   var appName = "RTTemplateName";
+   var buildStamp = "RTBuildStamp";
+   console.log(appName + ' build ' + buildStamp);
+
+   //If anything blows up while the loader is still showing, put the error ON the page so
+   //we can debug from phones where there's no console
+   function RTShowFatalError(msg)
+   {
+     try {
+       var l = document.getElementById('loader');
+       if (!l || l.style.display === 'none') return; //game already started, ignore async noise
+       var t = l.querySelector('.loadingtext');
+       if (t) t.innerHTML = 'Error: ' + msg + '<br><span style="font-size:10px;opacity:0.7">build ' + buildStamp + '</span>';
+     } catch (x) {}
+   }
+
+   function RTErrorText(e)
+   {
+     if (!e) return 'unknown';
+     var s = String(e.message || e);
+     if (e.stack) s += ' | ' + String(e.stack).split('\n').slice(0, 3).join(' <- ');
+     return s;
+   }
+   window.addEventListener('error', function(ev) {
+     RTShowFatalError((ev.message || 'unknown') + (ev.filename ? ' @' + ev.filename.split('/').pop() + ':' + ev.lineno : ''));
+   });
+   window.addEventListener('unhandledrejection', function(ev) {
+     RTShowFatalError('(promise) ' + RTErrorText(ev.reason));
+   });
+</script>
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/web/dink/manifest.webmanifest">
+    <meta name="theme-color" content="#1a1a2e">
+    <link rel="apple-touch-icon" href="/web/dink/apple-touch-icon.png">
+    <title>RTTemplateName</title>
+      <style>
+      html {
+        box-sizing: border-box;
+      }
+      *, *:before, *:after {
+        box-sizing: inherit;
+      }
+      body {
+        margin: 0;
+        background: #444;
+        /* Prevent iOS rubber-band scrolling */
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+      }
+      #gameContainer {
+        width: 100vw;
+        height: 100vh; /* Fallback for older browsers */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      /* 100vh is the LARGE viewport on iOS -- it ignores the Safari toolbar, so
+         the bottom of the game ends up behind it. dvh tracks what's visible. */
+      @supports (height: 100dvh) {
+        #gameContainer {
+          height: 100dvh;
+        }
+      }
+
+      /* Dink renders 4:3. Scale it UP to fill as much of the screen as possible
+         while holding that ratio.
+
+         Do not be tempted by `width:auto; aspect-ratio; max-width:100%` -- on a
+         canvas, `auto` means its intrinsic drawing-buffer size and max-* only
+         ever shrink, so the game renders at its internal resolution (about a
+         third of the screen) instead of scaling up.
+
+         The width/max-width pair below always clamps together with the
+         height/max-height pair, because W*3/4 > H is the same condition as
+         W > H*4/3. So exactly one axis fills the screen and the ratio holds.
+
+         Sizing the element itself (rather than a full-bleed box using
+         object-fit:contain) matters for input: SDL maps touches through the
+         element's bounding rect, so letterboxing inside a larger box would
+         offset every tap. */
+      canvas.emscripten {
+        display: block;
+        margin: auto;
+        touch-action: none;
+        width:      calc(100vw - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
+        height:     calc((100vw - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) * 3 / 4);
+        max-height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+        max-width:  calc((100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) * 4 / 3);
+        background: black;
+      }
+
+      @supports (height: 100dvh) {
+        canvas.emscripten {
+          max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+          max-width:  calc((100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) * 4 / 3);
+        }
+      }
+
+      .logo {
+          display: block;
+          max-width: 100vw;
+          max-height: 70vh;
+          z-index: -1;
+      }
+
+      .progress {
+          margin: 1.5em;
+          border: 1px solid white;
+          width: 50vw;
+          display: none;
+      }
+      .progress .full {
+          margin: 2px;
+          background: white;
+          height: 1em;
+          transform-origin: top left;
+      }
+
+      #loader {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        pointer-events:none;
+
+      }
+
+			.loadingtext {
+ 				 color: white;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .spinner,
+      .spinner:after {
+        border-radius: 50%;
+        width: 5em;
+        height: 5em;
+      }
+      .spinner {
+        margin: 10px;
+        font-size: 10px;
+        position: relative;
+        text-indent: -9999em;
+        border-top: 1.1em solid rgba(255, 255, 255, 0.2);
+        border-right: 1.1em solid rgba(255, 255, 255, 0.2);
+        border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
+        border-left: 1.1em solid #ffffff;
+        transform: translateZ(0);
+        animation: spinner-spin 1.1s infinite linear;
+
+      }
+      @keyframes spinner-spin
+      {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+    </style>
+      <script src="/web/arcade-mobile.js" defer></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        if (window.ArcadeMobile) ArcadeMobile.init({ mode: "game", target: "#gameContainer", label: "Dink Smallwood HD", orientation: "landscape" });
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="gameContainer">
+    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+    </div>
+    <div id="loader">
+      <img class="logo" src="WebLoaderData/logo.png">
+      <div class="spinner"></div>
+       <div class="loadingtext">Setting up...<br><span style="font-size:10px;opacity:0.6">build RTBuildStamp</span></div>
+
+      <div class="progress"><div class="full"></div></div>
+    </div>
+  </body>
+
+
+  <script>
+  	var textNum = 0;
+
+  //Uncomment below to disable webassembly loading
+  //UnityLoader.SystemInfo.hasWasm = false;
+
+        var Module =
+        {
+        	setStatus: function(text)
+			  	{
+			      console.log('SetStatus: ' + text)
+			      const progress = document.querySelector("#loader .progress");
+
+			      if (!Module.progress)
+			      {
+			      	//set it up
+			      progress.style.display = "block";
+			      Module.progress = progress.querySelector(".full");
+			      loader.querySelector(".spinner").style.display = "none";
+			      Module.progress.style.transform = `scaleX(${0})`;
+			       } else
+			     	{
+				//continue it
+		 				var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+		 				if (m)
+		 					{
+		 						loader.querySelector(".loadingtext").innerHTML = "Loading stuff...";
+			 					 var cur = parseInt(m[2])*100;
+			           var progressMax = parseInt(m[4])*100;
+			           //console.log('cur: ' + cur+' max: '+progressMax) ;
+			           Module.progress.style.transform = `scaleX(${cur/progressMax})`;
+			        } else
+			       	{
+		         		//done loading
+		         		 UpdateText(); //will show index 0
+		     			   loader.style.display = "none";
+		     			   loader.querySelector(".spinner").style.display = "block";
+		    			}
+      	}
+     	},
+        	  print: function(text) {console.log('>> ' + text) },
+  					printErr: function(text) { console.log(appName+' ERROR: ' + text) },
+  					onAbort: function(what)
+  					{
+  						RTShowFatalError('abort: ' + what);
+  					},
+
+            onRuntimeInitialized: function()
+            {
+
+            loader.querySelector(".spinner").style.display = "none";
+            loader.style.display = "none";
+            Module.ccall('mainf', null, null);
+
+            },
+            canvas: (function()
+            {
+                var canvas = document.getElementById('canvas');
+                return canvas;
+                })(),
+            //Cache-bust the .wasm/.data requests with the build stamp. The old files had
+            //ancient Last-Modified dates, so browsers heuristically cached them for months and
+            //serve them without revalidating -- mixing a stale wasm/js pair gives
+            //"import a:a must be an object" type instantiation errors. New URL = no stale cache.
+            locateFile: function(path, prefix)
+            {
+                return (prefix || '') + path + '?v=' + encodeURIComponent(buildStamp);
+            }
+        };
+
+        var start_function = function(o) {
+            loader.querySelector(".spinner").style.display = "none";
+            loader.style.display = "none";
+            Module.ccall('mainf', null, null);
+        };
+
+    </script>
+    <script>
+
+          var script = document.createElement('script');
+          script.src = appName + ".js?v=" + encodeURIComponent(buildStamp); //cache-bust, see locateFile comment
+          document.body.appendChild(script);
+
+
+  var textIntervalHandle;
+  var textTimerIntervalMS = 5000; //how fast the text updates after the initial two
+
+  var textCommentArray = [
+   "This can really take a while.",
+   "Webgl apps like this are still relatively new, they will get faster to initialize in time.",
+   "While slow to initialize, this is safer to run and always up to date as compared to a downloadable that you would need to install.",
+   "Make sure you're using a 64 bit browser.  Chrome or Firefox are good choices.",
+   "Did you know RTsoft has been making weird games since 1989?  It's true, Seth is just that old.",
+   "It's looking like you'll be old too before this game starts.",
+   "You've gotta be bored out of your gourd by now.  Sorry about the wait.",
+   "Works on mobile now! Tap Install (or Add to Home Screen) to play without the address bar.",
+   "It's possible this could take like 5 minutes.  Wait if you want, or go try it on a powerful desktop machine maybe."
+   ];
+
+
+	function UpdateText()
+	{
+   if (textCommentArray.length > textNum)
+   {
+   	  //we have more to show
+      const loader = document.querySelector("#loader");
+
+     	loader.querySelector(".loadingtext").innerHTML = textCommentArray[textNum];
+
+      textNum++;
+
+	    if (textNum > 1)
+	    {
+	    	//keep rescheduling them after the first two messages
+	     textIntervalHandle = window.setTimeout(UpdateText, textTimerIntervalMS);
+	    }
+    }
+	}
+
+  </script>
+
+</html>

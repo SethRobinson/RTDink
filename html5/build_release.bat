@@ -10,9 +10,9 @@ SET USE_HTML5_CUSTOM_MAIN=1
 :If 1, this is used:
 
 
-SET CUSTOM_TEMPLATE=..\..\shared\html5\templates\CustomMain4-3AspectRatioTemplate.html
-:SET CUSTOM_TEMPLATE=..\..\shared\html5\templates\CustomMain3-2AspectRatioTemplate.html
-:SET CUSTOM_TEMPLATE=..\..\shared\html5\templates\CustomMainFullTemplate.html
+:This local template is the hand-tweaked PWA/mobile page that was live on the website (July 2026), don't
+:switch back to the shared ones without merging its changes
+SET CUSTOM_TEMPLATE=CustomMain4-3AspectRatioTemplate.html
 
 
 set CURPATH=%cd%
@@ -32,7 +32,14 @@ if ERRORLEVEL 1 (
      %RT_UTIL%\beeper
      pause
      exit
-) 
+)
+
+if not exist %RT_UTIL%\sed.exe (
+    ECHO You need RT_UTIL set to a dir containing sed.exe ^(used to generate the html from the template^).
+     %RT_UTIL%\beeper
+     pause
+     exit
+)
 
 
 :Oh, we better build our media just in case
@@ -86,7 +93,7 @@ set ZLIB_SRC=%ZLIBPATH%/deflate.c %ZLIBPATH%/gzio.c %ZLIBPATH%/infback.c %ZLIBPA
 
 REM ****************************** PNG SUPPORT 
 SET PNG_SRC=%PNGSRC%/png.c %PNGSRC%/pngerror.c %PNGSRC%/pngget.c %PNGSRC%/pngmem.c %PNGSRC%/pngpread.c %PNGSRC%/pngread.c ^
-%PNGSRC%/pngrio.c %PNGSRC%/pngrtran.c %PNGSRC%/pngrutil.c %PNGSRC%/pngset.c %PNGSRC%/pngtrans.c %PNGSRC%/pngwio.c %PNGSRC%/pngwtran.c
+%PNGSRC%/pngrio.c %PNGSRC%/pngrtran.c %PNGSRC%/pngrutil.c %PNGSRC%/pngset.c %PNGSRC%/pngtrans.c %PNGSRC%/pngwio.c %PNGSRC%/pngwtran.c %PNGSRC%/pngwrite.c %PNGSRC%/pngwutil.c
 
 
 REM **************************************** PARTICLE SYSTEM SOURCE CODE FILES
@@ -104,7 +111,7 @@ set JPG_SRC=%JPGSRC%\jcapimin.c %JPGSRC%\jcapistd.c %JPGSRC%\jccoefct.c %JPGSRC%
 
 
 REM **************************************** APP SOURCE CODE FILES
-set APP_SRC=%APP%\App.cpp %APP%\Component\ActionButtonComponent.cpp %APP%\Component\CursorComponent.cpp %APP%\Component\DragControlComponent.cpp ^
+set APP_SRC=%APP%\App.cpp %APP%\AutoTester.cpp %APP%\Component\ActionButtonComponent.cpp %APP%\Component\CursorComponent.cpp %APP%\Component\DragControlComponent.cpp ^
 %APP%\Component\FPSControlComponent.cpp %APP%\Component\InventoryComponent.cpp %APP%\dink\dink.cpp %APP%\dink\FFReader.cpp %APP%\dink\misc_util.cpp %APP%\dink\ScriptAccelerator.cpp ^
 %APP%\video_gl.cpp ^
 %APP%\GUI\AboutMenu.cpp %APP%\GUI\BrowseMenu.cpp %APP%\GUI\DebugMenu.cpp %APP%\GUI\DMODInstallMenu.cpp ^
@@ -116,9 +123,9 @@ REM **************************************** END SOURCE
 :unused so far: -s USE_GLFW=3 -s NO_EXIT_RUNTIME=1 -s FORCE_ALIGNED_MEMORY=1 -s EMTERPRETIFY=1  -s EMTERPRETIFY_ASYNC=1 -DRT_EMTERPRETER_ENABLED -s TOTAL_MEMORY=16MB
 :To skip font loading so it needs no resource files or zlib, add  -DC_NO_ZLIB
 SET CUSTOM_FLAGS= -DHAS_SOCKLEN_T -DBOOST_ALL_NO_LIB -DPLATFORM_HTML5 -DRT_USE_SDL_AUDIO -DRT_JPG_SUPPORT ^
--DRT_PNG_SUPPORT -s WASM=1 -DC_GL_MODE -s LEGACY_GL_EMULATION=1 -DPLATFORM_HTML5  --ignore-dynamic-linking -s ALLOW_MEMORY_GROWTH=1 -s PRECISE_F32=2 ^
--Wno-deprecated-builtins -Wno-c++11-compat-deprecated-writable-strings -Wno-shift-negative-value -Wno-deprecated-non-prototype --memory-init-file 0 ^
--Wno-switch -Wno-writable-strings -Wno-shift-negative-value -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap'] -sASYNCIFY -DRT_EMTERPRETER_ENABLED -s TOTAL_MEMORY=16MB --use-preload-cache
+-DRT_PNG_SUPPORT -s WASM=1 -DC_GL_MODE -s LEGACY_GL_EMULATION=1 -s INITIAL_MEMORY=16MB -s ALLOW_MEMORY_GROWTH=1 ^
+-Wno-deprecated-builtins -Wno-c++11-compat-deprecated-writable-strings -Wno-shift-negative-value -Wno-deprecated-non-prototype ^
+-Wno-switch -Wno-writable-strings -sASYNCIFY -DRT_EMTERPRETER_ENABLED --use-preload-cache -s USE_SDL=1
 
 :unused:   -s FULL_ES2=1 --emrun
 
@@ -126,7 +133,7 @@ SET CUSTOM_FLAGS= -DHAS_SOCKLEN_T -DBOOST_ALL_NO_LIB -DPLATFORM_HTML5 -DRT_USE_S
 
 IF %USE_HTML5_CUSTOM_MAIN% EQU 1 (
 :add this define so we'll manually call mainf from the html later instead of it being auto
-SET CUSTOM_FLAGS=%CUSTOM_FLAGS% -DRT_HTML5_USE_CUSTOM_MAIN -s EXPORTED_FUNCTIONS=['_mainf','_PROTON_SystemMessage','_PROTON_GUIMessage'] 
+SET CUSTOM_FLAGS=%CUSTOM_FLAGS% -DRT_HTML5_USE_CUSTOM_MAIN -s EXPORTED_FUNCTIONS=['_mainf','_PROTON_SystemMessage','_PROTON_GUIMessage'] -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']
 SET FINAL_EXTENSION=js
 ) else (
 SET FINAL_EXTENSION=html
@@ -159,7 +166,7 @@ del %APP_NAME%.wasm*
 del %APP_NAME%.data
 
 del %APP_NAME%.mem
-del temp.bc
+del temp.o
 
 :grab our shared WebLoaderData, this has default graphics and scripts that handle various emscripten/html5 communication
 :if you need to customize it, you can stop copying these and customize yours instead
@@ -175,6 +182,8 @@ call emcc %CUSTOM_FLAGS% %INCLUDE_DIRS% ^
 :fmodstudioL.js.mem
 
 
+:Don't add --use-preload-plugins: it decodes audio via audio elements which hang on iOS Safari (no
+:canplaythrough before a user gesture).
 call emcc %CUSTOM_FLAGS% %INCLUDE_DIRS% ^
 %APP_SRC% %SRC% %COMPONENT_SRC% temp.o ../../shared/html5/fmodstudio/api/studio/lib/upstream/w32/fmodstudioL_wasm.a --exclude-file .svn ^
 --preload-file ../bin/interface@interface/ --preload-file ../bin/audio@audio/ --preload-file ../bin/dink_html5@dink/ --js-library %SHARED%\html5\SharedJSLIB.js -lidbfs.js -o %APP_NAME%.%FINAL_EXTENSION%
@@ -186,8 +195,8 @@ REM Make sure the file compiled ok
 if not exist %APP_NAME%.js %RT_UTIL%\beeper.exe /p
 
 IF %USE_HTML5_CUSTOM_MAIN% EQU 1 (
-%RT_UTIL%\sed "s/RTTemplateName/%APP_NAME%/g" %CUSTOM_TEMPLATE% > %APP_NAME%.html
-) 
+%RT_UTIL%\sed -e "s/RTTemplateName/%APP_NAME%/g" -e "s|RTBuildStamp|%DATE% %TIME%|g" %CUSTOM_TEMPLATE% > %APP_NAME%.html
+)
 
 
 IF "%1" == "nopause" (
