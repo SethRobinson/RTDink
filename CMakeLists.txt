@@ -116,6 +116,14 @@ set_source_files_properties(
     PROPERTIES COMPILE_FLAGS "-Wno-incompatible-pointer-types"
 )
 
+# The classic dink engine passes string literals to old char* functions all over; making it
+# const-correct is too risky a refactor, so just quiet GCC about it (the html5 build does the same)
+set_source_files_properties(
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/dink/dink.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/dink/misc_util.cpp
+    PROPERTIES COMPILE_FLAGS "-Wno-write-strings"
+)
+
 # Output binary to bin/ where game assets already live
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 

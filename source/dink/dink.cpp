@@ -4698,7 +4698,7 @@ int var_equals(char name[20], char newname[20], char math, int script, char rest
 {
 	int k;  
 	//redink1 set newret to NULL so debug errors did not appear.
-	int newret = NULL; // = NULL;
+	int newret = 0; // = NULL;
 
 	if (name[0] != '&')
 	{
