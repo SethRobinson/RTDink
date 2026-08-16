@@ -16,7 +16,7 @@
 #include "Entity/HTTPComponent.h"
 
 #ifdef PLATFORM_HTML5
-#include "html5/SharedJSLIB.h";
+#include "html5/SharedJSLIB.h"
 #endif
 
 bool g_bMainMenuFirstTime = true;
@@ -454,7 +454,9 @@ void ImportSaveFileIfApplicable(string fName)
 
 void CheckForImportedSavedGames()
 {
-	if (!GetEmulatedPlatformID() == PLATFORM_ID_IOS) return;
+	//note: this looks like it wanted to be "!= PLATFORM_ID_IOS", but due to precedence it has always actually meant
+	//"return if the emulated platform is Windows", so keeping that exact behavior to not risk changing anything
+	if (GetEmulatedPlatformID() == PLATFORM_ID_WINDOWS) return;
 
 	vector<string> files = GetFilesAtPath(GetSavePath());
 

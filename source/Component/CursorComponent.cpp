@@ -101,11 +101,12 @@ void CursorComponent::OnInput( VariantList *pVList )
 			break;
 		case MESSAGE_TYPE_GUI_CLICK_MOVE:
 		case MESSAGE_TYPE_GUI_CLICK_MOVE_RAW:
-			
+
 			OnUpdatePos(pt);
 			break;
 
-			
+		default:
+			break;
 		}
 	}
 	else
@@ -137,6 +138,9 @@ void CursorComponent::OnInput( VariantList *pVList )
 		case MESSAGE_TYPE_GUI_CLICK_MOVE:
 		case MESSAGE_TYPE_GUI_CLICK_MOVE_RAW:
 			OnUpdatePos(pt);
+			break;
+
+		default:
 			break;
 		}
 	}

@@ -111,6 +111,9 @@ void InventoryComponent::OnInput( VariantList *pVList )
 		if (fingerID == m_activeFinger) OnUpdatePos(pt);
 		}
 		break;
-	}	
+
+	default:
+		break;
+	}
 
 }

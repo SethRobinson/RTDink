@@ -370,7 +370,7 @@ void OnPauseArcadeInput(VariantList *pVList)
 	}
 	
 	
-	int bobAmount =iPadMapY(40);
+	int bobAmount =(int)iPadMapY(40);
 	int bobCycleMS = 300;
 
 	if (bIsDown)
@@ -379,11 +379,11 @@ void OnPauseArcadeInput(VariantList *pVList)
 		{
 			case VIRTUAL_KEY_DIR_LEFT:
 				
-				BobEntity(pQuickSaveEnt, bobAmount, 0, bobCycleMS);
+				BobEntity(pQuickSaveEnt, (float)bobAmount, 0, bobCycleMS);
 				break;
 
 			case VIRTUAL_KEY_DIR_RIGHT:
-				BobEntity(pQuickLoadEnt, bobAmount, 0, bobCycleMS);
+				BobEntity(pQuickLoadEnt, (float)bobAmount, 0, bobCycleMS);
 				break;
 
 			case VIRTUAL_KEY_GAME_FIRE:

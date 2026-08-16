@@ -179,6 +179,9 @@ void DMODInstallOnError(VariantList *pVList)
 	case NetHTTP::ERROR_404_FILE_NOT_FOUND:
 		msg = "`4Server gave a 404: File not found. Bad url?";
 		break;
+
+	default:
+		break; //the generic message is fine for the rest
 	}
 
 	DMODInstallShowMsg(pVList->m_variant[0].GetComponent()->GetParent(), msg);
@@ -270,7 +273,7 @@ void OnDMODInstallHTTPFinish(VariantList *pVList)
 void OnDMODInstallStatusUpdate(VariantList *pVList)
 {
 
-	static int _updateTimerMS = 0;
+	static uint32 _updateTimerMS = 0;
 
 	if (_updateTimerMS < GetTick())
 	{

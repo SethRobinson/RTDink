@@ -467,7 +467,7 @@ void OnGameProcessKey(VariantList *pVList)
 
 		char c = toupper(char(pVList->Get(1).GetUINT32()));
 		
-		if (c > 28 && c < 255)
+		if (c > 28) //note: this used to also check c < 255, but c is a signed char so that was always true
 		{
 
 			switch (c)
@@ -1438,7 +1438,7 @@ void GameFinishLoading(Entity *pBG)
 	}
 #endif
 
-	float trans = rt_max(0.4, GetApp()->GetVar("gui_transparency")->GetFloat());
+	float trans = rt_max(0.4f, GetApp()->GetVar("gui_transparency")->GetFloat());
 	Entity *pButtonEntity;
 	DestroyUnusedTextures();
 	

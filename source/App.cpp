@@ -353,7 +353,7 @@ App::App()
 {
 	m_logFileHandle = NULL;
 
-	https://www.rtsoft.com
+	//https://www.rtsoft.com
 
 	m_bGhostMode = false;
 #ifdef ANDROID_NDK

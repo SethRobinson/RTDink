@@ -65,6 +65,9 @@ void AboutMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity se
 		case PLATFORM_ID_ANDROID:
 			url = "market://details?id=com.rtsoft.rtdink";
 			break;
+
+		default:
+			break; //the default url is fine for the rest
 		}
 
 		PopUpCreate(pEntClicked->GetParent()->GetParent()->GetParent(), "Leave the game and check out Dink Smallwood HD?", url,

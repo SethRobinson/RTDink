@@ -22,7 +22,7 @@ void LoadMenuOnSelect(VariantList *pVList) //0=vec2 point of click, 1=entity sen
 		//LoadMenuCreate(GetParent()
 	}
 
-	int num = atol(pEntClicked->GetName().c_str());
+	int num = (int)atol(pEntClicked->GetName().c_str());
 
 	if (num > 0)
 	{
@@ -94,7 +94,7 @@ void SetupLoadButton(Entity *pParent, int x, float *pY, int gameID)
 	}
 	
 	string butText = stFormatted;
-	Entity * pButtonEntity = CreateTextButtonEntity(pParent, clickKey, iPhoneMapX(x), iPhoneMapY(*pY), butText, false); *pY += ySpacer;
+	Entity * pButtonEntity = CreateTextButtonEntity(pParent, clickKey, iPhoneMapX((float)x), iPhoneMapY(*pY), butText, false); *pY += ySpacer;
 	pButtonEntity->GetShared()->GetFunction("OnButtonSelected")->sig_function.connect(&LoadMenuOnSelect);
 	//pButtonEntity->GetVar("alignment")->Set(uint32(ALIGNMENT_CENTER));
 }
@@ -114,7 +114,7 @@ Entity * LoadMenuCreate(Entity *pParentEnt)
 	{
 		if (i == 5) y = yStart;
 
-		SetupLoadButton(pBG, x, &y, i);
+		SetupLoadButton(pBG, (int)x, &y, i);
 	}
 
 	pButtonEntity = CreateTextButtonEntity(pBG, "Back", iPhoneMapX(x), iPhoneMapY(y), "Back"); y += ySpacer;

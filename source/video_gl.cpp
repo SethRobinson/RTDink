@@ -61,8 +61,11 @@ IDirectDrawSurface * LoadBitmapIntoSurface(const char *pName, eTransparencyType 
 	switch( mode)
 	{
 	case IDirectDrawSurface::MODE_SHADOW_GL:
-	
-	
+
+
+		break;
+
+	default:
 		break;
 	}
 	

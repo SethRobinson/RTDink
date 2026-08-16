@@ -76,6 +76,9 @@ Entity * EnterURLMenuCreate(Entity *pParentEnt)
 		case PLATFORM_ID_WINDOWS:
 			msg = "Enter a URL to a .dmod file to download and install.  (example: https://rtsoft.com/NewQuest.dmod ) Use Ctrl-V to paste from the clipboard.";
 		break;
+
+		default:
+			break; //the default message is fine for the rest
 	}
 	
 	Entity *pText = CreateTextBoxEntity(pBG, "text", vTextAreaPos, vTextAreaBounds, msg);

@@ -162,7 +162,7 @@ void PopUpCreate(Entity *pEnt, string msg, string url, string button1Action, str
 	Entity *pDarken = pEnt->AddEntity(new Entity("pop_up_darken"));
 	pDarken->AddComponent(new FocusRenderComponent); 
 	pDarken->AddComponent(new FocusUpdateComponent); 
-	FadeScreen(pDarken, 0, 0.7, 400, false); //fade the whole GUI
+	FadeScreen(pDarken, 0, 0.7f, 400, false); //fade the whole GUI
 
 	//add our prompt
 	Entity *pBG = CreateOverlayEntity(pEnt, "pop_up", ReplaceWithLargeInFileName("interface/iphone/pop_up.rttex"), 0,0);
