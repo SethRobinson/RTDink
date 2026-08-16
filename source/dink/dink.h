@@ -670,7 +670,7 @@ public:
 		//LogMsg("Old SetVolume: Changing %.02f to final vol of %.2f", f, (1800 + f) / 1800);
 		//LogMsg("New SetVolume: Changing vol %.02f to %f", f, ConvertMillibelsToPercentage(f));
 #endif
-		GetAudioManager()->SetVol(m_audioID, ConvertMillibelsToPercentage(f));
+		GetAudioManager()->SetVol(m_audioID, (float)ConvertMillibelsToPercentage((int)f));
 	};
 
 

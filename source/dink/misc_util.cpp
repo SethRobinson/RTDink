@@ -6,7 +6,7 @@ void strchar(char *string, char ch)
 a single character, updating the null at the end. */
 {
 	int last;
-	last=strlen(string);
+	last=(int)strlen(string);
 	string[last]=ch;
 	string[last+1]=0;
 }
@@ -238,7 +238,7 @@ start:
 				if (checker+1 == strlen(this1))
 				{
 doit:
-					u = u - strlen(this1);
+					u = u - (int)strlen(this1);
 					u++;
 					for (i = 0; i < u; i++) hold[i] = line[i];
 					for (i = 0; i < strlen(that); i++) hold[(u)+i]=that[i];

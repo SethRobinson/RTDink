@@ -412,12 +412,13 @@ int strnicmp(const char *pStr1, const char *pStr2, size_t Count)
 bool compare(char *orig, char *comp)
 {
 	int len;
-	len = strlen(comp);
+	len = (int)strlen(comp);
 	if (strlen(orig) != len)
 	{
 		return(false);
 	}
 	
+#pragma warning(suppress:4996) //this actually calls our own strnicmp defined above, not the deprecated CRT one.  Non MSVC compilers ignore unknown pragmas
 	if (strnicmp(orig,comp,len) == 0)
 	{
 		return(true);
@@ -928,8 +929,8 @@ void fix_dead_sprites( void )
 				//g_dglos.g_playerInfo.spmap[*pmap].last_time = GetApp()->GetGameTick();
 				//I don't think this is needed, because it's reset elsewhere to the current time if visited
 			}
-			if  ((g_dglos.g_dinkTick > (g_dglos.g_playerInfo.spmap[*pmap].last_time +  300000)) ||
-				(g_dglos.g_dinkTick  +400000 < g_dglos.g_playerInfo.spmap[*pmap].last_time +  300000) )
+			if  ((g_dglos.g_dinkTick > (uint32)(g_dglos.g_playerInfo.spmap[*pmap].last_time +  300000)) ||
+				(g_dglos.g_dinkTick  +400000 < (uint32)(g_dglos.g_playerInfo.spmap[*pmap].last_time +  300000)) )
 			{
 				//this sprite can come back online now
 				g_dglos.g_playerInfo.spmap[*pmap].type[i] = 0;
@@ -939,7 +940,7 @@ void fix_dead_sprites( void )
 		if (g_dglos.g_playerInfo.spmap[*pmap].type[i] == 7)
 		{
 
-			if (g_dglos.g_dinkTick > (g_dglos.g_playerInfo.spmap[*pmap].last_time +  180000))
+			if (g_dglos.g_dinkTick > (uint32)(g_dglos.g_playerInfo.spmap[*pmap].last_time +  180000))
 			{
 				//this sprite can come back online now
 				g_dglos.g_playerInfo.spmap[*pmap].type[i] = 0;
@@ -949,7 +950,7 @@ void fix_dead_sprites( void )
 		if (g_dglos.g_playerInfo.spmap[*pmap].type[i] == 8)
 		{
 
-			if (g_dglos.g_dinkTick > (g_dglos.g_playerInfo.spmap[*pmap].last_time +  60000))
+			if (g_dglos.g_dinkTick > (uint32)(g_dglos.g_playerInfo.spmap[*pmap].last_time +  60000))
 			{
 				//this sprite can come back online now
 				g_dglos.g_playerInfo.spmap[*pmap].type[i] = 0;
@@ -960,7 +961,7 @@ void fix_dead_sprites( void )
 
 void load_map(const int num)
 {
-	FILE *          fp;
+	//FILE *          fp;
 	int holdme,lsize;
 
 	//LogMsg("Loading map %d...",num);
@@ -1634,7 +1635,7 @@ bool load_game_small(int num, char * line, int *mytime)
 
 void load_info()
 {
-	FILE *          fp;
+	//FILE *          fp;
 	string fName = GetFileLocationString(g_dglos.current_dat);
 	//redink1 changed 'crap' to 'current_dat'
 	
@@ -1830,8 +1831,8 @@ bool LoadSpriteSingleFrame(string fNameBase, int seq, int oo, int picIndex, eTra
 			}
 			else
 			{
-				g_dglos.g_seq[seq].m_xoffset = (g_dglos.g_picInfo[picIndex].box.right -
-					(g_dglos.g_picInfo[picIndex].box.right / 2)) + (g_dglos.g_picInfo[picIndex].box.right / 6);
+				g_dglos.g_seq[seq].m_xoffset = (short)((g_dglos.g_picInfo[picIndex].box.right -
+					(g_dglos.g_picInfo[picIndex].box.right / 2)) + (g_dglos.g_picInfo[picIndex].box.right / 6));
 			}
 
 
@@ -1842,8 +1843,8 @@ bool LoadSpriteSingleFrame(string fNameBase, int seq, int oo, int picIndex, eTra
 			}
 			else
 			{
-				g_dglos.g_seq[seq].m_yoffset = (g_dglos.g_picInfo[picIndex].box.bottom -
-					(g_dglos.g_picInfo[picIndex].box.bottom / 4)) - (g_dglos.g_picInfo[picIndex].box.bottom / 30);
+				g_dglos.g_seq[seq].m_yoffset = (short)((g_dglos.g_picInfo[picIndex].box.bottom -
+					(g_dglos.g_picInfo[picIndex].box.bottom / 4)) - (g_dglos.g_picInfo[picIndex].box.bottom / 30));
 			}
 
 		}
@@ -1874,16 +1875,16 @@ bool LoadSpriteSingleFrame(string fNameBase, int seq, int oo, int picIndex, eTra
 			if (yoffset > 0)
 				g_dglos.g_picInfo[picIndex].yoffset = yoffset; else
 			{
-				g_dglos.g_picInfo[picIndex].yoffset = (g_dglos.g_picInfo[picIndex].box.bottom -
-					(g_dglos.g_picInfo[picIndex].box.bottom / 4)) - (g_dglos.g_picInfo[picIndex].box.bottom / 30);	//for the rest
+				g_dglos.g_picInfo[picIndex].yoffset = (int16)((g_dglos.g_picInfo[picIndex].box.bottom -
+					(g_dglos.g_picInfo[picIndex].box.bottom / 4)) - (g_dglos.g_picInfo[picIndex].box.bottom / 30));	//for the rest
 			}
 
 
 			if (xoffset > 0)
 				g_dglos.g_picInfo[picIndex].xoffset = xoffset; else
 			{
-				g_dglos.g_picInfo[picIndex].xoffset = (g_dglos.g_picInfo[picIndex].box.right -// 	
-					(g_dglos.g_picInfo[picIndex].box.right / 2)) + (g_dglos.g_picInfo[picIndex].box.right / 6);
+				g_dglos.g_picInfo[picIndex].xoffset = (int16)((g_dglos.g_picInfo[picIndex].box.right -//
+					(g_dglos.g_picInfo[picIndex].box.right / 2)) + (g_dglos.g_picInfo[picIndex].box.right / 6));
 			}
 		}
 	}
@@ -2018,7 +2019,7 @@ bool load_sprites(char org[512], int seq, int speed, int xoffset, int yoffset, r
 	} else
 	{
 		//LogMsg("Not reloading..");
-		g_dglos.g_seq[seq].s = g_dglos.g_curPicIndex -1;
+		g_dglos.g_seq[seq].s = (short)(g_dglos.g_curPicIndex -1);
 	}
 	
 	if (bScanOnly || g_dglos.g_seq[seq].frame[1] == 0)
@@ -2165,7 +2166,7 @@ void ReadFromLoadSequenceString(char ev[15][100] )
 {
 
 	//           name   seq    speed       offsetx     offsety       hardx      hardy   
-	int seqID = atol(ev[3]);
+	int seqID = (int)atol(ev[3]);
 
 
 	int speed = 0;
@@ -2215,13 +2216,13 @@ void ReadFromLoadSequenceString(char ev[15][100] )
 	if (g_dglos.g_seq[seqID].m_bIsAnim)
 	{
 		//yes, an animation! Set default values for entire animation if we've got them
-		g_dglos.g_seq[seqID].m_speed = atol(ev[4]);
-		g_dglos.g_seq[seqID].m_xoffset = atol(ev[5]);
-		g_dglos.g_seq[seqID].m_yoffset = atol(ev[6]);
-		g_dglos.g_seq[seqID].m_hardbox.left = atol(ev[7]);
-		g_dglos.g_seq[seqID].m_hardbox.top = atol(ev[8]);
-		g_dglos.g_seq[seqID].m_hardbox.right = atol(ev[9]);
-		g_dglos.g_seq[seqID].m_hardbox.bottom = atol(ev[10]);
+		g_dglos.g_seq[seqID].m_speed = (int)atol(ev[4]);
+		g_dglos.g_seq[seqID].m_xoffset = (short)atol(ev[5]);
+		g_dglos.g_seq[seqID].m_yoffset = (short)atol(ev[6]);
+		g_dglos.g_seq[seqID].m_hardbox.left = (int)atol(ev[7]);
+		g_dglos.g_seq[seqID].m_hardbox.top = (int)atol(ev[8]);
+		g_dglos.g_seq[seqID].m_hardbox.right = (int)atol(ev[9]);
+		g_dglos.g_seq[seqID].m_hardbox.bottom = (int)atol(ev[10]);
 	}
 }
 
@@ -2334,7 +2335,7 @@ bool figure_out(const char *line, int load_seq)
 	if (    (compare(ev[1],"LOAD_SEQUENCE_NOW")) | ( compare(ev[1],"LOAD_SEQUENCE"))  ) 
 	{
 		//           name   seq    speed       offsetx     offsety       hardx      hardy   
-		int seqID = atol(ev[3]);
+		int seqID = (int)atol(ev[3]);
 
 		if (!g_dglos.g_seq[seqID].active)
 		{
@@ -2414,7 +2415,7 @@ bool pre_figure_out(const char *line, int load_seq, bool bLoadSpriteOnly)
 		if ( compare(ev[1],"LOAD_SEQUENCE_NOW") || compare(ev[1],"LOAD_SEQUENCE") ) 
 			//  if (     (load_seq == -1) | (load_seq == atol(ev[3]))  )
 		{
-			int seqID = atol(ev[3]);
+			int seqID = (int)atol(ev[3]);
 
 #ifdef _DEBUG
 			if (seqID == 439)
@@ -2478,7 +2479,7 @@ bool pre_figure_out(const char *line, int load_seq, bool bLoadSpriteOnly)
 		
 	//           name   seq    speed       offsetx     offsety       hardx      hardy   
 	//if (k[seq[myseq].frame[myframe]].frame = 0) Msg("Changing sprite that doesn't exist...");
-	myseq = atol(ev[2]);
+	myseq = (int)atol(ev[2]);
 	
 	if (!SequenceIsValid(myseq))
 	{
@@ -2487,16 +2488,16 @@ bool pre_figure_out(const char *line, int load_seq, bool bLoadSpriteOnly)
 		return 1;
 	}
 
-	myframe = atol(ev[3]);
+	myframe = (int)atol(ev[3]);
 
 	ScanSeqFilesIfNeeded(myseq);
 
-	g_dglos.g_picInfo[g_dglos.g_seq[myseq].frame[myframe]].xoffset = atol(ev[4]);
-	g_dglos.g_picInfo[g_dglos.g_seq[myseq].frame[myframe]].yoffset = atol(ev[5]);
-	g_dglos.g_picInfo[g_dglos.g_seq[myseq].frame[myframe]].hardbox.left = atol(ev[6]);
-	g_dglos.g_picInfo[g_dglos.g_seq[myseq].frame[myframe]].hardbox.top = atol(ev[7]);
-	g_dglos.g_picInfo[g_dglos.g_seq[myseq].frame[myframe]].hardbox.right = atol(ev[8]);
-	g_dglos.g_picInfo[g_dglos.g_seq[myseq].frame[myframe]].hardbox.bottom = atol(ev[9]);
+	g_dglos.g_picInfo[g_dglos.g_seq[myseq].frame[myframe]].xoffset = (int16)atol(ev[4]);
+	g_dglos.g_picInfo[g_dglos.g_seq[myseq].frame[myframe]].yoffset = (int16)atol(ev[5]);
+	g_dglos.g_picInfo[g_dglos.g_seq[myseq].frame[myframe]].hardbox.left = (int)atol(ev[6]);
+	g_dglos.g_picInfo[g_dglos.g_seq[myseq].frame[myframe]].hardbox.top = (int)atol(ev[7]);
+	g_dglos.g_picInfo[g_dglos.g_seq[myseq].frame[myframe]].hardbox.right = (int)atol(ev[8]);
+	g_dglos.g_picInfo[g_dglos.g_seq[myseq].frame[myframe]].hardbox.bottom = (int)atol(ev[9]);
 	g_dglos.g_picInfo[g_dglos.g_seq[myseq].frame[myframe]].m_bCustomSettingsApplied = true;
 	
 	
@@ -2522,7 +2523,7 @@ bool pre_figure_out(const char *line, int load_seq, bool bLoadSpriteOnly)
 	//if (k[seq[myseq].frame[myframe]].frame = 0) Msg("Changing sprite that doesn't exist...");
 
 	
-	myseq = atol(ev[2]);
+	myseq = (int)atol(ev[2]);
 
 	//make sure myseq is within bounds
 	if (!SequenceIsValid(myseq))
@@ -2531,8 +2532,8 @@ bool pre_figure_out(const char *line, int load_seq, bool bLoadSpriteOnly)
 		LogError("Error:  SET_FRAME_SPECIAL> Sequence %d is over the max of %d", myseq, C_MAX_SEQUENCES);
 		return 1;
 	}
-	myframe = atol(ev[3]);
-	special = atol(ev[4]);
+	myframe = (int)atol(ev[3]);
+	special = (int)atol(ev[4]);
 
 	g_dglos.g_seq[myseq].special[myframe] = special;
 	//LogMsg("Set special.  %d %d %d",myseq, myframe, special);
@@ -2545,7 +2546,7 @@ bool pre_figure_out(const char *line, int load_seq, bool bLoadSpriteOnly)
 
 
 
-	myseq = atol(ev[2]);
+	myseq = (int)atol(ev[2]);
 
 	if (!SequenceIsValid(myseq))
 	{
@@ -2554,8 +2555,8 @@ bool pre_figure_out(const char *line, int load_seq, bool bLoadSpriteOnly)
 		return 1;
 	}
 
-	myframe = atol(ev[3]);
-	special = atol(ev[4]);
+	myframe = (int)atol(ev[3]);
+	special = (int)atol(ev[4]);
 
 	ScanSeqFilesIfNeeded(myseq);
 
@@ -2565,20 +2566,20 @@ bool pre_figure_out(const char *line, int load_seq, bool bLoadSpriteOnly)
 
 	if (compare(ev[1],"STARTING_DINK_X"))
 	{
-	myseq = atol(ev[2]);
+	myseq = (int)atol(ev[2]);
 	g_dglos.g_playerInfo.x = myseq;
 	}
 
 	if (compare(ev[1],"STARTING_DINK_Y"))
 	{
-		myseq = atol(ev[2]);
+		myseq = (int)atol(ev[2]);
 		g_dglos.g_playerInfo.y = myseq;
 	}
 
 	if (compare(ev[1],"SET_FRAME_FRAME"))
 	{
 
-	myseq = atol(ev[2]);
+	myseq = (int)atol(ev[2]);
 
 	if (!SequenceIsValid(myseq))
 	{
@@ -2587,9 +2588,9 @@ bool pre_figure_out(const char *line, int load_seq, bool bLoadSpriteOnly)
 		return 1;
 	}
 
-	myframe = atol(ev[3]);
-	special = atol(ev[4]);
-	special2 = atol(ev[5]);
+	myframe = (int)atol(ev[3]);
+	special = (int)atol(ev[4]);
+	special2 = (int)atol(ev[5]);
 
 
 	ScanSeqFilesIfNeeded(myseq);
@@ -3071,7 +3072,7 @@ void BlitGUIOverlay()
 
 	if (*pmagic_cost > 0 && *pmagic_level > 0)
 	{
-		draw_mlevel( (float(*pmagic_level) / float(*pmagic_cost))*100, true );
+		draw_mlevel( (int)((float(*pmagic_level) / float(*pmagic_cost))*100), true );
 	}
 
 }
@@ -3482,7 +3483,7 @@ bool ScriptEOF(int script)
 
 bool read_next_line(int script, char *line)
 {
-	if (  (g_scriptInstance[script] == NULL) || (g_scriptBuffer == NULL) )
+	if (g_scriptInstance[script] == NULL) //note: this used to also check g_scriptBuffer == NULL, but it's an array so that could never be true
 	{
 
 		//this happens a lot in the revolution mod, enough that I'm commenting out in release mode because it can slow
@@ -3535,7 +3536,7 @@ int load_script(const char *pScript, int sprite, bool set_sprite, bool bQuietErr
 
     StringReplace("\\", "/", fName);
 	int script;
-	FILE *stream;  
+	//FILE *stream;
 	bool comp = false;
 
 	bool bFound = false;
@@ -3651,7 +3652,7 @@ if (g_script_debug_mode)
 
 		//LogMsg("file in cbuf");
 
-		g_scriptInstance[script]->end = (strlen(pMemBuffer) );
+		g_scriptInstance[script]->end = (int32)(strlen(pMemBuffer) );
 		//LogMsg("length of %s is %d!", fileName.c_str(), g_scriptInstance[script]->end);                
 
 		g_scriptBuffer[script] = (char *) malloc( g_scriptInstance[script]->end+1 );
@@ -3769,7 +3770,7 @@ bool locate_goto(char proc[50], int script)
 {
 	g_scriptInstance[script]->current = 0;
 	
-	int procLen = strlen(proc);
+	int procLen = (int)strlen(proc);
 	
 	if (proc[procLen - 1] == ';')
 	{
@@ -3804,6 +3805,7 @@ bool locate_goto(char proc[50], int script)
 	{
 		strip_beginning_spaces(line);
 
+#pragma warning(suppress:4996) //this actually calls our own strnicmp, not the deprecated CRT one.  Non MSVC compilers ignore unknown pragmas
 		if (strnicmp(line, proc, procLen) == 0)
 		{
 			//if (debug_mode) LogMsg("Found goto : Line is %s, word is %s.", line, ev[1]);
@@ -3959,7 +3961,7 @@ bool recurse_var_replace(int i, int script, char* line, char* prevar)
 		if (g_dglos.g_playerInfo.var[i].active &&
 			i == get_var(script, g_dglos.g_playerInfo.var[i].name) &&
 			strstr(line, g_dglos.g_playerInfo.var[i].name) &&
-			(prevar == NULL || prevar != NULL && strstr(g_dglos.g_playerInfo.var[i].name, prevar)))
+			(prevar == NULL || (prevar != NULL && strstr(g_dglos.g_playerInfo.var[i].name, prevar))))
 		{
 			//Look for shorter variables
 			if (!recurse_var_replace(i + 1, script, line, g_dglos.g_playerInfo.var[i].name))
@@ -4152,7 +4154,7 @@ bool get_parms(char proc_name[20], int32 script, char *h, int32 p[10])
 				decipher(crap, script);
 			}
 
-			g_nlist[i] = atol( crap);
+			g_nlist[i] = (int)atol( crap);
 
 		} else
 
@@ -4532,7 +4534,7 @@ int say_text(char text[512], int h, int script)
 	}
 	*plast_text = crap2;    
 	strcpy_safe(g_sprite[crap2].text, text);
-	g_sprite[crap2].kill = strlen(text) * text_timer;
+	g_sprite[crap2].kill = (int)strlen(text) * text_timer;
 	if (g_sprite[crap2].kill < text_min) g_sprite[crap2].kill = text_min;
 	g_sprite[crap2].damage = -1;
 	g_sprite[crap2].owner = h;
@@ -4566,7 +4568,7 @@ int say_text_xy(char text[512], int mx, int my, int script)
 	}
 	*plast_text = crap2;    
 	strcpy_safe(g_sprite[crap2].text, text);
-	g_sprite[crap2].kill = strlen(text) * text_timer;
+	g_sprite[crap2].kill = (int)strlen(text) * text_timer;
 	if (g_sprite[crap2].kill < text_min) g_sprite[crap2].kill = text_min;
 	g_sprite[crap2].damage = -1;
 	g_sprite[crap2].nohit = 1;
@@ -4814,7 +4816,7 @@ next:
 		goto next2;
 	}
 
-	newval = atol(newname);
+	newval = (int)atol(newname);
 
 next2:
 
@@ -4920,7 +4922,7 @@ int var_figure(char h[512], int script)
 		} 
 
 		//Msg("truth is %s", h);
-		ret =  atol(h);
+		ret =  (int)atol(h);
 		//  Msg("returning %d, happy?", ret);
 		return(ret);
 	}
@@ -4929,13 +4931,13 @@ int var_figure(char h[512], int script)
 	//Msg("Comparing %s...", crap);
 
 	decipher_string(crap,script);
-	n1 = atol(crap);
+	n1 = (int)atol(crap);
 
 	get_word(h, 3, crap);
 	replace(")", "", crap);
 	//Msg("to  %s...", crap);
 	decipher_string(crap,script);
-	n2 = atol(crap);
+	n2 = (int)atol(crap);
 
 	get_word(h, 2, crap);
 	//if (g_script_debug_mode) LogMsg("Compared %d to %d",n1, n2);
@@ -5088,14 +5090,14 @@ redo:
 		if (compare(checker, (char*)"set_y"))
 		{
 			get_word(line, 2, checker);
-			g_dglos.g_talkInfo.newy = atol(checker);
+			g_dglos.g_talkInfo.newy = (int)atol(checker);
 			goto redo;
 		}
 
 		if (compare(checker, (char*)"set_title_color"))
 		{
 			get_word(line, 2, checker);
-			g_dglos.g_talkInfo.color = atol(checker);
+			g_dglos.g_talkInfo.color = (int)atol(checker);
 			goto redo;
 		}
 
@@ -5358,7 +5360,7 @@ bool StopMidi()
 void get_right(char line[512], char thing[100], char *ret)
 {
 	char *dumb;
-	int pos = strcspn(line, thing );
+	int pos = (int)strcspn(line, thing );
 
 	if (pos == 0){ strcpy_safe(ret, ""); return; }
 
@@ -6235,7 +6237,7 @@ void CopyBitmapToBackBuffer (char *pName)
 		return;
 	}
 	
-	if (lpDDSBuffer && lpDDSBuffer->m_pSurf && lpDDSBuffer->m_pSurf->GetSurfaceType() == SoftSurface::SURFACE_RGBA || lpDDSBuffer->m_pSurf->GetSurfaceType() == SoftSurface::SURFACE_RGB)
+	if (lpDDSBuffer && lpDDSBuffer->m_pSurf && (lpDDSBuffer->m_pSurf->GetSurfaceType() == SoftSurface::SURFACE_RGBA || lpDDSBuffer->m_pSurf->GetSurfaceType() == SoftSurface::SURFACE_RGB))
 	{
 		LogMsg("Warning, losing high color back buffer");
 		//assert(0);
@@ -6279,7 +6281,7 @@ void copy_bmp( char *pName)
 		return;
 	}
 	
-	if (lpDDSBuffer && lpDDSBuffer->m_pSurf && lpDDSBuffer->m_pSurf->GetSurfaceType() == SoftSurface::SURFACE_RGBA || lpDDSBuffer->m_pSurf->GetSurfaceType() == SoftSurface::SURFACE_RGB)
+	if (lpDDSBuffer && lpDDSBuffer->m_pSurf && (lpDDSBuffer->m_pSurf->GetSurfaceType() == SoftSurface::SURFACE_RGBA || lpDDSBuffer->m_pSurf->GetSurfaceType() == SoftSurface::SURFACE_RGB))
 	{
 		//LogMsg("Warning, losing high color back buffer");
 		//assert(0);
@@ -6469,8 +6471,8 @@ void update_sound(void)
 				soundinfo[i].repeat = 0;
 			} else
 			{
-				soundbank[i].SetPan(get_pan(soundinfo[i].owner));
-				soundbank[i].SetVolume(get_vol(soundinfo[i].owner));
+				soundbank[i].SetPan((float)get_pan(soundinfo[i].owner));
+				soundbank[i].SetVolume((float)get_vol(soundinfo[i].owner));
 
 			}
 		}
@@ -6497,8 +6499,8 @@ void update_sound(void)
 
 					} else
 					{
-						soundbank[i].SetPan(get_pan(soundinfo[i].owner));
-						soundbank[i].SetVolume(get_vol(soundinfo[i].owner));
+						soundbank[i].SetPan((float)get_pan(soundinfo[i].owner));
+						soundbank[i].SetVolume((float)get_vol(soundinfo[i].owner));
 					}
 
 				}
@@ -6614,7 +6616,7 @@ if (fileSize > 1024*1024*2)
 	bForceStreaming = true;
 }
 
-soundbank[i].m_audioID = GetAudioManager()->Play(fName, repeat != NULL, false, false, bForceStreaming);
+soundbank[i].m_audioID = GetAudioManager()->Play(fName, repeat, false, false, bForceStreaming);
 #ifdef _DEBUG
 	//LogMsg("Got audioid %d when playing %s",soundbank[i].m_audioID, fName.c_str() );
 #endif
@@ -6628,8 +6630,8 @@ if (GetEmulatedPlatformID() != PLATFORM_ID_ANDROID)
 
 if (sound3d > 0) 
 {
-	soundbank[i].SetPan(get_pan(sound3d));
-	soundbank[i].SetVolume(get_vol(sound3d));
+	soundbank[i].SetPan((float)get_pan(sound3d));
+	soundbank[i].SetVolume((float)get_vol(sound3d));
 }
 
 soundinfo[i].owner = sound3d;
@@ -7202,7 +7204,7 @@ pass:
 			ugly_return(0);
 		}
 		
-		if (strchr(temp, '<=') != NULL) 
+		if (strchr(temp, '=') != NULL) //careful: this was strchr(temp, '<=') which truncates to '=', keeping the exact behavior since DMOD scripts depend on it
 		{
 			h = &h[1];
 			strip_beginning_spaces(h);
@@ -7213,7 +7215,7 @@ pass:
 			strcpy_safe(h, "\n");
 			ugly_return(0);
 		}
-		if (strchr(temp, '>=') != NULL) 
+		if (strchr(temp, '=') != NULL) //careful: this was strchr(temp, '>=') which truncates to '=', keeping the exact behavior since DMOD scripts depend on it
 		{
 			h = &h[1];
 			strip_beginning_spaces(h);
@@ -7226,7 +7228,7 @@ pass:
 		}
 		
 
-		if (strchr(temp, '!=') != NULL) 
+		if (strchr(temp, '=') != NULL) //careful: this was strchr(temp, '!=') which truncates to '=', keeping the exact behavior since DMOD scripts depend on it
 		{
 			h = &h[1];
 			strip_beginning_spaces(h);
@@ -8323,7 +8325,7 @@ pass:
 			if (get_parms(ev[1], script, h, p))
 			{
 
-				int regm = atol(slist[0]);      
+				int regm = (int)atol(slist[0]);      
 				LogMsg("Processing playmidi command.");            
 				if (regm > 1000)
 				{
@@ -8440,7 +8442,7 @@ pass:
 					if (g_nlist[0] > 0)
 					{
 						soundinfo[g_nlist[0]].vol = g_nlist[1];
-						soundbank[g_nlist[0]].SetVolumeLogarithmic(g_nlist[1]);
+						soundbank[g_nlist[0]].SetVolumeLogarithmic((float)g_nlist[1]);
 					}
 				}
 			}
@@ -8859,7 +8861,7 @@ pass:
 		if (compare(ev[1], (char*)"get_client_version"))
 		{
 			h = &h[strlen(ev[1])];
-			g_dglos.g_returnint = GetApp()->GetVersion()*100;
+			g_dglos.g_returnint = (int32)(GetApp()->GetVersion()*100);
 			strcpy_safe(pLineIn, h);  
 			ugly_return(0);
 		}
@@ -10525,7 +10527,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 
 				if (g_nlist[0] < 1 || g_nlist[0] >= C_MAX_SPRITES_AT_ONCE)
 				{
-					LogMsg("Error: Can't compare sprite script for sprite %d!??!?!", g_nlist[0]);
+					LogMsg("Error: Can't compare sprite script for sprite %d!?\?!?\?!", g_nlist[0]); //the escapes stop it from being read as a trigraph
 					ugly_return(0);
 				}
 				if (g_sprite[g_nlist[0]].active)
@@ -10902,7 +10904,7 @@ LogMsg("%d scripts used", g_dglos.g_returnint);
 			int32 p[20] = {1,0,0,0,0,0,0,0,0,0};  
 			if (get_parms(ev[1], script, h, p))
 			{
-				g_dglos.g_returnint = sqrt((double)abs(g_nlist[0]));
+				g_dglos.g_returnint = (int32)sqrt((double)abs(g_nlist[0]));
 			}
 			strcpy_safe(pLineIn, h);  
 			ugly_return(0);
@@ -11622,7 +11624,9 @@ void process_callbacks(void)
 		if (g_dglos.g_scriptCallback[k].active)
 		{
 
-			if (g_dglos.g_scriptCallback[k].owner > 0) if (g_scriptInstance[g_dglos.g_scriptCallback[k].owner] == NULL)
+			if (g_dglos.g_scriptCallback[k].owner > 0)
+			{
+				if (g_scriptInstance[g_dglos.g_scriptCallback[k].owner] == NULL)
 			{
 				//kill this process, it's owner sprite is 'effin dead.
 				if (g_script_debug_mode) LogMsg("Killed callback %s because script %d is dead.",
@@ -11675,6 +11679,7 @@ void process_callbacks(void)
 					}
 
 				}
+			}
 			}
 		}
 	}
@@ -12938,7 +12943,7 @@ void pill_brain(int h)
         if (g_sprite[h].distance == 0) g_sprite[h].distance = 5;
         int distance = get_distance_and_dir(h, g_sprite[h].target, &dir);
 
-        if (distance < g_sprite[h].distance) if (g_sprite[h].attack_wait < g_dglos.g_dinkTick)
+        if (distance < g_sprite[h].distance) if ((uint32)g_sprite[h].attack_wait < g_dglos.g_dinkTick)
         {
             //  Msg("base attack is %d.",spr[h].base_attack);
             if (g_sprite[h].base_attack != -1)
@@ -12966,7 +12971,7 @@ void pill_brain(int h)
 
         }
 
-        if (g_sprite[h].move_wait  < g_dglos.g_dinkTick)
+        if ((uint32)g_sprite[h].move_wait  < g_dglos.g_dinkTick)
         {
             process_target(h);
             g_sprite[h].move_wait = g_dglos.g_dinkTick + 200;
@@ -12987,7 +12992,7 @@ walk_normal:
         if ( g_sprite[h].seq == 0) goto recal;
     }
 
-    if (( g_sprite[h].seq == 0) && (g_sprite[h].move_wait < g_dglos.g_dinkTick))
+    if (( g_sprite[h].seq == 0) && ((uint32)g_sprite[h].move_wait < g_dglos.g_dinkTick))
     {
 recal:
         if (((rand() % 12)+1) == 1 )
@@ -13126,7 +13131,7 @@ void people_brain(int h)
         return;
     }
 
-    if ((g_sprite[h].move_wait < g_dglos.g_dinkTick) && (g_sprite[h].seq == 0))
+    if (((uint32)g_sprite[h].move_wait < g_dglos.g_dinkTick) && (g_sprite[h].seq == 0))
     {
         g_sprite[h].action = 0;
     }
@@ -13276,7 +13281,7 @@ void dragon_brain(int h)
     }
 
     if (g_sprite[h].target != 0)
-        if (g_sprite[h].attack_wait < g_dglos.g_dinkTick)
+        if ((uint32)g_sprite[h].attack_wait < g_dglos.g_dinkTick)
         {
             if (g_sprite[h].script != 0) 
             {
@@ -13518,7 +13523,9 @@ int check_if_move_is_legal(int u)
 				g_sprite[u].moveman = 0;
 
 				if (g_dglos.g_pushingEnabled)
-					if (u == 1) if (hardness != 2) if (g_dglos.g_playerInfo.push_active == false)
+					if (u == 1) if (hardness != 2)
+					{
+						if (g_dglos.g_playerInfo.push_active == false)
 					{
 						if ((g_sprite[u].dir == 2) | (g_sprite[u].dir == 4) | (g_sprite[u].dir == 6) | (g_sprite[u].dir == 8))
 						{
@@ -13532,6 +13539,7 @@ int check_if_move_is_legal(int u)
 					else
 					{
 						if (g_dglos.g_playerInfo.push_dir != g_sprite[1].dir) g_dglos.g_playerInfo.push_active = false;
+					}
 					}
 				
 		
@@ -13688,11 +13696,11 @@ CL_Vec2f DinkToPrimaryNativeCoords(CL_Vec2f vPos)
 	double xmod = (double(g_dglo.m_orthoRenderRect.GetWidth()) / GetPrimaryGLX());
 	double ymod = (double(g_dglo.m_orthoRenderRect.GetHeight()) / GetPrimaryGLY());
 	r += g_dglo.m_centeringOffset;
-	r.x *= g_dglo.m_aspectRatioModX;
-	r.y *= g_dglo.m_aspectRatioModY;
+	r.x *= (float)g_dglo.m_aspectRatioModX;
+	r.y *= (float)g_dglo.m_aspectRatioModY;
 
-	r.x /= xmod;
-	r.y /= ymod;
+	r.x /= (float)xmod;
+	r.y /= (float)ymod;
 	return r;
 }
 
@@ -13705,7 +13713,7 @@ void UpdateInterfaceWithoutTransitionAndThinking() //transition
 	}
 
 	glPushMatrix();
-	SetOrthoRenderSize((float)g_dglo.m_orthoRenderRect.right, (float)g_dglo.m_orthoRenderRect.GetHeight(), (float)-g_dglo.m_orthoRenderRect.left, (float)-g_dglo.m_orthoRenderRect.top);
+	SetOrthoRenderSize((float)g_dglo.m_orthoRenderRect.right, (float)g_dglo.m_orthoRenderRect.GetHeight(), -g_dglo.m_orthoRenderRect.left, -g_dglo.m_orthoRenderRect.top);
 	GetBaseApp()->SetGameTickPause(true); //don't let logic actually happen in here
 
 
@@ -13716,7 +13724,7 @@ void UpdateInterfaceWithoutTransitionAndThinking() //transition
 	//Also, some weirdness with ConvertFakeScreenRectToReal that I worked around, uhh... this whole function sucks ballz and will be horrible to debug, sorry
 
 	rtRect clipRectFullScreen(0, 0, 1024, 768);
-	rtRectf nativeClipRectFullScreen = ConvertFakeScreenRectToReal(clipRectFullScreen, g_dglo.m_aspectRatioModX, g_dglo.m_aspectRatioModY);
+	rtRectf nativeClipRectFullScreen = ConvertFakeScreenRectToReal(clipRectFullScreen, (float)g_dglo.m_aspectRatioModX, (float)g_dglo.m_aspectRatioModY);
 	float rawGLOffsetX = (GetPrimaryGLX() - nativeClipRectFullScreen.GetWidth()) / 2;
 	float rawGLOffsetY = (GetPrimaryGLY() - nativeClipRectFullScreen.GetHeight()) / 2;
 	float percentOfGameAreaThatIsSideBar = 0.032f;
@@ -13725,21 +13733,21 @@ void UpdateInterfaceWithoutTransitionAndThinking() //transition
 	float widthOfBar = (percentOfGameAreaThatIsSideBar * fullscreenWidthX);
 
 	//left bar
-	rtRect clipRect(0, 0, g_dglo.m_nativeGameArea.left, 768);
+	rtRect clipRect(0, 0, (int)g_dglo.m_nativeGameArea.left, 768);
 	rtRectf nativeClipRectLeft = ConvertFakeScreenRectToReal(clipRect);
 	nativeClipRectLeft.left += rawGLOffsetX;
 	nativeClipRectLeft.right = rawGLOffsetX + widthOfBar;
 	nativeClipRectLeft.top += rawGLOffsetY;
 	nativeClipRectLeft.bottom += rawGLOffsetY;
 
-	glScissor(nativeClipRectLeft.left, nativeClipRectLeft.top, nativeClipRectLeft.GetWidth(), nativeClipRectLeft.GetHeight());
+	glScissor((GLint)nativeClipRectLeft.left, (GLint)nativeClipRectLeft.top, (GLsizei)nativeClipRectLeft.GetWidth(), (GLsizei)nativeClipRectLeft.GetHeight());
 	
 	BlitInterfaceFullDraw(false);
 
 	{
 		//right bar
-		rtRect clipRect(g_dglo.m_nativeGameArea.right, 0, 1024, 768);
-		rtRectf nativeClipRect = ConvertFakeScreenRectToReal(clipRect, g_dglo.m_aspectRatioModX, g_dglo.m_aspectRatioModY);
+		rtRect clipRect((int)g_dglo.m_nativeGameArea.right, 0, 1024, 768);
+		rtRectf nativeClipRect = ConvertFakeScreenRectToReal(clipRect, (float)g_dglo.m_aspectRatioModX, (float)g_dglo.m_aspectRatioModY);
 			
 		nativeClipRect.right = rawGLOffsetX + fullscreenWidthX;
 		nativeClipRect.left = ((rawGLOffsetX + fullscreenWidthX) - widthOfBar) + 2;
@@ -13748,19 +13756,19 @@ void UpdateInterfaceWithoutTransitionAndThinking() //transition
 
 		nativeClipRect.right += 5; //it's ok to go a little extra
 
-		glScissor(nativeClipRect.left, nativeClipRect.top, nativeClipRect.GetWidth(), nativeClipRect.GetHeight());
+		glScissor((GLint)nativeClipRect.left, (GLint)nativeClipRect.top, (GLsizei)nativeClipRect.GetWidth(), (GLsizei)nativeClipRect.GetHeight());
 		BlitInterfaceFullDraw();
 	}
 
 	//bottom bar
 	{
-		rtRect clipRect(0, g_dglo.m_nativeGameArea.bottom, 1024, 768);
+		rtRect clipRect(0, (int)g_dglo.m_nativeGameArea.bottom, 1024, 768);
 		rtRectf nativeClipRect = ConvertFakeScreenRectToReal(clipRect);
 
 		nativeClipRect.left += rawGLOffsetX;
 		nativeClipRect.right += rawGLOffsetX;
 	
-		glScissor(rawGLOffsetX, rawGLOffsetY, nativeClipRect.GetWidth(), fullscreenWidthY * 0.166f);
+		glScissor((GLint)rawGLOffsetX, (GLint)rawGLOffsetY, (GLsizei)nativeClipRect.GetWidth(), (GLsizei)(fullscreenWidthY * 0.166f));
 		BlitInterfaceFullDraw();
 	}
 
@@ -13776,7 +13784,7 @@ void UpdateInterfaceWithoutTransitionAndThinking() //transition
 
 void UpdateFrameWithoutTransitionAndThinking(bool bForceTimeToPass = false)
 {
-	SetOrthoRenderSize(g_dglo.m_orthoRenderRect.right, g_dglo.m_orthoRenderRect.GetHeight(), -g_dglo.m_orthoRenderRect.left, -g_dglo.m_orthoRenderRect.top);
+	SetOrthoRenderSize((float)g_dglo.m_orthoRenderRect.right, (float)g_dglo.m_orthoRenderRect.GetHeight(), -g_dglo.m_orthoRenderRect.left, -g_dglo.m_orthoRenderRect.top);
 
 	GetBaseApp()->SetGameTickPause(true); //don't let logic actually happen in here
 
@@ -13882,21 +13890,21 @@ void StartScreenScrollTransition(int direction)
 	switch(direction)
 	{
 		case 4:
-			g_dglo.m_transitionOffsetNative = CL_Vec2f((int32)-g_dglo.m_nativeGameArea.GetWidth(), 0);
-			g_dglo.m_transitionOffset = CL_Vec2f((int32)-g_dglo.m_gameArea.GetWidth(), 0);
+			g_dglo.m_transitionOffsetNative = CL_Vec2f((float)-g_dglo.m_nativeGameArea.GetWidth(), 0);
+			g_dglo.m_transitionOffset = CL_Vec2f((float)-g_dglo.m_gameArea.GetWidth(), 0);
 		break;
 		
 		case 6:
-			g_dglo.m_transitionOffsetNative = CL_Vec2f((int32)g_dglo.m_nativeGameArea.GetWidth(), 0);
-			g_dglo.m_transitionOffset = CL_Vec2f((int32)g_dglo.m_gameArea.GetWidth(), 0);
+			g_dglo.m_transitionOffsetNative = CL_Vec2f((float)g_dglo.m_nativeGameArea.GetWidth(), 0);
+			g_dglo.m_transitionOffset = CL_Vec2f((float)g_dglo.m_gameArea.GetWidth(), 0);
 			break;
 		case 8:
-			g_dglo.m_transitionOffsetNative = CL_Vec2f(0, -g_dglo.m_nativeGameArea.GetHeight());
-			g_dglo.m_transitionOffset = CL_Vec2f(0, -g_dglo.m_gameArea.GetHeight());
+			g_dglo.m_transitionOffsetNative = CL_Vec2f(0, (float)-g_dglo.m_nativeGameArea.GetHeight());
+			g_dglo.m_transitionOffset = CL_Vec2f(0, (float)-g_dglo.m_gameArea.GetHeight());
 			break;
 		case 2:
-			g_dglo.m_transitionOffsetNative = CL_Vec2f(0, (int32)g_dglo.m_nativeGameArea.GetHeight());
-			g_dglo.m_transitionOffset = CL_Vec2f(0, (int32)g_dglo.m_gameArea.GetHeight());
+			g_dglo.m_transitionOffsetNative = CL_Vec2f(0, (float)g_dglo.m_nativeGameArea.GetHeight());
+			g_dglo.m_transitionOffset = CL_Vec2f(0, (float)g_dglo.m_gameArea.GetHeight());
 			break;
 		
 		default:
@@ -13994,8 +14002,8 @@ void BlitSecondTransitionScreen() //TRANSITION
 			if (NeedsSeamFix())
 			{
 				//without normal antialiasing we don't need to do much, but this does fix tiny black artifacts during the screen transition
-				dstOffset = rtRectf(-0.05, -0.05f, 0.05f, 0.05);
-				srcOffset = rtRectf(0.4, 0.4, -0.4, -0.4);
+				dstOffset = rtRectf(-0.05f, -0.05f, 0.05f, 0.05f);
+				srcOffset = rtRectf(0.4f, 0.4f, -0.4f, -0.4f);
 			}
 		}
 
@@ -14557,7 +14565,7 @@ void process_bow( int h)
 {
     int timetowait = 100;
 
-    if (g_dglos.g_bowStatus.wait < g_dglos.g_dinkTick)
+    if ((uint32)g_dglos.g_bowStatus.wait < g_dglos.g_dinkTick)
     {
         if (sjoy.right) g_sprite[h].dir = 6;
         if (sjoy.left) g_sprite[h].dir = 4;
@@ -14589,7 +14597,7 @@ void process_bow( int h)
     }
     g_sprite[h].pseq = 100+g_sprite[h].dir;
 
-    if (g_dglos.g_bowStatus.pull_wait < g_dglos.g_dinkTick)
+    if ((uint32)g_dglos.g_bowStatus.pull_wait < g_dglos.g_dinkTick)
     {
         g_dglos.g_bowStatus.pull_wait = g_dglos.g_dinkTick + 10;
         if (g_dglos.g_bowStatus.hitme) g_dglos.g_bowStatus.time += 7;
@@ -14597,7 +14605,7 @@ void process_bow( int h)
         
 		float progress = (float(g_dglos.g_bowStatus.time)/500); //was +1
 
-		g_sprite[h].pframe =  (float(4)*progress)+1;
+		g_sprite[h].pframe =  (int32)((float(4)*progress)+1);
 #ifdef _DEBUG
 	//LogMsg("sprite %d's pframe is now %d", h, g_sprite[h].pframe);
 #endif
@@ -14780,7 +14788,7 @@ void human_brain(int h)
         return;
     }
 
-    if ( (sjoy.button[2] == true) )
+    if (sjoy.button[2] == true)
     {
         if (!run_through_tag_list_talk(h))
         {
@@ -14896,7 +14904,7 @@ void human_brain(int h)
     }
 
     if (g_dglos.magic_script != 0) if (sjoy.joybit[3]) goto shootm;
-    if ( (sjoy.button[3] == true) )
+    if (sjoy.button[3] == true)
     {
         if (g_dglos.magic_script == 0)
         {
@@ -14974,7 +14982,7 @@ shootm:
     }
 #endif
 
-    if ( (sjoy.button[5] == true) )
+    if (sjoy.button[5] == true)
     {
 
         if (!g_dglos.g_bShowingBitmap.active) if (!g_dglos.g_bowStatus.active) if (!g_dglos.g_talkInfo.active)
@@ -15402,7 +15410,7 @@ void flip_it(void)
     {
      
         //Make sure we're not 'stuck'... i.e. fade down when already black, or fade up when not black
-        if (g_dglos.process_downcycle && g_dglos.bFadedDown || g_dglos.process_upcycle && !g_dglos.bFadedDown)
+        if ((g_dglos.process_downcycle && g_dglos.bFadedDown) || (g_dglos.process_upcycle && !g_dglos.bFadedDown))
         {
             if (g_dglos.process_downcycle)
                 g_dglos.process_downcycle = false;
@@ -16115,7 +16123,7 @@ death:
 
 fin:
       
-        if (g_dglos.g_talkInfo.timer < g_dglos.g_dinkTick)
+        if ((uint32)g_dglos.g_talkInfo.timer < g_dglos.g_dinkTick)
         {   
             g_dglos.g_talkInfo.curf++;
             g_dglos.g_talkInfo.timer = g_dglos.g_dinkTick+100;
@@ -16178,11 +16186,11 @@ CL_Vec2f DinkToNativeCoords(CL_Vec2f vPos)
 	double xmod = (double(g_dglo.m_orthoRenderRect.GetWidth()) / GetScreenSizeXf());
 	double ymod = (double(g_dglo.m_orthoRenderRect.GetHeight()) / GetScreenSizeYf());
 	r += g_dglo.m_centeringOffset;
-	r.x *= g_dglo.m_aspectRatioModX;
-	r.y *= g_dglo.m_aspectRatioModY;
+	r.x *= (float)g_dglo.m_aspectRatioModX;
+	r.y *= (float)g_dglo.m_aspectRatioModY;
 
-	r.x /= xmod;
-	r.y /= ymod;
+	r.x /= (float)xmod;
+	r.y /= (float)ymod;
 	return r;
 }
 
@@ -16207,8 +16215,8 @@ void DinkSetCursorPosition(CL_Vec2f vPos)
 #ifdef _DEBUG
 		//LogMsg("Setting pos %s", toString(vPos).c_str());
 #endif
-		g_sprite[1].x = vPos.x;
-		g_sprite[1].y = vPos.y;
+		g_sprite[1].x = (int32)vPos.x;
+		g_sprite[1].y = (int32)vPos.y;
 	}
 
 	if (g_dglos.g_talkInfo.active != 0 && fabs(difY) < 100) //dialog select? the 100 is an ugly hack to get rid of accumulated pixels due to .. something
@@ -16219,7 +16227,7 @@ void DinkSetCursorPosition(CL_Vec2f vPos)
 #endif
 		if (!GetApp()->GetUsingTouchScreen())
 		{
-			g_dglos.g_playerInfo.mouse += difY;
+			g_dglos.g_playerInfo.mouse = (int32)(g_dglos.g_playerInfo.mouse + difY);
 		}
 	}
 
@@ -16393,7 +16401,7 @@ void draw_item(int num, bool magic, int mseq, int mframe)
     }
 
 	
-    int ddrval = lpDDSBack->BltFast( r.left, r.top, g_pSpriteSurface[g_dglos.g_seq[mseq].frame[mframe]],
+    int ddrval = lpDDSBack->BltFast( (int)r.left, (int)r.top, g_pSpriteSurface[g_dglos.g_seq[mseq].frame[mframe]],
         &g_dglos.g_picInfo[g_dglos.g_seq[mseq].frame[mframe]].box, DDBLTFAST_SRCCOLORKEY);
 
 }
@@ -16445,7 +16453,7 @@ void process_item( void )
     if (g_dglos.g_playerInfo.curitem < 1) g_dglos.g_playerInfo.curitem = 1;
 
 
-    if (g_dglos.g_dinkTick > g_dglos.item_timer)
+    if (g_dglos.g_dinkTick > (uint32)g_dglos.item_timer)
     {
         if (g_dglos.item_pic == 2) g_dglos.item_pic = 3; else g_dglos.item_pic = 2;
         g_dglos.item_timer = g_dglos.g_dinkTick + 400;
@@ -16636,7 +16644,7 @@ void process_animated_tiles( void )
 
     //process water tiles
 
-    if (water_timer < g_dglos.g_dinkTick)
+    if ((uint32)water_timer < g_dglos.g_dinkTick)
     {
 
         water_timer = g_dglos.g_dinkTick + ((rand() % 2000));
@@ -16809,7 +16817,7 @@ void ThinkSprite(int h, bool get_frame, bool bDebug)
 			}
 #endif
 			if (g_sprite[h].kill_timer == 0) g_sprite[h].kill_timer = g_dglos.g_dinkTick;
-			if (g_sprite[h].kill_timer + g_sprite[h].kill < g_dglos.g_dinkTick)
+			if ((uint32)(g_sprite[h].kill_timer + g_sprite[h].kill) < g_dglos.g_dinkTick)
 			{
 
 				g_sprite[h].active = false;
@@ -16841,7 +16849,7 @@ void ThinkSprite(int h, bool get_frame, bool bDebug)
 		if (g_sprite[h].notouch) if (g_dglos.g_dinkTick > g_sprite[h].notouch_timer) g_sprite[h].notouch = false;
 		if (get_frame == false)
 		{
-			if (   (g_sprite[h].brain == 1)/* || (spr[h].brain == 9) || (spr[h].brain == 3) */ )
+			if ( g_sprite[h].brain == 1/* || (spr[h].brain == 9) || (spr[h].brain == 3) */ )
 			{
 
 				run_through_touch_damage_list(h);
@@ -17267,7 +17275,7 @@ void updateFrame()
 	
 	ProcessGraphicGarbageCollection();
 	
-	SetOrthoRenderSize(g_dglo.m_orthoRenderRect.right, g_dglo.m_orthoRenderRect.GetHeight(), -g_dglo.m_orthoRenderRect.left, -g_dglo.m_orthoRenderRect.top);
+	SetOrthoRenderSize((float)g_dglo.m_orthoRenderRect.right, (float)g_dglo.m_orthoRenderRect.GetHeight(), -g_dglo.m_orthoRenderRect.left, -g_dglo.m_orthoRenderRect.top);
 	
 	if (5 > 9) //I'm sorry about this
 	{
@@ -17293,7 +17301,7 @@ void updateFrame()
 	//game timer
 
 	g_dglos.lastTickCount = g_dglos.g_dinkTick;
-	g_dglos.g_dinkTick += (1000.0f / 60.0f); //FPS lock at 60 fps
+	g_dglos.g_dinkTick = (uint32)(g_dglos.g_dinkTick + (1000.0f / 60.0f)); //FPS lock at 60 fps
 
 	//assume we're locked at 60 fps
 	
@@ -17310,7 +17318,7 @@ void updateFrame()
 		junk3 = 3;
 
 	bool bSpeedUp = false;
-	g_sprite[1].speed = (int)junk3*1.0f;
+	g_sprite[1].speed = (int)junk3;
 	if (DinkGetSpeedUpMode())
 	{
 		bSpeedUp = true;
@@ -17355,7 +17363,7 @@ void updateFrame()
 		process_item();
 		bRenderDinkText = false;
 		
-		if (!g_dglo.m_curView == DinkGlobals::VIEW_ZOOMED)
+		if (g_dglo.m_curView != DinkGlobals::VIEW_ZOOMED) //was the buggy looking "!g_dglo.m_curView == VIEW_ZOOMED" which works out the same since VIEW_ZOOMED is 0
 		{
 			BlitGUIOverlay();
 		}
@@ -17445,7 +17453,7 @@ void updateFrame()
 		goto flip;
 	}
 
-	if ( (sjoy.joybit[7] == true) )
+	if (sjoy.joybit[7] == true)
 	{
 		//space is pressed, lets draw the hitmap, why not?
 		if (!no_cheat) DrawCollision();
@@ -17661,7 +17669,7 @@ void SetDefaultVars(bool bFullClear)
 	g_dglos.plane_process = true;
 	g_dglos.weapon_script = 0;
 	g_dglos.magic_script = 0;
-	g_dglos.last_sprite_created;
+	//g_dglos.last_sprite_created;  //possible bug: this line did nothing, was it meant to be = 0?  Leaving it off to keep behavior identical
 	g_dglos.no_running_main = false;
 	g_dglos.process_warp = 0;
 	g_dglos.process_upcycle = false;
@@ -17847,7 +17855,7 @@ string GetDMODRootPath(string *pDMODNameOutOrNull)
 			
 				if (dmodpath[dmodpath.size() - 1] != '/') dmodpath += '/'; //need a trailing slash
 
-				int len = dmodpath.find_last_of("/", dmodpath.length() - 2);
+				int len = (int)dmodpath.find_last_of("/", dmodpath.length() - 2);
 				if (len == string::npos)
 				{
 					//no demod dir?  Weird but ok
@@ -17993,7 +18001,7 @@ bool LoadGameChunk(int gameIDToLoad, float &progressOut)
 		load_batch(20, percent);
 
 		//get the progress meter to update within the range of this chunk type
-		progressOut += .5 * percent;
+		progressOut += 0.5f * percent;
 		
 		if (percent != 1)
 		{
@@ -18120,7 +18128,7 @@ void DinkGlobals::SetView( eView view )
 	
 		g_dglo.m_aspectRatioModX = g_dglo.m_aspectRatioModY = 1.0f;
 		g_dglo.m_centeringOffset = CL_Vec2f(0, 0);
-		g_dglo.m_nativeGameArea = rtRectf(0,0,GetScreenSizeX(),GetScreenSizeY());
+		g_dglo.m_nativeGameArea = rtRectf(0,0,GetScreenSizeXf(),GetScreenSizeYf());
 		g_dglo.m_gameArea = rtRect32 (20, 0, 620, 400);
 		g_dglo.m_orthoRenderRect = rtRect32 (20, 0, 620, 400);
 		break;
@@ -18138,7 +18146,7 @@ void DinkGlobals::SetView( eView view )
 		float aspect = (float(C_DINK_SCREENSIZE_X)/GetScreenSizeXf());
 		float aspectY = (float(C_DINK_SCREENSIZE_Y)/GetScreenSizeYf());
 
-		g_dglo.m_nativeGameArea = rtRectf(double(g_dglo.m_gameArea.left)/ aspect,0,double(g_dglo.m_gameArea.right)/aspect,double(g_dglo.m_gameArea.bottom)/aspectY);
+		g_dglo.m_nativeGameArea = rtRectf((float)(double(g_dglo.m_gameArea.left)/ aspect),0,(float)(double(g_dglo.m_gameArea.right)/aspect),(float)(double(g_dglo.m_gameArea.bottom)/aspectY));
 		g_dglo.m_orthoRenderRect = rtRect32 (0, 0, 640, 480);
 		RecomputeAspectRatio();
 
@@ -18156,7 +18164,7 @@ void DinkGlobals::SetView( eView view )
 	}
 
 	
-	g_dglo.m_fontSize = 1.24;
+	g_dglo.m_fontSize = 1.24f;
 
 	if (IsIPADSize || IsDesktop())
 	{
@@ -18604,7 +18612,7 @@ bool SaveSpriteState(FILE *fp)
 
 		if (g_customSpriteMap[i] != 0)
 		{
-			int32 count = g_customSpriteMap[i]->size();
+			int32 count = (int32)g_customSpriteMap[i]->size();
 
 			SaveToFile(count, fp); //let them know how many are coming
 
@@ -18754,7 +18762,7 @@ bool GetDMODDirFromState(string const &path, string &dmodDirOut)
 		dmodDirOut = dmodDirOut.substr(0, dmodDirOut.length() - 1);
 		bDidRemoveTrailingSlash = true;
 	}
-	int index = dmodDirOut.find_last_of('/');
+	int index = (int)dmodDirOut.find_last_of('/');
 	if (index != string::npos)
 	{
 		//just grab the last dmod dir part
@@ -19088,7 +19096,7 @@ void ApplyAspectRatioGLMatrix()
 		return;
 	}
 
-	glScalef(g_dglo.m_aspectRatioModX, g_dglo.m_aspectRatioModY, 1);
+	glScalef((float)g_dglo.m_aspectRatioModX, (float)g_dglo.m_aspectRatioModY, 1);
 
 	CL_Mat4f mat;
 	glGetFloatv(GL_MODELVIEW_MATRIX, &mat[0]);
@@ -19098,7 +19106,7 @@ void ApplyAspectRatioGLMatrix()
 	g_dglo.m_dink_matrix_inverted = mat;
 
 	CL_Vec3f vTotal =  mat.get_transformed_point(CL_Vec3f(C_DINK_SCREENSIZE_X, C_DINK_SCREENSIZE_Y, 0));
-	CL_Vec3f vDinkSize = mat.get_transformed_point(CL_Vec3f(C_DINK_SCREENSIZE_X*g_dglo.m_aspectRatioModX, C_DINK_SCREENSIZE_Y *g_dglo.m_aspectRatioModY, 0));
+	CL_Vec3f vDinkSize = mat.get_transformed_point(CL_Vec3f((float)(C_DINK_SCREENSIZE_X*g_dglo.m_aspectRatioModX), (float)(C_DINK_SCREENSIZE_Y *g_dglo.m_aspectRatioModY), 0));
 
 	g_dglo.m_centeringOffset = (vTotal - vDinkSize)/2.0f;
 
