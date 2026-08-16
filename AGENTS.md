@@ -75,8 +75,14 @@ Requires the Proton SDK sibling layout (this repo lives at `proton/RTDink`, SDK 
 "C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe" windows_vs2017\iPhoneRTDink.sln /p:Configuration="Release GL" /p:Platform=x64 /m
 ```
 
-Output: `bin\winRTDink_Release GL.exe`. Only deprecation warnings expected
-(boost bind placeholders, std::iterator, ClanLib unary minus).
+Output: `bin\winRTDink_Release GL.exe`. Zero warnings expected: a cleanup pass
+(Aug 2026) got Windows Release/Debug GL, Mac and HTML5 builds warning-free, so
+treat any new warning as a regression. Two intentional oddities from that pass:
+the DinkC parser's `strchr(temp, '=')` calls used to read `strchr(temp, '<=')`
+etc but always truncated to '=' (kept, DMOD script compat depends on it), and
+MainMenu's CheckForImportedSavedGames platform check preserves its historical
+"return if Windows" behavior rather than the "return unless iOS" it appears to
+have wanted.
 
 ### Windows packaging (`script\BuildAndPackageWindows.bat`)
 
