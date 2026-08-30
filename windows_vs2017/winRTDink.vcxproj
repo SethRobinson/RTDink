@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Common Debug|Win32">
@@ -325,7 +325,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\source;..\..\shared;..\..\shared\win\;..\..\shared\util\boost;..\..\shared\ClanLib-2.0\Sources;..\..\shared\win\include;..\..\shared\FliteTTS\include;..\..\shared\Irrlicht\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;C_GL_MODE;_HAS_ITERATOR_DEBUGGING=0;_SECURE_SCL=0;_NO_DEBUG_HEAP=1;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_RUNS_IN_BACKGROUND;RT_IPV6;RT_PNG_SUPPORT;RT_CUSTOM_LOGMSG;RT_USE_LIBCURL;_WIN32_WINNT=0x06030000;WINVER=0x06030000;C_TREAT_MOUSE_AS_TOUCH_REMOVETHISPARTTOUSEIT;RT_DISABLE_WINDOWS_MENU;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;C_GL_MODE;RT_SHADER_PIPELINE_AVAILABLE;_HAS_ITERATOR_DEBUGGING=0;_SECURE_SCL=0;_NO_DEBUG_HEAP=1;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_RUNS_IN_BACKGROUND;RT_IPV6;RT_PNG_SUPPORT;RT_CUSTOM_LOGMSG;RT_USE_LIBCURL;_WIN32_WINNT=0x06030000;WINVER=0x06030000;C_TREAT_MOUSE_AS_TOUCH_REMOVETHISPARTTOUSEIT;RT_DISABLE_WINDOWS_MENU;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BufferSecurityCheck>true</BufferSecurityCheck>
@@ -2064,6 +2064,7 @@
     <ClCompile Include="..\..\shared\Renderer\linearparticle\sources\L_ParticleSystem.cpp" />
     <ClCompile Include="..\..\shared\Renderer\linearparticle\sources\L_ShootingEffect.cpp" />
     <ClCompile Include="..\..\shared\Renderer\RenderBatcher.cpp" />
+    <ClCompile Include="..\..\shared\Renderer\ShaderPipeline.cpp" />
     <ClCompile Include="..\..\shared\Renderer\RTGLESExt.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Common Debug|x64'">Use</PrecompiledHeader>
