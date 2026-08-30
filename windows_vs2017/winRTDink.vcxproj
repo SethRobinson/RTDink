@@ -300,7 +300,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\source;..\..\shared;..\..\shared\win\;..\..\shared\util\boost;..\..\shared\ClanLib-2.0\Sources;..\..\shared\win\include;..\..\shared\FliteTTS\include;..\..\shared\Irrlicht\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;C_GL_MODE;_HAS_ITERATOR_DEBUGGING=0;_SECURE_SCL=0;_NO_DEBUG_HEAP=1;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_RUNS_IN_BACKGROUND_DISABLED;RT_IPV6;_USE_32BIT_TIME_T;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;WGL_WGLEXT_PROTOTYPES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;C_GL_MODE;RT_SHADER_PIPELINE_AVAILABLE;_HAS_ITERATOR_DEBUGGING=0;_SECURE_SCL=0;_NO_DEBUG_HEAP=1;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_RUNS_IN_BACKGROUND_DISABLED;RT_IPV6;_USE_32BIT_TIME_T;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;WGL_WGLEXT_PROTOTYPES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -354,7 +354,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release GL|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\source;..\..\shared;..\..\shared\win\;..\..\shared\util\boost;..\..\shared\ClanLib-2.0\Sources;..\..\shared\win\include;..\..\shared\FliteTTS\include;..\dxsdk\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;_USE_32BIT_TIME_T;C_GL_MODE;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_IPV6;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;_USE_32BIT_TIME_T;C_GL_MODE;RT_SHADER_PIPELINE_AVAILABLE;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_IPV6;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PlatformPrecomp.h</PrecompiledHeaderFile>
@@ -377,7 +377,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release GL Beta|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\source;..\..\shared;..\..\shared\win\;..\..\shared\util\boost;..\..\shared\ClanLib-2.0\Sources;..\..\shared\win\include;..\..\shared\FliteTTS\include;..\dxsdk\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;_USE_32BIT_TIME_T;C_GL_MODE;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_IPV6;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;_USE_32BIT_TIME_T;C_GL_MODE;RT_SHADER_PIPELINE_AVAILABLE;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_IPV6;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PlatformPrecomp.h</PrecompiledHeaderFile>
@@ -406,7 +406,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4267;4244;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_IPV6;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;C_GL_MODE;RT_USE_LIBCURL;_WIN32_WINNT=0x0601;RT_DISABLE_WINDOWS_MENU;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_IPV6;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;C_GL_MODE;RT_SHADER_PIPELINE_AVAILABLE;RT_USE_LIBCURL;_WIN32_WINNT=0x0601;RT_DISABLE_WINDOWS_MENU;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -433,7 +433,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4267;4244;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_IPV6;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;C_GL_MODE;RT_USE_LIBCURL;RT_IS_BETA=1;_WIN32_WINNT=0x0601;RT_DISABLE_WINDOWS_MENU;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;RT_JPG_SUPPORT;RT_DONT_DO_MOVE_TIMER_TRICK;RT_IPV6;RT_CUSTOM_LOGMSG;RT_PNG_SUPPORT;C_GL_MODE;RT_SHADER_PIPELINE_AVAILABLE;RT_USE_LIBCURL;RT_IS_BETA=1;_WIN32_WINNT=0x0601;RT_DISABLE_WINDOWS_MENU;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
