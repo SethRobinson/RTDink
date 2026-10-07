@@ -98,7 +98,7 @@ ${COMPPATH}/UnpackArchiveComponent.cpp ${COMPPATH}/ArcadeInputComponent.cpp ${CO
 ${PPATH}/L_Defination.cpp ${PPATH}/L_DroppingEffect.cpp ${PPATH}/L_EffectEmitter.cpp ${PPATH}/L_ExplosionEffect.cpp ${PPATH}/L_MotionController.cpp ${PPATH}/L_Particle.cpp 
 ${PPATH}/L_ParticleEffect.cpp ${PPATH}/L_ParticleMem.cpp ${PPATH}/L_ParticleSystem.cpp ${PPATH}/L_ShootingEffect.cpp ${PPATH}/L_EffectManager.cpp 
 
-${APP}/App.cpp ${APP}/Component/ActionButtonComponent.cpp ${APP}/Component/CursorComponent.cpp ${APP}/Component/DragControlComponent.cpp ${APP}/Component/emulatedPointerComponent.cpp
+${APP}/App.cpp ${APP}/AutoTester.cpp ${APP}/Component/ActionButtonComponent.cpp ${APP}/Component/CursorComponent.cpp ${APP}/Component/DragControlComponent.cpp ${APP}/Component/emulatedPointerComponent.cpp
 ${APP}/Component/FPSControlComponent.cpp ${APP}/Component/InventoryComponent.cpp ${APP}/dink/dink.cpp ${APP}/dink/FFReader.cpp ${APP}/dink/misc_util.cpp ${APP}/dink/ScriptAccelerator.cpp 
 ${APP}/video_gl.cpp 
 ${APP}/GUI/AboutMenu.cpp ${APP}/GUI/BrowseMenu.cpp ${APP}/GUI/DebugMenu.cpp ${APP}/GUI/DMODInstallMenu.cpp 

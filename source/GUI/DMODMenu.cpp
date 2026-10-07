@@ -12,6 +12,7 @@
 #include "QuickTipMenu.h"
 #include "BrowseMenu.h"
 #include "ReadTextMenu.h"
+#include "DMODCleanup.h"
 
  
 void DMODMenuAddScrollContent(Entity *pParent);
@@ -24,7 +25,11 @@ void DMODMenuOnRemoveDMOD(VariantList *pVList)
 
 	if (!dmodDirToDelete.empty())
 	{
-		RemoveDirectoryRecursively(dmodDirToDelete);
+		if (!RemoveInstalledDMOD(GetDMODRootPath(), dmodDirToDelete, GetBaseAppPath()))
+		{
+			LogError("Unable to remove DMOD directory: %s", dmodDirToDelete.c_str());
+			PopUpCreate(pMenu, "Unable to completely remove this add-on. Check that its files are writable and not in use, then try again.", "", "cancel", "Continue", "", "", true);
+		}
 		DMODMenuAddScrollContent(pMenu);
 	}
 	LogMsg("Removing DMOD");

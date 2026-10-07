@@ -6,6 +6,7 @@
 #include "AutoTester.h"
 #include "App.h"
 #include "dink/dink.h"
+#include "DMODCleanup.h"
 #include "GUI/MainMenu.h"
 #include "GUI/BrowseMenu.h"
 #include "GUI/DMODMenu.h"
@@ -229,8 +230,7 @@ static void DoCleanup()
 	for (unsigned int i = 0; i < s_installedDmodDirs.size(); i++)
 	{
 		string path = GetDMODRootPath() + s_installedDmodDirs[i];
-		RemoveDirectoryRecursively(path);
-		if (FileExists(path + "/dmod.diz"))
+		if (!RemoveInstalledDMOD(GetDMODRootPath(), path, GetBaseAppPath()))
 		{
 			bCleanupOK = false;
 			detail += "couldn't delete " + path + " ";

@@ -653,7 +653,7 @@ bool App::Init()
 			}
 	*/
 
-		RemoveFile(GetDMODRootPath()+"temp.dmod");
+		RemoveFile(GetDMODRootPath()+"temp.dmod", false);
 		RemoveFile("temp.dmod");
 
 	}

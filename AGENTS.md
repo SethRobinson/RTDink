@@ -48,6 +48,31 @@ Gotcha: the Cocoa entry path on Mac never passed argv to the app; `App::Init`
 now ingests it via `_NSGetArgc/_NSGetArgv` (this also made `-game`/`-window`
 etc work on Mac for the first time).
 
+### DMOD deletion compatibility (October 2026)
+
+Proton's recursive deletion API now requires physical absolute paths. The
+menu and autotest use `source/DMODCleanup.h` to turn the usual relative
+`dmods/` root into an explicit app-base path, resolve POSIX OS cache aliases,
+and delete only one immediate DMOD child. Do not pass `GetDMODRootPath() + name`
+straight to the engine deletion API. Failures must be reported; disappearance
+of `dmod.diz` alone does not prove the entire folder was removed. Startup's
+`temp.dmod` cleanup uses `RemoveFile(path, false)` since a cache path can already
+be absolute. The download/unpack cleanup uses file-only deletion as before.
+Windows `-game name` can intentionally return an empty relative root; the
+helper binds that case to the checked app base too, never to an unchecked cwd.
+
+`tests/dmod_cleanup.cpp` exercises the production helper without starting the
+game. From the parent Proton repo, compile with `cl /EHsc /W3 /WX /I shared
+RTDink/tests/dmod_cleanup.cpp` (or `g++ -std=c++11 -Wall -Wextra -Werror -I shared`)
+and pass the executable to Proton's `tests/deletion_safety.py --native <exe>`.
+See `../docs/deletion-safety.md` for complete commands and the build matrix.
+The helper tests pass on Windows, Linux, macOS and Emscripten. Windows Release
+x64, Linux, macOS Release, HTML5 and Android native arm64 builds were checked.
+Android CMake now includes `AutoTester.cpp`, which was previously missing and
+broke its link.
+These are companion changes in this separate repo; committing Proton alone
+does not include them.
+
 
 ## Security
 
