@@ -234,12 +234,26 @@ The README screenshots (`doc/images/screenshot_*.png`) are copies of
 autotest output; refresh them from `script\testruns\windows\` after UI
 changes.
 
-### HTML5 / web version (`html5\`, verified July 2026)
+### HTML5 / web version (`html5\`, verified October 2026)
 
 - Builds with Emscripten 6.0.3 from `d:\pro\emsdk` (`EMSCRIPTEN_ROOT`, set by
   proton's `base_setup.bat`). Build: `html5\build_release.bat nopause`; then
   `html5\UploadToWebsite.bat` scp's to `rtsoft@rtsoft.com:www/web/dink/`
   (live at https://www.rtsoft.com/web/dink/). `BuildAndUpload.bat` chains both.
+- For automation, use `UploadToWebsite.bat nobrowser` or
+  `BuildAndUpload.bat nobrowser` (also skips the final pause). The scripts
+  anchor paths to their own directory and stop on build/upload failures.
+  Build cleanup uses Proton's `SafeRemove.ps1`; upload overwrites only the
+  named build/loader files without deleting the live loader directory, then
+  publishes the cache-busted HTML after the payloads and fixes permissions.
+- October 8, 2026: fresh release built with Proton `f073700` and RTDink
+  `ff45273`, deployed and hash-verified at the URL above. The Emscripten
+  build succeeds with two existing `-Winvalid-pp-token` warnings from the
+  JavaScript empty strings in Proton's `BaseApp.cpp` `EM_ASM` block; the
+  older blanket warning-free HTML5 claim no longer applies. Local and live
+  headless Edge verified the main menu and new game without JavaScript
+  errors. Test artifacts belong in the
+  ignored `script/testruns/` directory.
 - `CustomMain4-3AspectRatioTemplate.html` (local, in `html5\`) is the
   hand-tweaked PWA/mobile page; sed generates `RTDink.html`/`index.html` from
   it, substituting the app name and an `RTBuildStamp` build stamp that

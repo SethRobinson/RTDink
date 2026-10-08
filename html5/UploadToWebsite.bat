@@ -1,29 +1,30 @@
-SET _FTP_USER_=rtsoft
-SET _FTP_SITE_=rtsoft.com
-SET WEB_SUB_DIR=web/dink
+@echo off
+setlocal DisableDelayedExpansion
+cd /d "%~dp0" || exit /b 1
 
+REM Upload only the build artifacts; keep website-owned PWA files intact.
+for %%F in (RTDink.data RTDink.html RTDink.js RTDink.wasm WebLoaderData\logo.png WebLoaderData\progressLogo.Dark.png WebLoaderData\progressLogo.Light.png WebLoaderData\RTLoader.js) do (
+    if not exist "%%F" (
+        echo Missing build artifact: %%F
+        exit /b 1
+    )
+)
+copy /Y RTDink.html index.html >nul
+if errorlevel 1 exit /b 1
 
-set CURPATH=%cd%
-cd ..
-call app_info_setup.bat
-cd %CURPATH%
+REM Overwrite loader assets without deleting the live directory.
+ssh -o BatchMode=yes rtsoft@rtsoft.com "mkdir -p ~/www/web/dink/WebLoaderData"
+if errorlevel 1 exit /b 1
+scp RTDink.data RTDink.js RTDink.wasm rtsoft@rtsoft.com:www/web/dink/
+if errorlevel 1 exit /b 1
+scp WebLoaderData\logo.png WebLoaderData\progressLogo.Dark.png WebLoaderData\progressLogo.Light.png WebLoaderData\RTLoader.js rtsoft@rtsoft.com:www/web/dink/WebLoaderData/
+if errorlevel 1 exit /b 1
+REM Publish the cache-busted pages after the payloads finish uploading.
+scp RTDink.html index.html rtsoft@rtsoft.com:www/web/dink/
+if errorlevel 1 exit /b 1
+ssh -o BatchMode=yes rtsoft@rtsoft.com "chmod -R u=rwX,go=rX ~/www/web/dink"
+if errorlevel 1 exit /b 1
 
-if not exist %APP_NAME%.js %RT_UTIL%\beeper.exe /p
-:Get rid of files we don't actually need
-del %APP_NAME%.js.orig.js
-del temp.o
-:SSH transfer, this assumes you have ssh and valid keys setup already
-copy /Y %APP_NAME%.html index.html
-
-:NOTE: manifest.webmanifest, the icon pngs and .htaccess in this web dir live on the server
-:only (mirrored in d:\website\web\dink) - this script must never delete or overwrite them.
-ssh %_FTP_USER_%@%_FTP_SITE_% "mkdir -p ~/www/%WEB_SUB_DIR%"
-ssh %_FTP_USER_%@%_FTP_SITE_% "rm -rf ~/www/%WEB_SUB_DIR%/WebLoaderData"
-:rsync isn't a thing on stock Windows, so we use OpenSSH's scp instead
-scp %APP_NAME%.data %APP_NAME%.html %APP_NAME%.js %APP_NAME%.wasm index.html %_FTP_USER_%@%_FTP_SITE_%:www/%WEB_SUB_DIR%/
-scp -r WebLoaderData %_FTP_USER_%@%_FTP_SITE_%:www/%WEB_SUB_DIR%/
-ssh %_FTP_USER_%@%_FTP_SITE_% "chmod -R u=rwX,go=rX ~/www/%WEB_SUB_DIR%"
-
-:Let's go ahead an open a browser to test it
-:start http://www.%_FTP_SITE_%/%WEB_SUB_DIR%/%APP_NAME%.html
-start http://www.%_FTP_SITE_%/%WEB_SUB_DIR%
+REM Automation can upload without opening a visible browser.
+if /i not "%~1"=="nobrowser" start https://www.rtsoft.com/web/dink/
+exit /b 0

@@ -1,3 +1,5 @@
+@setlocal DisableDelayedExpansion
+cd /d "%~dp0" || exit /b 1
 :Set below to DEBUG=1 for debug mode builds - slower but way easier to see problems. Disables the ASYNC stuff as that doesn't seem to play
 :well with the rest.  It uses Emscripten default html setup which doesn't allow uploading/downloading though.
 
@@ -15,37 +17,35 @@ SET USE_HTML5_CUSTOM_MAIN=1
 SET CUSTOM_TEMPLATE=CustomMain4-3AspectRatioTemplate.html
 
 
-set CURPATH=%cd%
-cd ..
-call app_info_setup.bat
+cd /d "%~dp0.." || exit /b 1
+set "APP_NAME="
+call .\app_info_setup.bat
+if errorlevel 1 exit /b 1
+if not "%APP_NAME%"=="RTDink" exit /b 1
 :um, why does the emsdk_env.bat not fully work unless I'm in the emscripten dir?  Whatever, we'll move there and then back
-cd /D %EMSCRIPTEN_ROOT%
-call emsdk_env.bat
+if not defined EMSCRIPTEN_ROOT exit /b 1
+cd /d "%EMSCRIPTEN_ROOT%" || exit /b 1
+call .\emsdk_env.bat
+if errorlevel 1 exit /b 1
 :Move back to original directory
-cd %CURPATH%
+cd /d "%~dp0" || exit /b 1
 
 
 where /q emsdk_env.bat
 
 if ERRORLEVEL 1 (
     ECHO You need the environmental EMSCRIPTEN_ROOT set.  This should be set in setup_base.bat in proton's main dir, then called from app_info_setup.bat.
-     %RT_UTIL%\beeper
-     pause
-     exit
+     exit /b 1
 )
 
-if not exist %RT_UTIL%\sed.exe (
+if not defined RT_UTIL exit /b 1
+if not exist "%RT_UTIL%\sed.exe" (
     ECHO You need RT_UTIL set to a dir containing sed.exe ^(used to generate the html from the template^).
-     %RT_UTIL%\beeper
-     pause
-     exit
+     exit /b 1
 )
 
 
-:Oh, we better build our media just in case
-cd ../media
-:call update_media.bat
-cd ../html5
+:Media is prebuilt in bin/interface, bin/audio and bin/dink_html5.
 
 
 SET SHARED=..\..\shared
@@ -160,21 +160,21 @@ SET INCLUDE_DIRS=-I%SHARED% -I%APP% -I../../shared/util/boost -I../../shared/Cla
 :compile some libs into a separate thing, otherwise our list of files is too long and breaks stuff
 
 
-del %APP_NAME%.js*
-del %APP_NAME%.html
-del %APP_NAME%.wasm*
-del %APP_NAME%.data
-
-del %APP_NAME%.mem
-del temp.o
+for %%F in (RTDink.js* RTDink.html RTDink.wasm* RTDink.data RTDink.mem temp.o) do (
+    powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0..\..\shared\win\utils\SafeRemove.ps1" -Root "%~dp0.." -RelativePath "html5\%%F" -FilesOnly
+    if errorlevel 1 exit /b 1
+)
 
 :grab our shared WebLoaderData, this has default graphics and scripts that handle various emscripten/html5 communication
 :if you need to customize it, you can stop copying these and customize yours instead
-mkdir WebLoaderData
+if not exist WebLoaderData mkdir WebLoaderData
+if errorlevel 1 exit /b 1
 copy /Y ..\..\shared\html5\templates\WebLoaderData .\WebLoaderData
+if errorlevel 1 exit /b 1
 
 call emcc %CUSTOM_FLAGS% %INCLUDE_DIRS% ^
 %ZLIB_SRC% %JPG_SRC% %PNG_SRC% %PARTICLE_SRC% -r -o temp.o
+if errorlevel 1 exit /b 1
 
 :../../shared/html5/fmodstudio/api/studio/lib/upstream/wasm/fmodstudioL.wasm
 :../../shared/html5/fmodstudio/api/studio/lib/upstream/js/fmodstudioL.js
@@ -187,15 +187,17 @@ call emcc %CUSTOM_FLAGS% %INCLUDE_DIRS% ^
 call emcc %CUSTOM_FLAGS% %INCLUDE_DIRS% ^
 %APP_SRC% %SRC% %COMPONENT_SRC% temp.o ../../shared/html5/fmodstudio/api/studio/lib/upstream/w32/fmodstudioL_wasm.a --exclude-file .svn ^
 --preload-file ../bin/interface@interface/ --preload-file ../bin/audio@audio/ --preload-file ../bin/dink_html5@dink/ --js-library %SHARED%\html5\SharedJSLIB.js -lidbfs.js -o %APP_NAME%.%FINAL_EXTENSION%
+if errorlevel 1 exit /b 1
 
 :skip
 echo on
 @echo on
 REM Make sure the file compiled ok
-if not exist %APP_NAME%.js %RT_UTIL%\beeper.exe /p
+for %%F in (RTDink.js RTDink.wasm RTDink.data) do if not exist "%%F" exit /b 1
 
 IF %USE_HTML5_CUSTOM_MAIN% EQU 1 (
-%RT_UTIL%\sed -e "s/RTTemplateName/%APP_NAME%/g" -e "s|RTBuildStamp|%DATE% %TIME%|g" %CUSTOM_TEMPLATE% > %APP_NAME%.html
+"%RT_UTIL%\sed" -e "s/RTTemplateName/%APP_NAME%/g" -e "s|RTBuildStamp|%DATE% %TIME%|g" %CUSTOM_TEMPLATE% > %APP_NAME%.html
+if errorlevel 1 exit /b 1
 )
 
 
@@ -205,3 +207,4 @@ echo no pause wanted
 echo Compile complete.
 pause
 )
+exit /b 0

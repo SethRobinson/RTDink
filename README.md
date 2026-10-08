@@ -7,13 +7,15 @@ An enhanced, portable version of **Dink Smallwood**, the classic 1997 action RPG
 <img src="doc/images/screenshot_newgame.png" width="49%" alt="Gameplay - the start of a new game">
 </p>
 
-## Download
+## Play or download
+
+**[Play in your browser](https://www.rtsoft.com/web/dink/)** — the HTML5/WebAssembly version runs without an installer.
 
 | Platform | Get it | Size |
 |----------|--------|------|
 | **Windows** | [DinkSmallwoodHDInstaller.exe](https://www.rtsoft.com/dink/DinkSmallwoodHDInstaller.exe) | ~85 MB |
 | **macOS** | [DinkSmallwoodHD.dmg](https://www.rtsoft.com/dink/DinkSmallwoodHD.dmg) (universal, Intel + Apple Silicon, macOS 11+) | ~100 MB |
-| **Linux** | Flatpak, one command (see below) | ~90 MB |
+| **Linux** | Flatpak: [x86_64](https://www.rtsoft.com/dink/DinkSmallwoodHD-x86_64.flatpak) / [ARM64 (aarch64)](https://www.rtsoft.com/dink/DinkSmallwoodHD-aarch64.flatpak) (install command below) | ~90 MB |
 | **iOS** | [App Store](https://apps.apple.com/app/dink-smallwood-hd/id391690243) | |
 | **Android** | [Google Play](https://play.google.com/store/apps/details?id=com.rtsoft.rtdink) | |
 
