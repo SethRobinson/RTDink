@@ -122,7 +122,6 @@
           display: block;
           max-width: 100vw;
           max-height: 70vh;
-          z-index: -1;
       }
 
       .progress {
@@ -140,6 +139,7 @@
 
       #loader {
         position: absolute;
+        z-index: 1;
         left: 0;
         top: 0;
         width: 100vw;
@@ -207,49 +207,38 @@
 
       <div class="progress"><div class="full"></div></div>
     </div>
+    <input type="file" id="uploader" style="display:none" onchange="previewFile()">
+    <!-- File transfer only: the legacy RTLoader.js also starts the game. -->
+    <script src="DinkFileTransfer.js?v=RTBuildStamp"></script>
   </body>
 
 
   <script>
-  	var textNum = 0;
-
-  //Uncomment below to disable webassembly loading
-  //UnityLoader.SystemInfo.hasWasm = false;
-
         var Module =
         {
-        	setStatus: function(text)
-			  	{
-			      console.log('SetStatus: ' + text)
-			      const progress = document.querySelector("#loader .progress");
-
-			      if (!Module.progress)
-			      {
-			      	//set it up
-			      progress.style.display = "block";
-			      Module.progress = progress.querySelector(".full");
-			      loader.querySelector(".spinner").style.display = "none";
-			      Module.progress.style.transform = `scaleX(${0})`;
-			       } else
-			     	{
-				//continue it
-		 				var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
-		 				if (m)
-		 					{
-		 						loader.querySelector(".loadingtext").innerHTML = "Loading stuff...";
-			 					 var cur = parseInt(m[2])*100;
-			           var progressMax = parseInt(m[4])*100;
-			           //console.log('cur: ' + cur+' max: '+progressMax) ;
-			           Module.progress.style.transform = `scaleX(${cur/progressMax})`;
-			        } else
-			       	{
-		         		//done loading
-		         		 UpdateText(); //will show index 0
-		     			   loader.style.display = "none";
-		     			   loader.querySelector(".spinner").style.display = "block";
-		    			}
-      	}
-     	},
+            setStatus: function(text)
+            {
+                // Emscripten sends plain status strings between progress updates.
+                // Only onRuntimeInitialized may dismiss the loading overlay.
+                var loader = document.getElementById('loader');
+                if (loader.style.display === 'none') return;
+                var progress = loader.querySelector('.progress');
+                var match = text.match(/^(.*?)\s*\((\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)\)/);
+                if (match && Number(match[3]) > 0)
+                {
+                    var fraction = Math.max(0, Math.min(1, Number(match[2]) / Number(match[3])));
+                    progress.style.display = 'block';
+                    progress.querySelector('.full').style.transform = 'scaleX(' + fraction + ')';
+                    loader.querySelector('.spinner').style.display = 'none';
+                    loader.querySelector('.loadingtext').textContent = 'Loading... ' + Math.floor(fraction * 100) + '%';
+                }
+                else
+                {
+                    progress.style.display = 'none';
+                    loader.querySelector('.spinner').style.display = 'block';
+                    if (text) loader.querySelector('.loadingtext').textContent = text;
+                }
+            },
         	  print: function(text) {console.log('>> ' + text) },
   					printErr: function(text) { console.log(appName+' ERROR: ' + text) },
   					onAbort: function(what)
@@ -280,12 +269,6 @@
             }
         };
 
-        var start_function = function(o) {
-            loader.querySelector(".spinner").style.display = "none";
-            loader.style.display = "none";
-            Module.ccall('mainf', null, null);
-        };
-
     </script>
     <script>
 
@@ -293,41 +276,6 @@
           script.src = appName + ".js?v=" + encodeURIComponent(buildStamp); //cache-bust, see locateFile comment
           document.body.appendChild(script);
 
-
-  var textIntervalHandle;
-  var textTimerIntervalMS = 5000; //how fast the text updates after the initial two
-
-  var textCommentArray = [
-   "This can really take a while.",
-   "Webgl apps like this are still relatively new, they will get faster to initialize in time.",
-   "While slow to initialize, this is safer to run and always up to date as compared to a downloadable that you would need to install.",
-   "Make sure you're using a 64 bit browser.  Chrome or Firefox are good choices.",
-   "Did you know RTsoft has been making weird games since 1989?  It's true, Seth is just that old.",
-   "It's looking like you'll be old too before this game starts.",
-   "You've gotta be bored out of your gourd by now.  Sorry about the wait.",
-   "Works on mobile now! Tap Install (or Add to Home Screen) to play without the address bar.",
-   "It's possible this could take like 5 minutes.  Wait if you want, or go try it on a powerful desktop machine maybe."
-   ];
-
-
-	function UpdateText()
-	{
-   if (textCommentArray.length > textNum)
-   {
-   	  //we have more to show
-      const loader = document.querySelector("#loader");
-
-     	loader.querySelector(".loadingtext").innerHTML = textCommentArray[textNum];
-
-      textNum++;
-
-	    if (textNum > 1)
-	    {
-	    	//keep rescheduling them after the first two messages
-	     textIntervalHandle = window.setTimeout(UpdateText, textTimerIntervalMS);
-	    }
-    }
-	}
 
   </script>
 

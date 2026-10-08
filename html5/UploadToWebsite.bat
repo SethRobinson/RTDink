@@ -3,7 +3,7 @@ setlocal DisableDelayedExpansion
 cd /d "%~dp0" || exit /b 1
 
 REM Upload only the build artifacts; keep website-owned PWA files intact.
-for %%F in (RTDink.data RTDink.html RTDink.js RTDink.wasm WebLoaderData\logo.png WebLoaderData\progressLogo.Dark.png WebLoaderData\progressLogo.Light.png WebLoaderData\RTLoader.js) do (
+for %%F in (RTDink.data RTDink.html RTDink.js RTDink.wasm DinkFileTransfer.js WebLoaderData\logo.png WebLoaderData\progressLogo.Dark.png WebLoaderData\progressLogo.Light.png WebLoaderData\RTLoader.js) do (
     if not exist "%%F" (
         echo Missing build artifact: %%F
         exit /b 1
@@ -15,9 +15,14 @@ if errorlevel 1 exit /b 1
 REM Overwrite loader assets without deleting the live directory.
 ssh -o BatchMode=yes rtsoft@rtsoft.com "mkdir -p ~/www/web/dink/WebLoaderData"
 if errorlevel 1 exit /b 1
+REM Use "nobrowser htmlonly" after regenerating HTML without a WASM rebuild.
+if /i "%~2"=="htmlonly" goto upload_html
 scp RTDink.data RTDink.js RTDink.wasm rtsoft@rtsoft.com:www/web/dink/
 if errorlevel 1 exit /b 1
 scp WebLoaderData\logo.png WebLoaderData\progressLogo.Dark.png WebLoaderData\progressLogo.Light.png WebLoaderData\RTLoader.js rtsoft@rtsoft.com:www/web/dink/WebLoaderData/
+if errorlevel 1 exit /b 1
+:upload_html
+scp DinkFileTransfer.js rtsoft@rtsoft.com:www/web/dink/
 if errorlevel 1 exit /b 1
 REM Publish the cache-busted pages after the payloads finish uploading.
 scp RTDink.html index.html rtsoft@rtsoft.com:www/web/dink/

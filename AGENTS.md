@@ -263,6 +263,25 @@ changes.
 - `manifest.webmanifest`, the icon pngs, `.htaccess`, and `/web/arcade-mobile.js`
   live on the server only (mirrored in `d:\website\web\dink`); the upload
   script must never delete or overwrite them.
+- Loader/file transfer (fixed October 8, 2026): keep the logo above the
+  black canvas (no negative z-index) and dismiss the loader only in
+  `onRuntimeInitialized`, never on plain download-status strings.
+  `html5/DinkFileTransfer.js` restores the legacy loader's FileSaver and
+  file-transfer helpers without redefining `Module` or booting the game
+  twice. The template owns `#uploader`; imports write `/proton_temp.tmp`
+  and send `MESSAGE_TYPE_HTML5_GOT_UPLOAD` (53) with the original filename.
+  Preserve the local PWA/layout/cache-busting code. Do not include the
+  complete legacy `RTLoader.js` (it also requests obsolete `.js.mem` data).
+  `node tests/html5_loader.cjs` tests status transitions, cancelled/failed
+  reads, import filenames/bytes, and download bytes/MIME without npm.
+  Headless Edge checks cover desktop/mobile layout, an actual quicksave
+  export/import round trip, and normal-slot byte transfer in an isolated
+  browser profile. Menu clicks need a realistic down/up delay (about 150 ms)
+  so the engine can register its file-picker click handler before mouseup.
+  For HTML/JS-only releases, regenerate `RTDink.html` and `index.html` from
+  the template using the existing binary build stamp, then run
+  `UploadToWebsite.bat nobrowser htmlonly`; this uploads the helper and pages
+  without recompiling or uploading the unchanged JS/WASM/data payloads.
 - Emscripten 6 port notes: needs `-s USE_SDL=1` (SDL 1.x shim no longer
   default), `-s INITIAL_MEMORY` (was TOTAL_MEMORY); `PRECISE_F32`,
   `--ignore-dynamic-linking`, `--memory-init-file` are gone. The ancient
