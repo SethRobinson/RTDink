@@ -122,8 +122,11 @@ REM **************************************** END SOURCE
 
 :unused so far: -s USE_GLFW=3 -s NO_EXIT_RUNTIME=1 -s FORCE_ALIGNED_MEMORY=1 -s EMTERPRETIFY=1  -s EMTERPRETIFY_ASYNC=1 -DRT_EMTERPRETER_ENABLED -s TOTAL_MEMORY=16MB
 :To skip font loading so it needs no resource files or zlib, add  -DC_NO_ZLIB
+:STACK_SIZE: newer Emscriptens default to a 64KB stack (it used to be 5MB). The DinkC interpreter recurses
+:through process_line/run_script with ~2.5KB of buffers per level, so DMODs with nested procedure calls
+:(Questlog Edition's quest log) overflowed it and silently corrupted memory ("null function" crashes later).
 SET CUSTOM_FLAGS= -DHAS_SOCKLEN_T -DBOOST_ALL_NO_LIB -DPLATFORM_HTML5 -DRT_USE_SDL_AUDIO -DRT_JPG_SUPPORT ^
--DRT_PNG_SUPPORT -s WASM=1 -DRT_SHADER_PIPELINE_AVAILABLE -DRT_SHADER_PIPELINE_ONLY -s FULL_ES2=1 -s INITIAL_MEMORY=16MB -s ALLOW_MEMORY_GROWTH=1 ^
+-DRT_PNG_SUPPORT -s WASM=1 -DRT_SHADER_PIPELINE_AVAILABLE -DRT_SHADER_PIPELINE_ONLY -s FULL_ES2=1 -s INITIAL_MEMORY=16MB -s ALLOW_MEMORY_GROWTH=1 -s STACK_SIZE=5MB ^
 -Wno-deprecated-builtins -Wno-c++11-compat-deprecated-writable-strings -Wno-shift-negative-value -Wno-deprecated-non-prototype ^
 -Wno-switch -Wno-writable-strings -sASYNCIFY -DRT_EMTERPRETER_ENABLED --use-preload-cache -s USE_SDL=1
 

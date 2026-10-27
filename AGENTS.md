@@ -282,6 +282,14 @@ changes.
   the template using the existing binary build stamp, then run
   `UploadToWebsite.bat nobrowser htmlonly`; this uploads the helper and pages
   without recompiling or uploading the unchanged JS/WASM/data payloads.
+- Stack size (fixed October 27, 2026): `build_release.bat` sets
+  `-s STACK_SIZE=5MB`. Emscripten's default dropped to 64KB, and the DinkC
+  interpreter's `run_script`/`process_line` recursion (~2.5KB of buffers per
+  level) overflowed it on DMODs with nested procedure calls (Questlog
+  Edition's quest log). Release builds don't check the stack, so the overflow
+  silently corrupted static data and crashed later with an unrelated
+  "RuntimeError: null function" (e.g. inside a `stringstream`). To diagnose
+  crashes like that, build with `--profiling-funcs -sSTACK_OVERFLOW_CHECK=2`.
 - Emscripten 6 port notes: needs `-s USE_SDL=1` (SDL 1.x shim no longer
   default), `-s INITIAL_MEMORY` (was TOTAL_MEMORY); `PRECISE_F32`,
   `--ignore-dynamic-linking`, `--memory-init-file` are gone. The ancient
